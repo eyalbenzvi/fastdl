@@ -12,10 +12,13 @@
       return part.replace(/\d+(?:[.:–-]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; });
     }).join('');
   }
+  // באיסוף עצמי אין משלוח, ולכן אין ערך למעקב: null → השורה לא מוצגת (CLAUDE.md §3.4, H-02)
   function track(m) {
     if (m.tracking) return m.group === 'בדואר' ? 'מעקב דואר' : 'כן, שליח';
-    return m.group === 'איסוף עצמי' ? '—' : 'ללא מעקב';
+    return m.group === 'איסוף עצמי' ? null : 'ללא מעקב';
   }
+  // השוואה בלי פיסוק ורווחים: "למחרת יום ההזמנה, מ-11:00" = "למחרת יום ההזמנה מ-11:00"
+  function norm(s) { return String(s || '').replace(/[\s,.·]/g, ''); }
   function tagCls(t) {
     if (t === 'ללא עלות') return 'tag--free';
     if (t === 'ללא מעקב') return 'tag--notrack';
@@ -61,7 +64,7 @@
           '<td>' + fmt(m.eta_rule) + '</td>' +
           '<td>' + fmt(m.how || '') + '</td>' +
           '<td class="dl-price' + priceCls(m) + '">' + fmt(m.price_display) + '</td>' +
-          '<td>' + track(m) + '</td>' +
+          '<td>' + (track(m) || '') + '</td>' +
           '<td>' + ORDER + '</td></tr>';
       }).join('') + '</tbody>';
   }).join(''));
@@ -73,7 +76,8 @@
           '<div class="dl-card__head"><p class="dl-card__name">' + esc(m.name) + '</p>' + qBtn(m) + '</div>' +
           (t ? '<div class="dl-card__tags">' + t + '</div>' : '') +
           benefits(m) +
-          '<p>' + fmt(m.eta_rule) + (track(m) === '—' ? '' : ' · מעקב: ' + track(m)) + '</p>' +
+          // מובייל (F04/L-11): בלי "· מעקב: …" – התג ושורת התועלת כבר אומרים את זה; שורת המועד רק אם היא לא חוזרת על פריט בשורת התועלת
+          ((m.benefits || []).some(function (b) { return norm(b) === norm(m.eta_rule); }) ? '' : '<p>' + fmt(m.eta_rule) + '</p>') +
           (m.how ? '<p class="muted">איך מקבלים: ' + fmt(m.how) + '</p>' : '') +
           '<div class="dl-card__foot"><span class="dl-card__price' + priceCls(m) + '">' + fmt(m.price_display) + '</span>' + ORDER + '</div></li>';
       }).join('') + '</ul></section>';
@@ -87,7 +91,8 @@
     var m = M.filter(function (x) { return x.id === id; })[0];
     if (!m) return;
     title.textContent = m.name;
-    var list = [['זמן אספקה', fmt(m.eta_rule)], ['מחיר', fmt(m.price_display)], ['מעקב', track(m)]];
+    var list = [['זמן אספקה', fmt(m.eta_rule)], ['מחיר', fmt(m.price_display)]];
+    if (track(m)) list.push(['מעקב', track(m)]);
     if (m.how) list.push(['איך מקבלים', fmt(m.how)]);
     var ben = benefits(m);
     if (ben) list.push([(m.benefits || []).length ? 'מה מקבלים' : 'שימו לב', ben]);

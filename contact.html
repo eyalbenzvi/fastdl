@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
   <title>צרו קשר – רישיון עד הבית</title>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/tokens.css">
@@ -60,7 +61,8 @@
               <div class="field">
                 <label class="label" for="c-txt">פירוט</label>
                 <textarea id="c-txt" class="input" maxlength="1000" aria-describedby="c-cnt"></textarea>
-                <p id="c-cnt" class="help" aria-live="polite"><span class="num" dir="ltr" id="c-cnt-n">0</span> / <span class="num" dir="ltr">1000</span> תווים</p>
+                <p id="c-cnt" class="help"><span class="num" dir="ltr" id="c-cnt-n">0</span> / <span class="num" dir="ltr">1000</span> תווים</p>
+                <p class="sr-only" id="c-cnt-live" aria-live="polite"></p>
               </div>
               <button type="submit" class="btn btn--primary btn--m-block contact-form__submit">שליחת פנייה</button>
             </form>
@@ -79,8 +81,8 @@
               <p>א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span><br>שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></p>
               <p class="small muted">זמן מענה לפניות בכתב: <span class="tbc">[לאישור, למשל עד 2 ימי עסקים]</span></p>
             </section>
-            <div class="contact-soon"><svg class="ico" data-icon="message" aria-hidden="true"></svg>בקרוב – גם בוואטסאפ</div>
-            <p class="small">מוקד משרד התחבורה: <a href="tel:*5678"><span class="num" dir="ltr">&lrm;*5678</span></a></p>
+            <p class="contact-soon"><svg class="ico" data-icon="message" aria-hidden="true"></svg><span><span class="tbc">בקרוב</span> – גם בוואטסאפ</span></p>
+            <p class="small">מוקד משרד התחבורה: <a class="tel-tap" href="tel:*5678"><span class="num" dir="ltr">&lrm;*5678</span></a></p>
           </aside>
         </div>
       </div>

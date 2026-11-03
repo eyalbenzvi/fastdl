@@ -12,9 +12,21 @@
   var topic = UI.param('topic');
   if (topic && sub.querySelector('option[value="' + topic.replace(/[^a-z]/g, '') + '"]')) sub.value = topic;
 
-  function count() { cnt.textContent = String(txt.value.length); }
-  txt.addEventListener('input', count);
-  count();
+  // המספר הגלוי מתעדכן בכל הקשה; קורא המסך מקבל הכרזה רק בספים – כל 100 תווים, ובכל הקשה ב-100 האחרונים (F09)
+  var live = document.getElementById('c-cnt-live');
+  var MAX = Number(txt.getAttribute('maxlength')) || 1000;
+  var lastBucket = 0;
+  function count(announce) {
+    var n = txt.value.length;
+    cnt.textContent = String(n);
+    if (!live || !announce) return;
+    var bucket = Math.floor(n / 100);
+    if (n >= MAX - 100 || bucket !== lastBucket) live.textContent = n + ' / ' + MAX + ' תווים';
+    lastBucket = bucket;
+  }
+  txt.addEventListener('input', function () { count(true); });
+  count(false);
+  lastBucket = Math.floor(txt.value.length / 100);
 
   sub.addEventListener('change', function () { if (sub.value) UI.fieldError(sub, null); });
   ph.addEventListener('input', function () {

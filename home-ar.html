@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
   <title>الرخصة حتى البيت – فحص الحالة وطلب التوصيل</title>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/tokens.css">
@@ -11,6 +12,8 @@
   <link rel="stylesheet" href="css/pages.css">
   <script defer src="js/icons.js"></script>
   <script defer src="js/ui.js"></script>
+  <script defer src="js/validation.js"></script>
+  <script defer src="js/pages/home.js"></script>
 </head>
 <body data-page="home-ar">
   <div class="page">
@@ -47,12 +50,12 @@
           <div class="home-hero__text">
             <h1 class="h1">أنهيتم الدفع مقابل الرخصة؟<br><span class="accent">هنا تختارون كيف ستصلكم</span></h1>
             <p class="home-hero__lead">بعد دفع الرسوم والتصوير (إذا لزم)، يصلنا الطلب من وزارة المواصلات. ومن تلك اللحظة لديكم 48 ساعة (في أيام العمل) لاختيار توصيل سريع أو استلام ذاتي.</p>
-            <form class="card card--raised id-card" action="login.html" aria-labelledby="ar-form-t">
+            <form class="card card--raised id-card" id="ar-form" action="login.html" novalidate aria-labelledby="ar-form-t">
               <h2 class="id-card__title" id="ar-form-t">فحص الحالة وطلب التوصيل</h2>
-              <div class="field"><label class="label" for="ar-id">رقم الهوية</label><input id="ar-id" class="input" inputmode="numeric" maxlength="9" autocomplete="off"></div>
-              <div class="field"><label class="label" for="ar-ph">رقم الهاتف المحمول</label><input id="ar-ph" class="input" type="tel" inputmode="tel" autocomplete="tel"></div>
-              <a class="btn btn--primary btn--block" href="login.html">أرسلوا لي رمز التحقق</a>
-              <p class="ar-help"><svg class="ico ico--18" data-icon="phone" aria-hidden="true"></svg><span>لمساعدة بالعربية: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · <span lang="he">המשך התהליך בעברית</span></span></p>
+              <div class="field"><label class="label" for="ar-id">رقم الهوية</label><input id="ar-id" name="id" class="input input--num" inputmode="numeric" maxlength="9" autocomplete="off" aria-invalid="false"></div>
+              <div class="field"><label class="label" for="ar-ph">رقم الهاتف المحمول</label><input id="ar-ph" name="phone" class="input input--num" type="tel" inputmode="tel" maxlength="11" autocomplete="tel" aria-invalid="false"></div>
+              <button type="submit" class="btn btn--primary btn--block" id="ar-submit">أرسلوا لي رمز التحقق</button>
+              <p class="ar-help"><svg class="ico ico--18" data-icon="phone" aria-hidden="true"></svg><!-- ملاحظة للمترجم (L-14): "للمساعدة بالعربية" --><span>لمساعدة بالعربية: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · <span lang="he">המשך התהליך בעברית</span></span></p>
               <p class="small muted">سنرسل رمزًا عبر SMS إلى الرقم الذي أدخلتموه. لن نستخدم الرقم لأي غرض آخر. <a href="login.html">لماذا نطلب ذلك؟</a></p>
             </form>
           </div>

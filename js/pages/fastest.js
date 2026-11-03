@@ -9,7 +9,9 @@
   var home = document.getElementById('calc-date-home');
   if (!input || !res || !pick || !home) return;
 
-  function label(d) { return 'יום ' + Dates.DAYS[d.getDay()] + ', <span class="num" dir="ltr">' + Dates.formatShort(d) + '</span>'; }
+  // פורמט המועד האחיד באתר: "יום ג׳ 25.8" (F23)
+  var DAY = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
+  function label(d) { return 'יום ' + DAY[d.getDay()] + ' <span class="num" dir="ltr">' + d.getDate() + '.' + (d.getMonth() + 1) + '</span>'; }
 
   function update() {
     var d = Dates.fastestPickup(input.value);

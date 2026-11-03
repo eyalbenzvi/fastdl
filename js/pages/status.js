@@ -187,7 +187,7 @@
   function freshLine() {
     var t = today(), nx = nextBiz(t), tomorrow = iso(new Date(pd(t).getTime() + 864e5));
     var next = nx === tomorrow ? 'מחר בבוקר' : 'ב' + fd(nx) + ' בבוקר';
-    return '<p class="small muted st-fresh">' + I('refresh', { size: 16 }) + '<span>המידע עודכן היום, ' + fd(t, '05:00') + ' · העדכון הבא: ' + next + '</span></p>';
+    return '<p class="small muted st-fresh">' + I('refresh', { size: 16 }) + '<span>המידע עודכן היום, ' + fd(t, '05:00') + ' · <span class="st-nw">העדכון הבא: ' + next + '</span></span></p>';
   }
 
   /* ---------- ציר: שלבים עם תאריכים ---------- */
@@ -241,7 +241,7 @@
       now: nowS0
     },
     S1: {
-      tone: 'success', icon: 'check', badge: 'אפשר להזמין', h1: function () { return 'הבקשה שלכם התקבלה – אפשר לבחור משלוח'; }, tl: true,
+      tone: 'success', icon: 'check', badge: 'אפשר להזמין', h1: function () { return 'הבקשה שלכם התקבלה\u00a0– אפשר לבחור משלוח'; }, tl: true,
       kv: function () { return [['סוג תעודה', docType()], ['כתובת למשלוח', rich(ADDR)]]; },
       help: [['השוואה בין שיטות המסירה', 'delivery.html'], ['מה קורה אם לא בוחרים?', 'faq.html']],
       now: nowS1
@@ -292,7 +292,8 @@
     },
     S7: {
       tone: 'warning', icon: 'alert-triangle', badge: 'לא אושרה מסירה', h1: function () { return 'לא מצאנו אישור ש' + N() + ' נמסר'; }, tl: true,
-      kv: function () { return [['שיטת מסירה', 'דואר רגיל'], ['כתובת למשלוח', rich(ADDR)]]; },
+      // "שיטת מסירה" כבר מופיעה ב"מה עכשיו?" ("נשלח בדואר רגיל" + בדיקת הזכאות) – לא חוזרת כאן (F20)
+      kv: function () { return [['כתובת למשלוח', rich(ADDR)]]; },
       help: [['מתי מגיעה הנפקה חוזרת?', 'faq.html']],
       now: nowS7
     },
@@ -412,7 +413,7 @@
   function nowS0() {
     return '<p>זה לא אומר שמשהו השתבש. בקשות מגיעות אלינו פעם ביום, לפנות בוקר. כדי שנכוון אתכם נכון:</p>' +
       '<fieldset class="s0-q"><legend class="s0-q__legend">מתי השלמתם את התשלום (והצילום, אם נדרש)?</legend><div class="g2 s0-q__grid">' +
-      ANS.map(function (t, i) { return '<button type="button" class="ans-btn" aria-pressed="' + (st.ans === i) + '"' + act('ans', ' data-i="' + i + '"') + '>' + t + '</button>'; }).join('') +
+      ANS.map(function (t, i) { return '<button type="button" class="ans-btn" aria-pressed="' + (st.ans === i) + '"' + act('ans', ' data-i="' + i + '"') + '>' + I('check', { size: 20, cls: 'ans-btn__ico' }) + '<span>' + t + '</span></button>'; }).join('') +
       '</div></fieldset>' +
       '<div id="s0-ans" class="s0-ans" aria-live="polite"' + (st.ans < 0 ? ' hidden' : '') + '>' + s0Answer() + '</div>' +
       '<p class="small s0-foot">לא שילמתם עדיין את האגרה? ' + ext('לתשלום באתר משרד התחבורה') + '</p>';
@@ -522,19 +523,30 @@
   /* ---------- Render ---------- */
   var root = document.getElementById('status-root');
 
-  function skeleton() {
-    return '<div class="status-skel" aria-busy="true" aria-label="טוען את מצב הבקשה" role="status">' +
-      '<div class="skel status-skel__id"></div><div class="skel status-skel__h"></div><div class="skel status-skel__tl"></div>' +
-      '<div class="skel status-skel__c1"></div><div class="skel status-skel__c2"></div></div>';
+  function skeleton() { // L-05: טקסט גלוי שמוכרז (role=status); aria-busy על <main> (ב-render)
+    return '<h1 class="sr-only">מצב הבקשה</h1>' +
+      '<div class="status-skel"><p class="muted small status-skel__msg" role="status">מאתרים את הבקשה שלכם…</p>' +
+      '<div aria-hidden="true" class="status-skel__boxes"><div class="skel status-skel__id"></div><div class="skel status-skel__h"></div>' +
+      '<div class="skel status-skel__tl"></div><div class="skel status-skel__c1"></div><div class="skel status-skel__c2"></div></div></div>';
   }
 
+  var SITE = ' – רישיון עד הבית';
+  var mainEl = document.getElementById('main');
+
   function render() {
-    if (st.s === 'loading') { root.innerHTML = skeleton(); return; }
+    if (st.s === 'loading') {
+      root.innerHTML = skeleton();
+      if (mainEl) mainEl.setAttribute('aria-busy', 'true');
+      document.title = 'מצב הבקשה' + SITE;
+      return;
+    }
+    if (mainEl) mainEl.removeAttribute('aria-busy');
     var d = STATE_UI[st.s];
+    document.title = d.h1().replace(/\u00a0/g, ' ') + SITE; // F05: כותרת הלשונית = H1 של המצב
     root.innerHTML =
       '<div class="st-idwrap"><div class="status-id"><p class="muted">שלום, ישראלה' + (st.s === 'S9' ? '' : ' · ' + docType()) +
       (multi() && st.s !== 'S9' ? ' · <a href="status.html?s=S9"' + act('switch') + '>החלפת בקשה (' + n('2') + ')</a>' : '') +
-      '</p><a href="index.html"' + act('logout') + '>יציאה</a></div>' + freshLine() + '</div>' +
+      '</p><a href="index.html" class="st-logout"' + act('logout') + '>יציאה</a></div>' + freshLine() + '</div>' +
       '<div class="status-head">' + badge(d.tone, d.icon, d.badge) + '<h1 class="h1" id="status-h1" tabindex="-1">' + d.h1() + '</h1>' +
       (d.sub ? '<p class="status-lead">' + d.sub + '</p>' : '') + '</div>' +
       (d.tl ? timeline() : '') +
@@ -584,7 +596,7 @@
     });
   }
 
-  function placeholderToast(text) { UI.toast(text + ' [לאישור]'); }
+  function placeholderToast(text) { UI.toast(text + ' [לאישור]', { icon: 'info' }); }
 
   /* ---------- Events ---------- */
   root.addEventListener('click', function (e) {

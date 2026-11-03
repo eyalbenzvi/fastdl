@@ -15,6 +15,37 @@
   var accRoot = document.getElementById('home-acc');
   if (accRoot) UI.accordion(accRoot, { openIndex: demo === 'acc3' ? 3 : -1 });
 
+  /* ---------- ID form, Arabic home (home-ar.html, F01) ----------
+     אין נוסחי שגיאה בערבית (ואסור להמציא), ולכן: ערכים תקינים → כמו בבית B (נשמרים, ממשיכים ל-otp.html);
+     ערכים חסרים/שגויים → נשמרים ו-login.html?check=1 מציג אותם מולאים עם הודעות השגיאה בעברית. */
+  var arForm = document.getElementById('ar-form');
+  if (arForm) {
+    var arId = document.getElementById('ar-id');
+    var arPh = document.getElementById('ar-ph');
+    var arBtn = document.getElementById('ar-submit');
+    [[arId, /\D/g, 9], [arPh, /[^\d-]/g, 11]].forEach(function (f) {
+      f[0].addEventListener('input', function () {
+        var v = f[0].value.replace(f[1], '').slice(0, f[2]);
+        if (v !== f[0].value) f[0].value = v;
+      });
+    });
+    arForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (arBtn.disabled) return;
+      UI.store.set('fd.login', { id: Validate.digits(arId.value), ph: arPh.value });
+      if (!Validate.israeliId(arId.value) || !Validate.mobile(arPh.value)) {
+        window.location.href = 'login.html?check=1';
+        return;
+      }
+      var d = Validate.digits(arPh.value);
+      UI.store.set('fd.phone', d);
+      UI.setBusy(arBtn, true, arBtn.textContent);
+      setTimeout(function () { window.location.href = 'otp.html?ph=' + encodeURIComponent(Validate.maskMobile(d)); }, 1200);
+    });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) UI.setBusy(arBtn, false); });
+    return;
+  }
+
   /* ---------- ID form (B only) ---------- */
   var form = document.getElementById('id-form');
   if (!form) return;

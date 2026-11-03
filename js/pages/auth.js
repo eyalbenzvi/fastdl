@@ -92,7 +92,11 @@
       setTimeout(function () { window.location.href = 'otp.html'; }, 1200);
     });
 
-    if (demo === 'errors') {
+    if (UI.param('check') === '1' && saved) {
+      // הגעה מהבית בערבית עם ערכים חסרים/שגויים (F01): הערכים מולאו מראש, ומציגים את השגיאות מיד
+      var firstBad = validate();
+      if (firstBad) UI.focus(firstBad);
+    } else if (demo === 'errors') {
       id.value = '12'; ph.value = '052';
       validate();
     } else if (demo === 'loading') {
