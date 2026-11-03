@@ -62,16 +62,10 @@
     var saved = UI.store.get('fd.login', null);
     if (saved) { id.value = saved.id || ''; ph.value = saved.ph || ''; }
 
-    id.addEventListener('input', function () {
-      var v = id.value.replace(/\D/g, '').slice(0, 9);
-      if (v !== id.value) id.value = v;
-      if (id.getAttribute('aria-invalid') === 'true') UI.fieldError(id, null);
-    });
-    ph.addEventListener('input', function () {
-      var v = ph.value.replace(/[^\d-]/g, '').slice(0, 11);
-      if (v !== ph.value) ph.value = v;
-      if (ph.getAttribute('aria-invalid') === 'true') UI.fieldError(ph, null);
-    });
+    // P1-1/P2-1: מסננים (רווחים, מקפים, ‎+972 → 0) ורק אז חותכים – בלי maxlength שחותך לפני הסינון
+    Validate.bindNormalize(id, 'id', function () { if (id.getAttribute('aria-invalid') === 'true') UI.fieldError(id, null); });
+    Validate.bindNormalize(ph, 'mobile', function () { if (ph.getAttribute('aria-invalid') === 'true') UI.fieldError(ph, null); });
+    if (saved) { id.value = Validate.normalizeId(id.value); ph.value = Validate.normalizeMobile(ph.value); }
 
     function validate() {
       var badId = !Validate.israeliId(id.value);
@@ -83,14 +77,17 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (btn.disabled) return;
+      if (btn.getAttribute('aria-busy') === 'true') return;
       var bad = validate();
       if (bad) { bad.focus(); return; }
       UI.store.set('fd.login', { id: Validate.digits(id.value), ph: ph.value });
       UI.store.set('fd.phone', Validate.digits(ph.value));
       UI.setBusy(btn, true, 'שולחים קוד…');
+      // push: Back ממסך הקוד חוזר לטופס (לתיקון המספר). מסך הקוד מוחלף במסך המצב (P1-5)
       setTimeout(function () { window.location.href = 'otp.html'; }, 1200);
     });
+    // חזרה מ-bfcache (Back) – משחררים את מצב הטעינה
+    window.addEventListener('pageshow', function (e) { if (e.persisted && demo !== 'loading') UI.setBusy(btn, false); });
 
     if (UI.param('check') === '1' && saved) {
       // הגעה מהבית בערבית עם ערכים חסרים/שגויים (F01): הערכים מולאו מראש, ומציגים את השגיאות מיד
@@ -107,6 +104,13 @@
 
   /* ---------- P03 ---------- */
   function initOtp() {
+    // P1-5: חזרה (Back/Forward) למסך הקוד אחרי שהאימות כבר הצליח – ממשיכים למסך המצב, לא מבקשים קוד שוב
+    function verifiedBefore() { var ss = UI.store.get('fd.session', null); return !!(ss && ss.verified && !demo); }
+    function backForward() {
+      try { var n = performance.getEntriesByType('navigation')[0]; return !!n && n.type === 'back_forward'; } catch (x) { return false; }
+    }
+    if (verifiedBefore() && backForward()) { window.location.replace('status.html?s=' + scenario()); return; }
+    window.addEventListener('pageshow', function (e) { if (e.persisted && verifiedBefore()) window.location.replace('status.html?s=' + scenario()); });
     var form = document.getElementById('otp-form');
     var boxes = UI.qsa('#otp-boxes input');
     var err = document.getElementById('otp-err');
@@ -116,6 +120,7 @@
     var submit = document.getElementById('otp-submit');
     var cont = document.getElementById('otp-continue');
     var ok = document.getElementById('otp-ok');
+    var blockedEl = document.getElementById('otp-blocked');
     var attempts = 3;
     var sec = 45;
     var iv = null;
@@ -188,6 +193,7 @@
     /* טיימר – מתעדכן כל שנייה, מוכרז רק כל 15 שניות ובסיום */
     function fmt(s) { return '0:' + (s < 10 ? '0' : '') + s; }
     function renderTimer(announce) {
+      if (attempts <= 0) return; // חסום – אין מונה ואין "שלחו שוב"
       var waiting = sec > 0;
       timerEl.hidden = !waiting;
       resendEl.hidden = waiting;
@@ -206,6 +212,7 @@
       }, 1000);
     }
     document.getElementById('otp-resend-btn').addEventListener('click', function () {
+      if (attempts <= 0) return;
       startTimer(45);
       live.textContent = 'לא קיבלתם? שליחה חוזרת בעוד ' + fmt(45);
       boxes.forEach(function (b) { b.value = ''; });
@@ -220,22 +227,42 @@
       var prev = UI.store.get('fd.session', null);
       // משתמש אחר = נתונים אחרים: הזמנה/הנפקה קודמת נשמרת רק לאותה ת״ז
       if (!prev || prev.id !== id) { UI.store.remove('fd.order'); UI.store.remove('fd.reissue'); }
-      UI.store.set('fd.session', { id: id, phoneMasked: masked || document.getElementById('otp-phone').textContent, scenario: scenario() });
+      UI.store.set('fd.session', { id: id, phoneMasked: masked || document.getElementById('otp-phone').textContent, scenario: scenario(), verified: true });
     }
+    // P1-5: replace – מסך הקוד לא נשאר בהיסטוריה, ו-Back ממסך המצב חוזר לטופס ההזדהות / לעמוד שלפניו
+    function goStatus() { window.location.replace(cont.getAttribute('href')); }
     function setVerified(auto) {
       verified = true;
       cont.setAttribute('href', 'status.html?s=' + scenario());
-      if (auto) startSession(); else cont.addEventListener('click', startSession);
+      if (auto) startSession();
+      cont.addEventListener('click', function (e) {
+        if (e.button > 0 || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        e.preventDefault();
+        if (!auto) startSession();
+        goStatus();
+      });
       clearError();
       ok.hidden = false;
+      var hadFocus = form.contains(document.activeElement);
       submit.hidden = true;
       cont.hidden = false;
-      if (auto) setTimeout(function () { window.location.href = cont.getAttribute('href'); }, 1500);
+      // P3-4: הכפתור המפוקס הוסתר – הפוקוס עובר להודעת האישור (לא נופל ל-BODY)
+      if (hadFocus || document.activeElement === document.body) { try { ok.focus({ preventScroll: true }); } catch (x) { ok.focus(); } }
+      if (auto) setTimeout(goStatus, 1500);
     }
+    /* P2-10: בחסימה "שלחו שוב" לא משחרר אותה (בשירות האמיתי החסימה בצד השרת – 10 דקות [לאישור]), ולכן הוא לא מוצע:
+       המונה ו"שלחו שוב" מוסתרים, ובמקומם קישור חיוג למוקד. הפוקוס עובר להודעה (tabindex=-1), לא נופל ל-BODY */
     function block() {
+      clearInterval(iv);
+      timerEl.hidden = true;
+      resendEl.hidden = true;
+      if (blockedEl) blockedEl.hidden = false;
+      live.textContent = '';
       boxes.forEach(function (b) { b.disabled = true; });
       submit.disabled = true;
       showError('חסמנו זמנית את הניסיונות. נסו שוב בעוד 10 דקות או פנו למוקד. <span class="tbc">[לאישור]</span>');
+      try { err.focus({ preventScroll: true }); } catch (x) { err.focus(); }
+      UI.ensureVisible(err);
     }
     form.addEventListener('submit', function (e) {
       e.preventDefault();

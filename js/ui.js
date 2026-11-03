@@ -464,22 +464,50 @@
     }
   }
 
-  /* ---------- Busy button ---------- */
+  /* ---------- Busy button ----------
+     P3-4: לא disabled – כפתור מושבת שמחזיק את הפוקוס מפיל אותו ל-BODY (קורא המסך שותק). במקום זה
+     aria-disabled + aria-busy, והחסימה ב-JS: לחיצה על כפתור עסוק לא עוברת, ו-submit של טופס
+     שכפתור השליחה שלו עסוק נבלע (גם Enter בשדה). המראה זהה ל-disabled (components.css). */
+  function isBusy(el) { return !!el && el.getAttribute && el.getAttribute('aria-busy') === 'true'; }
   function setBusy(btn, busy, busyText) {
     if (!btn) return;
     if (busy) {
       if (!btn.hasAttribute('data-label')) btn.setAttribute('data-label', btn.innerHTML);
       btn.style.minWidth = btn.offsetWidth + 'px';
-      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
       btn.setAttribute('aria-busy', 'true');
       btn.innerHTML = icon('spinner', { cls: 'spin' }) + '<span>' + esc(busyText || '') + '</span>';
     } else {
       btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
       btn.setAttribute('aria-busy', 'false');
       if (btn.hasAttribute('data-label')) { btn.innerHTML = btn.getAttribute('data-label'); btn.removeAttribute('data-label'); }
       btn.style.minWidth = '';
     }
   }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[aria-busy="true"],a[aria-busy="true"]') : null;
+    if (b) { e.preventDefault(); e.stopImmediatePropagation(); }
+  }, true);
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (f && f.querySelector && (isBusy(f.querySelector('[type="submit"][aria-busy="true"]')) || (e.submitter && isBusy(e.submitter)))) { e.preventDefault(); e.stopImmediatePropagation(); }
+  }, true);
+
+  /* ---------- קישורי placeholder (P2-9) ----------
+     href="#" = יעד שטרם נקבע (קישור חיצוני או עמוד משפטי). בלי ניווט (לא לשונית כפולה, לא קפיצה לראש העמוד):
+     טוסט מידע עם [לאישור]. ה-HTML והסימון החיצוני נשארים כמו שהם. */
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button > 0) return;
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.getAttribute('href') !== '#') return;
+    e.preventDefault();
+    var clone = a.cloneNode(true);
+    qsa('.sr-only,svg', clone).forEach(function (x) { x.remove(); });
+    var label = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+    var ext = a.getAttribute('target') === '_blank';
+    toast((ext ? 'קישור חיצוני' : 'קישור') + (label ? ' "' + label + '"' : '') + ' – היעד [לאישור]', { icon: 'info' });
+  });
 
   /* ---------- Field errors ---------- */
   // UI.fieldError(input, 'טקסט') / UI.fieldError(input, null) לניקוי
@@ -521,16 +549,23 @@
     try { pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingBottom) || 0; } catch (e) { /* */ }
     return pad;
   }
+  // כותרת דביקה במובייל (P3-6): scroll-padding-top על html = הגובה שהיא עלולה לכסות
+  function topInset() {
+    var pad = 0;
+    try { pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0; } catch (e) { /* */ }
+    return pad;
+  }
   function ensureVisible(el, opt) {
     if (!el || !el.getBoundingClientRect) return;
     opt = opt || {};
     var r = el.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
     var bottom = vh - bottomInset();
+    var tin = topInset();
     var need = opt.minVisible || Math.min(r.height || 0, 120) || 60; // כמה מהאלמנט חייב להיראות
-    if (r.top >= 8 && r.top + need <= bottom) return;
+    if (r.top >= 8 + tin && r.top + need <= bottom) return;
     var a = opt.anchor ? opt.anchor.getBoundingClientRect() : r; // גוללים לעוגן (למשל כפתור האקורדיון) כדי שההקשר יישאר
-    var top = window.pageYOffset + a.top - (opt.offset == null ? 16 : opt.offset);
+    var top = window.pageYOffset + a.top - (opt.offset == null ? 16 : opt.offset) - tin;
     try { window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion() ? 'auto' : 'smooth' }); }
     catch (e) { window.scrollTo(0, Math.max(0, top)); }
   }

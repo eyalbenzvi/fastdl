@@ -976,7 +976,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .docs-modal__cap--req{color:var(--c-warning-text)}
 .docs-modal__cap--ok{color:var(--c-success)}
 .docs-modal>.ext-link{align-self:flex-start}
-.confirm-modal{width:min(520px,94vw)}
+@media (min-width:641px){.confirm-modal{width:min(520px,94vw)}} /* ≤640: bottom sheet ברוחב מלא (P3-1) */
 
 /* loading skeleton (4.18) */
 .status-skel,.status-skel__boxes{display:flex;flex-direction:column;gap:20px}
@@ -1221,3 +1221,64 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 }
 @media (prefers-reduced-motion:reduce){.st-tlsum__chev{transition:none}}
 /* ===== /UX recs: status ===== */
+
+/* ===== UX behavior: shared/pages ===== */
+/* P3-6 · כותרת דביקה במובייל (לא בתהליך ההזמנה): נעלמת בגלילה למטה, חוזרת בגלילה למעלה (layout.js).
+   ה-slot ב-display:contents כדי שה-header יהיה דביק לאורך כל .page; scroll-padding-top = גובה הכותרת,
+   כך שפוקוס מקלדת ו-UI.ensureVisible לא נופלים מתחתיה */
+@media (max-width:640px){
+  html.has-sticky-header{scroll-padding-top:calc(var(--header-h-m) + 8px)}
+  html.has-sticky-header [data-slot="header"]{display:contents}
+  html.has-sticky-header .site-header{position:sticky;top:0;z-index:50;transition:transform var(--dur-base) var(--ease)}
+  html.has-sticky-header .site-header.is-tucked{transform:translateY(-100%)}
+  html.has-sticky-header .site-header.is-tucked .more-list{display:none}
+}
+@media (max-width:300px){html.has-sticky-header{scroll-padding-top:0}html.has-sticky-header .site-header{position:relative}} /* זום 200%: הכותרת בשתי שורות – לא דביקה */
+
+/* P2-8 · רכיבי ההדגמה לא מסתירים תוכן.
+   pill: מרווח בתחתית הפוטר בגובה ה-pill (16 + 44 + 12), כך שאפשר לגלול את שורת המוקד אל מעליו */
+html.has-pill .site-footer{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* ?clean=1 – מבחני משתמשים */
+/* סרגל ההדגמה נראה כמו כלי, לא כמו Stepper: קו מקווקו וצ'יפים מקווקווים */
+.demo-bar{border-bottom:2px dashed var(--c-demo-accent)}
+.demo-chip{border-style:dashed}
+.demo-chip[aria-pressed="true"],a.demo-chip[aria-current="page"]{border-style:solid}
+.demo-bar__toggle{min-height:44px;flex:1 1 100%;align-items:center;gap:6px;padding:0;background:none;border:0;color:#fff;font:inherit;text-align:start;cursor:pointer}
+.demo-bar__chev{margin-inline-start:auto;transition:transform var(--dur-fast) var(--ease)}
+.demo-bar__toggle[aria-expanded="true"] .demo-bar__chev{transform:rotate(180deg)}
+@media (max-width:640px){
+  .demo-bar .demo-bar__inner{min-height:44px;padding-block:0 8px}
+  .demo-bar.is-collapsed .demo-bar__inner{padding-block:0}
+  .demo-bar.is-collapsed .demo-bar__inner>:not(.demo-bar__toggle){display:none!important}
+}
+
+/* P2-13 · בית בערבית: סימון "(بالعبرية)" ליד קישור לעמוד בעברית, וטלפון המוקד בכותרת במובייל */
+.ar-he{font-weight:var(--fw-regular);color:var(--c-text-muted);white-space:nowrap}
+.nav__link .ar-he{font-size:var(--fs-xs)}
+.btn .ar-he{color:inherit}
+
+/* P2-10 · OTP: כשהניסיונות חסומים – קישור חיוג למוקד במקום "שלחו שוב" */
+.otp-blocked-call{display:flex;align-items:center;gap:8px;font-weight:var(--fw-semibold)}
+/* P3-9 · עמוד התקלה: אזור ההודעה אחרי "נסו שוב" – תמיד בעץ (role=status), בלי רווח כשהוא ריק */
+.err-retry-msg{align-self:stretch}
+.err-retry-msg:empty{margin-top:-18px}
+/* ===== /UX behavior: shared/pages ===== */
+
+/* ===== UX behavior: order/status ===== */
+/* <form> של שלבים 2 ו-4 (Enter = המשך/תשלום) לא משנה את הפריסה: הילדים נשארים פריטי ה-flex של השלב */
+.order-form-wrap{display:contents}
+/* P1-3: נעילה קצרה אחרי מעבר שלב/אישור – שכבה שקופה מעל אזור הכפתורים בולעת הקשה כפולה (לא עוברת לתוכן שמתחת) */
+.fd-lock{position:relative}
+.fd-lock::after{content:"";position:absolute;inset:0;z-index:5;cursor:progress}
+@media (max-width:640px){
+  .sticky-actions.fd-lock{position:sticky}
+  /* P3-7: מקלדת מסך פתוחה ושדה טקסט בפוקוס (order.js מוסיף html.kb-open) – הסרגל לא צף מעל השדות */
+  html.kb-open{scroll-padding-block-end:16px}
+  html.kb-open .order .sticky-actions{position:static;box-shadow:none}
+  /* P2-5: בעריכה שורת "בחרתם" כוללת גם "כבר שילמתם · לתשלום עכשיו" – נשברת במקום להיחתך */
+  .order-actions--choice .order-actions__chosen--credit{white-space:normal}
+}
+.order-actions__credit{color:var(--c-text)}
+/* P3-2: שדה עם שגיאה שמקבל פוקוס – התווית מעליו לא נחתכת בראש המסך */
+.order .field .input{scroll-margin-top:48px}
+/* ===== /UX behavior: order/status ===== */

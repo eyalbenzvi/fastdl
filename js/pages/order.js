@@ -48,9 +48,17 @@
     if (m.id === 'registered_mail') return 'מעקב דואר';
     return m.tracking ? 'כן' : 'ללא מעקב';
   }
-  function priceNum(m) { return Number.isInteger(m.price) ? String(m.price) : m.price.toFixed(2); }
+  function fmtPrice(x) { x = Math.round(x * 100) / 100; return Number.isInteger(x) ? String(x) : x.toFixed(2); }
+  function priceNum(m) { return fmtPrice(m.price); }
 
   /* ---------- טקסט: escape + מספרים ב-LTR + [לאישור] ---------- */
+  // P1-1: ספרות בלבד, ‎+972/972 → 0, ואז עד 10 ספרות (validation.js יכול לספק Validate.normalizeMobile משותף)
+  function normMobile(v) {
+    if (window.Validate && typeof Validate.normalizeMobile === 'function') return Validate.normalizeMobile(v);
+    var d = String(v || '').replace(/\D/g, '');
+    if (/^00972/.test(d)) d = '0' + d.slice(5); else if (/^972/.test(d)) d = '0' + d.slice(3);
+    return d.slice(0, 10);
+  }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '״'); }
   function numify(s) { return s.replace(/\d+(?:[.:,\/]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; }); }
   function rich(s) {
@@ -62,13 +70,15 @@
 
   /* ---------- State ----------
      ordered=true – ההזמנה הושלמה (status.js מציג ממנה את S2/S3). edit=true – עריכת הזמנה קיימת (?edit=1 מ-S2):
-     הבחירות נשמרות, ואם השיטה לא השתנתה לא משלמים שוב (paidMethod). */
+     הבחירות נשמרות, ואם השיטה לא השתנתה לא משלמים שוב (paidMethod).
+     עריכה עובדת על טיוטה (P1-4): committed = ההזמנה ששולמה, כפי שהייתה לפני העריכה. status.js מציג את committed
+     כל עוד edit=true; רק complete() מחליף אותה. paidTotal – כמה שולם בפועל (בעריכה משלמים רק את ההפרש, P2-5). */
   function fresh() {
     return {
       step: 1, method: null, auth: false, addr: 'moin', nudged: false,
       extras: { entrance: '', care_of: '', mailbox: '' },
       other: { city: '', street: '', house: '', entrance: '', apt: '', zip: '', care_of: '', phone: '', mailbox: '' },
-      prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null
+      prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null, paidTotal: null, committed: null
     };
   }
   function merge(base, saved) {
@@ -82,11 +92,39 @@
   }
   var order, ui = { termsErr: false, why: false, info: null, drawer: null, paying: false, skipcc: false, methodErr: false, nudge: false };
   function save() { UI.store.set(KEY, order); }
+  // ההזמנה שאושרה (לפני עריכה): שדות שהטיוטה משנה
+  var COMMIT_KEYS = ['method', 'auth', 'addr', 'extras', 'other', 'prod', 'terms', 'paidMethod', 'paidTotal'];
+  function snapshot(o) {
+    var c = {};
+    COMMIT_KEYS.forEach(function (k) { c[k] = o[k] && typeof o[k] === 'object' ? JSON.parse(JSON.stringify(o[k])) : o[k]; });
+    return c;
+  }
+  // יציאה מעריכה בלי להשלים: הטיוטה נמחקת וההזמנה חוזרת למה ששולם
+  function discardDraft() {
+    if (!order.edit || !order.committed) return;
+    var c = order.committed;
+    COMMIT_KEYS.forEach(function (k) { if (k in c) order[k] = c[k]; });
+    order.edit = false; order.committed = null; order.step = 5;
+    save();
+  }
 
   function cur() { return method(order.method); }
   function needsAddr() { var m = cur(); return m ? m.needs_address : true; }
   function isFree() { var m = cur(); return m ? m.price === 0 : false; }
-  function noPay() { return isFree() || (order.edit && !!order.method && order.paidMethod === order.method); }
+  // כמה כבר שולם על ההזמנה (בעריכה); הזמנה ישנה בלי paidTotal – מחיר paidMethod
+  function paidAmount() {
+    if (typeof order.paidTotal === 'number') return order.paidTotal;
+    var pm = method(order.paidMethod);
+    return pm ? pm.price : 0;
+  }
+  // לתשלום עכשיו: הזמנה חדשה – מחיר השיטה; עריכה – המחיר המלא בניכוי מה ששולם (כפי שמובטח ב-S2, [לאישור]); לא פחות מ-0
+  function due() {
+    var m = cur();
+    if (!m) return 0;
+    return order.edit ? Math.max(0, Math.round((m.price - paidAmount()) * 100) / 100) : m.price;
+  }
+  function credited() { return order.edit && paidAmount() > 0 && !!cur() && cur().id !== order.paidMethod; } // מציגים "כבר שילמתם"
+  function noPay() { return isFree() || due() === 0; }
   function nextFrom(n) { if (n === 1) return needsAddr() ? 2 : 3; if (n === 3) return noPay() ? 5 : 4; return n + 1; }
   function prevFrom(n) { if (n === 3) return needsAddr() ? 2 : 1; if (n === 4) return 3; return Math.max(1, n - 1); }
   function clamp(n) {
@@ -111,6 +149,7 @@
 
   function go(n, opt) {
     opt = opt || {};
+    if (locked() && !opt.force) return; // P1-3: הקשה נוספת בזמן מעבר שלב – לא מדלגים על שלב
     n = clamp(n);
     var prev = order.step;
     order.step = n;
@@ -123,7 +162,23 @@
     render();
     focusStep();
     stepMotion(prev, n);
+    if (prev !== n) lockStep();
   }
+
+  /* P1-3: אחרי מעבר שלב, כפתורי השלב החדש (באותו מקום בדיוק כמו "המשך" הקודם) מתעלמים מהקשות ל-450ms.
+     .fd-lock = שכבה שקופה מעל אזור הכפתורים (pages.css) – ההקשה נבלעת ולא עוברת לתוכן שמתחת */
+  var LOCK_MS = 450, lockT = null;
+  function lockTargets() {
+    var sec = qs('.order__step[data-step="' + order.step + '"]');
+    return [qs('#order-top')].concat(sec ? qsa('.order-actions, .order-done', sec) : []).filter(Boolean);
+  }
+  function lockStep() {
+    unlock();
+    lockTargets().forEach(function (el) { el.classList.add('fd-lock'); });
+    lockT = setTimeout(unlock, LOCK_MS);
+  }
+  function unlock() { clearTimeout(lockT); lockT = null; qsa('.fd-lock').forEach(function (el) { el.classList.remove('fd-lock'); }); }
+  function locked() { return !!lockT; }
 
   // מעבר שלב (רק בפעולת משתמש): השלב החדש נכנס בכיוון ההתקדמות (RTL: קדימה משמאל). השלב הישן מוסתר מיד, הפוקוס כבר ב-H1.
   // שלב 5: רצף ההצלחה (עיגול + ✓). בלי GSAP / ב-reduced-motion – אין תנועה
@@ -135,11 +190,13 @@
   }
 
   // ההזמנה הושלמה: מסך המצב יציג אותה (S2/S3); הנפקה חוזרת קודמת כבר לא רלוונטית
-  function complete() {
+  function complete(keepReissue) {
+    if (!order.ordered || order.edit) order.paidTotal = Math.round(((order.edit ? paidAmount() : 0) + due()) * 100) / 100;
     order.ordered = true;
     order.edit = false;
+    order.committed = null; // העריכה הושלמה – היא ההזמנה עכשיו
     if (!isFree()) order.paidMethod = order.method;
-    UI.store.remove('fd.reissue');
+    if (!keepReissue) UI.store.remove('fd.reissue');
   }
 
   function focusStep() {
@@ -148,6 +205,8 @@
     try { window.scrollTo(0, Math.max(0, main.getBoundingClientRect().top + window.pageYOffset)); } catch (e) { /* */ }
     if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
   }
+  // P2-2: Back/Forward – הדפדפן לא משחזר גלילה ישנה (אמצע הרשימה) מעל הגלילה לראש השלב
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) { /* */ }
 
   /* ---------- Render ---------- */
   function render() {
@@ -264,10 +323,16 @@
     renderChosen();
     renderMethodErr();
   }
+  // עריכה עם שיטה אחרת: "כבר שילמתם X · לתשלום עכשיו Y" (P2-5; הכלל עצמו [לאישור], כמו ב-S2)
+  function creditHTML() {
+    var paid = '<span class="num" dir="ltr">' + fmtPrice(paidAmount()) + '</span> ₪';
+    return 'כבר שילמתם ' + paid + ' · ' + (due() > 0 ? 'לתשלום עכשיו <span class="num" dir="ltr">' + fmtPrice(due()) + '</span> ₪' : 'אין תשלום נוסף') + ' <span class="tbc">[לאישור]</span>';
+  }
   function renderChosen() {
     var m = cur(), el = qs('#chosen-line');
     if (!el) return;
-    var html = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) : 'עוד לא בחרתם';
+    var html = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) + (credited() ? '<span class="order-actions__credit"> · ' + creditHTML() + '</span>' : '') : 'עוד לא בחרתם';
+    el.classList.toggle('order-actions__chosen--credit', !!(m && credited()));
     if (el.innerHTML === html) return;
     el.innerHTML = html;
     if (chosenReady) UI.motion.refresh(el); // שינוי בחירה: fade קצר בסרגל הדביק (המחיר מתחלף, לא נספר)
@@ -310,16 +375,26 @@
     var live = qs('#method-live');
     if (live) live.textContent = m.id === 'regular_mail' && ui.nudge ? 'לפני שממשיכים: בדואר רגיל אין מעקב. אפשר לבחור דואר רשום או שליח, או להמשיך עם דואר רגיל.' : '';
   }
-  function selectMethod(id, focus) {
+  // nav=true – הבחירה הגיעה מדפדוף בחיצים (P2-7): בלי גלילה ובלי "לפני שממשיכים" (היא תוצג ב"המשך")
+  function selectMethod(id, focus, nav) {
     order.method = id;
-    if (id === 'regular_mail' && !order.nudged) { ui.nudge = true; order.nudged = true; } else if (id !== 'regular_mail') ui.nudge = false;
+    if (id === 'regular_mail' && !order.nudged && !nav) { ui.nudge = true; order.nudged = true; } else if (id !== 'regular_mail') ui.nudge = false;
     ui.methodErr = false;
     save(); writeUrl(false);
     qsa('#method-list .opt-card').forEach(function (l) { var r = l.querySelector('input'); r.checked = r.value === id; l.classList.toggle('is-selected', r.checked); });
-    renderExtras.user = true; renderExtras(); renderExtras.user = false; renderChosen(); renderMethodErr(); renderStepper();
+    renderExtras.user = !nav; renderExtras(); renderExtras.user = false; renderChosen(); renderMethodErr(); renderStepper();
     if (focus) { var r = qs('#method-list input[value="' + id + '"]'); if (r) UI.focus(r); }
   }
   function next1() {
+    if (locked()) return;
+    // דואר רגיל שנבחר בחיצים: "לפני שממשיכים" מוצגת עכשיו (פעם אחת), לפני המעבר לשלב הבא
+    if (cur() && cur().id === 'regular_mail' && !order.nudged) {
+      ui.nudge = true; order.nudged = true; save();
+      renderExtras.user = true; renderExtras(); renderExtras.user = false;
+      var nd = qs('#mail-nudge');
+      if (nd) UI.focusInto(nd, { target: nd, anchor: nd.previousElementSibling || nd });
+      return;
+    }
     if (!cur()) {
       ui.methodErr = true; renderMethodErr();
       var first = qs('#method-list input[name="method"]');
@@ -352,8 +427,8 @@
       if (bad) { UI.fieldError(el, 'יש למלא ' + r[1] + '.'); first = first || el; } else UI.fieldError(el, null);
     });
     var ph = document.getElementById('o-p');
-    if (!Validate.mobile(ph.value)) { UI.fieldError(ph, 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.'); first = first || ph; } else UI.fieldError(ph, null);
-    if (first) UI.focus(first);
+    if (!Validate.mobile(ph.value)) { UI.fieldError(ph, ph.value.trim() ? 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.' : 'יש למלא נייד של המקבל.'); first = first || ph; } else UI.fieldError(ph, null);
+    if (first) focusField(first);
     updateTitle();
     return !first;
   }
@@ -386,7 +461,14 @@
   }
   function renderStep4() {
     var m = cur();
-    var pn = m ? priceNum(m) : '';
+    var pn = m ? fmtPrice(due()) : '';
+    var cr = !!m && credited();
+    qs('#sum-paid-row').hidden = !cr;
+    if (cr) qs('#sum-paid').innerHTML = '<span class="num" dir="ltr">' + fmtPrice(paidAmount()) + '</span> ₪ <span class="tbc">[לאישור]</span>';
+    qs('#sum-price-row').hidden = !cr;
+    if (cr) qs('#sum-price').innerHTML = rich(m.price_display);
+    qs('#sum-total-k').textContent = cr ? 'לתשלום עכשיו' : 'סה״כ לתשלום';
+    qs('#sum-total-s').textContent = cr ? 'לתשלום עכשיו: ' : 'סה״כ לתשלום: ';
     qsa('[data-price-num]').forEach(function (e) { e.textContent = pn; });
     qs('#sum-method').textContent = m ? m.name : '';
     var a = addrSummary();
@@ -399,35 +481,54 @@
     if (inv && !inv.value && D.citizen) inv.value = ((D.citizen.first_name || '') + ' ' + (D.citizen.last_name || '')).trim(); // ממולא מראש, אפשר לשנות
     qs('#order-sum').open = true; // פתוח כברירת מחדל (כמו בהדמיות 33 בשני הרוחבים); אפשר לקפל
     var pay = qs('#pay');
-    if (!ui.paying) { pay.disabled = false; pay.setAttribute('aria-busy', 'false'); }
+    if (!ui.paying) { pay.disabled = false; pay.setAttribute('aria-busy', 'false'); pay.removeAttribute('aria-disabled'); }
   }
+  // [id, תקין?, הודעה לשדה ריק, הודעה לערך שגוי]. P3-2: שדה ריק מקבל "יש למלא…"; הטווח "12–19" כמספר LTR שלא נשבר
   var CC = [
-    ['cc', function (v) { return Validate.cardNumber(v); }, 'מספר הכרטיס לא תקין. בדקו שהזנתם 12–19 ספרות.'],
-    ['exp', function (v) { return Validate.cardExpiry(v); }, 'תוקף לא תקין. הזינו חודש ושנה בפורמט MM/YY.'],
-    ['cvv', function (v) { return Validate.cvv(v); }, 'קוד CVV לא תקין. הזינו 3 או 4 ספרות.'],
-    ['hid', function (v) { return Validate.israeliId(v); }, 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).'],
-    ['inv', function (v) { return !!v.trim(); }, 'יש למלא שם לחשבונית.']
+    ['cc', function (v) { return Validate.cardNumber(v); }, 'יש למלא מספר כרטיס.', 'מספר הכרטיס לא תקין. בדקו שהזנתם {12–19} ספרות.'],
+    ['exp', function (v) { return Validate.cardExpiry(v); }, 'יש למלא תוקף.', 'תוקף לא תקין. הזינו חודש ושנה בפורמט MM/YY.'],
+    ['cvv', function (v) { return Validate.cvv(v); }, 'יש למלא קוד CVV.', 'קוד CVV לא תקין. הזינו {3} או {4} ספרות.'],
+    ['hid', function (v) { return Validate.israeliId(v); }, 'יש למלא ת״ז של בעל הכרטיס.', 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).'],
+    ['inv', function (v) { return !!v.trim(); }, 'יש למלא שם לחשבונית.', 'יש למלא שם לחשבונית.']
   ];
+  // UI.fieldError מציג טקסט; {…} הופך אחר כך ל-<span class="num" dir="ltr">
+  function fieldErr(el, msg) {
+    UI.fieldError(el, msg ? msg.replace(/[{}]/g, '') : null);
+    if (!msg || msg.indexOf('{') < 0) return;
+    var sp = qs('#' + el.id + '-err span');
+    if (sp) sp.innerHTML = esc(msg).replace(/\{([^}]*)\}/g, '<span class="num" dir="ltr">$1</span>');
+  }
+  // שגיאה: פוקוס לשדה, והתווית שמעליו גלויה (לא חצי מחוץ למסך)
+  function focusField(el) {
+    try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); }
+    var f = el.closest('.field') || el;
+    UI.ensureVisible(f, { minVisible: f.getBoundingClientRect().height || 80 });
+  }
   function validateCC() {
     var first = null;
     CC.forEach(function (c) {
       var el = document.getElementById(c[0]);
-      if (!c[1](el.value)) { UI.fieldError(el, c[2]); first = first || el; } else UI.fieldError(el, null);
+      if (!c[1](el.value)) { fieldErr(el, el.value.trim() ? c[3] : c[2]); first = first || el; } else UI.fieldError(el, null);
     });
-    if (first) UI.focus(first);
+    if (first) focusField(first);
     updateTitle();
     return !first;
   }
   function pay() {
-    if (ui.paying) return;
+    if (ui.paying || locked()) return;
     if (!ui.skipcc && !validateCC()) return;
     ui.paying = true;
     var btn = qs('#pay');
+    var had = document.activeElement === btn;
     UI.setBusy(btn, true, 'מעבדים את התשלום…');
+    // P3-4: כפתור מושבת מאבד פוקוס (BODY). חוסמים דרך ui.paying + aria-disabled, והפוקוס נשאר על הכפתור
+    if (btn.disabled) { btn.disabled = false; btn.setAttribute('aria-disabled', 'true'); }
+    if (had && document.activeElement !== btn) { try { btn.focus({ preventScroll: true }); } catch (e) { /* */ } }
     setTimeout(function () {
       ui.paying = false;
       UI.setBusy(btn, false);
-      if (order.step === 4) go(5, { replace: true });
+      btn.removeAttribute('aria-disabled');
+      if (order.step === 4) go(5, { replace: true, force: true });
     }, 1400);
   }
 
@@ -435,7 +536,8 @@
   function renderStep5() {
     var m = cur();
     var a = addrSummary();
-    var paid = isFree() ? 'ללא עלות' : (order.paidMethod && method(order.paidMethod) ? rich(method(order.paidMethod).price_display) : (m ? rich(m.price_display) : ''));
+    var paid = isFree() && !(order.paidTotal > 0) ? 'ללא עלות' : typeof order.paidTotal === 'number' ? '<span class="num" dir="ltr">' + fmtPrice(order.paidTotal) + '</span> ₪'
+      : (order.paidMethod && method(order.paidMethod) ? rich(method(order.paidMethod).price_display) : (m ? rich(m.price_display) : ''));
     var rows = [['שיטה', m ? esc(m.name) : ''], [a.k === 'עמדה' ? 'עמדת איסוף' : 'כתובת', a.v], ['שולם', paid],
       [m && !m.needs_address ? 'אפשר לאסוף' : 'יגיע', rich(eta(m, order.prod).replace(/^(יגיע |אפשר לאסוף )/, ''))]];
     qs('#done-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
@@ -477,16 +579,20 @@
   function bind() {
     // שלב 1
     var list = qs('#method-list');
+    var navKey = false; // שינוי מחיצים (דפדוף) ולא מהקשה/רווח (בחירה מפורשת)
+    list.addEventListener('keydown', function (e) { navKey = /^Arrow/.test(e.key); });
+    list.addEventListener('pointerdown', function () { navKey = false; });
     list.addEventListener('change', function (e) {
       if (e.target.name !== 'method') return;
-      selectMethod(e.target.value, false);
+      selectMethod(e.target.value, false, navKey);
+      navKey = false;
     });
     list.addEventListener('click', function (e) {
       var q = e.target.closest('[data-info]');
       if (q) { openMethodDrawer(q.getAttribute('data-info'), q); return; }
       var pk = e.target.closest('[data-pick]');
       if (pk) { ui.nudge = false; selectMethod(pk.getAttribute('data-pick'), true); return; }
-      if (e.target.closest('#nudge-go')) { ui.nudge = false; go(nextFrom(1)); }
+      if (e.target.closest('#nudge-go')) { if (locked()) return; ui.nudge = false; go(nextFrom(1)); }
     });
     qs('#open-compare').addEventListener('click', function (e) { UI.drawer.open('dr-compare', { returnFocus: e.currentTarget }); });
     qs('#compare-body').addEventListener('click', function (e) {
@@ -502,7 +608,14 @@
       if (order.step === 1 && method(id)) selectMethod(id, true);
     });
     qs('#next-1').addEventListener('click', next1);
-    document.addEventListener('click', function (e) { if (e.target.closest('[data-back-top]')) go(prevFrom(order.step)); });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-back-top]')) { go(prevFrom(order.step)); return; }
+      // "חזרה לפרטי הבקשה" בעריכה: הטיוטה נמחקת, ההזמנה ששולמה לא משתנה (P1-4)
+      if (e.target.closest('[data-back-status], #order-top a.back-link')) {
+        if (locked()) { e.preventDefault(); return; }
+        discardDraft();
+      }
+    });
 
     // שלב 2
     qsa('input[name="addr"]').forEach(function (r) {
@@ -510,7 +623,7 @@
     });
     qsa('[data-other]').forEach(function (i) {
       i.addEventListener('input', function () {
-        if (i.id === 'o-p') { var v = i.value.replace(/[^\d-]/g, '').slice(0, 11); if (v !== i.value) i.value = v; }
+        if (i.id === 'o-p') { var v = normMobile(i.value); if (v !== i.value) i.value = v; } // P1-1: 052-123-4567 / ‎+972… בלי לאבד ספרה
         if (i.id === 'o-z') { var d = i.value.replace(/\D/g, ''); if (d !== i.value) i.value = d; } // מספר בית/דירה: גם "12א" (M-05)
         order.other[i.getAttribute('data-other')] = i.value; save();
         if (i.getAttribute('aria-invalid') === 'true') UI.fieldError(i, null);
@@ -520,12 +633,16 @@
       i.addEventListener('input', function () { order.extras[i.getAttribute('data-extra')] = i.value; save(); });
     });
     qs('#to-pickup').addEventListener('click', function () {
+      if (locked()) return;
       go(1);
       var g = qs('#grp-box-pickup');
-      if (g) { try { g.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } }
+      if (g) { try { g.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } var gh = qs('#grp-pickup'); if (gh) { gh.setAttribute('tabindex', '-1'); try { gh.focus({ preventScroll: true }); } catch (e) { /* */ } } }
     });
     qsa('.order-sum__chg').forEach(function (b) { b.addEventListener('click', function () { go(Number(b.getAttribute('data-goto'))); }); });
-    qs('#next-2').addEventListener('click', function () {
+    // שלב 2 בתוך <form> (P3-3): Enter בשדה הכתובת = "המשך"
+    qs('#addr-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (locked()) return;
       if (order.auth && order.addr === 'other' && !validateOther()) return;
       go(3);
     });
@@ -538,27 +655,38 @@
     terms.addEventListener('change', function () { order.terms = terms.checked; ui.termsErr = false; save(); UI.fieldError(terms, null); });
     qs('#open-terms').addEventListener('click', function (e) { e.preventDefault(); UI.drawer.open('dr-terms', { returnFocus: e.currentTarget }); });
     qs('#next-3').addEventListener('click', function () {
+      if (locked()) return;
       if (!order.terms) { ui.termsErr = true; UI.fieldError(terms, 'כדי להמשיך יש לאשר את תנאי השימוש.'); terms.focus(); updateTitle(); return; }
       go(nextFrom(3));
     });
 
     // שלב 4
-    var filters = { cc: /[^\d ]/g, cvv: /\D/g, hid: /\D/g };
+    // סינון ואז חיתוך (P2-1): ת״ז שמודבקת עם רווחים/מקף לא נחתכת לפני הסינון
+    var filters = { cc: [/[^\d ]/g, 23], cvv: [/\D/g, 4], hid: [/\D/g, 9] };
     Object.keys(filters).forEach(function (id) {
       var el = document.getElementById(id);
-      el.addEventListener('input', function () { var v = el.value.replace(filters[id], ''); if (v !== el.value) el.value = v; });
+      el.addEventListener('input', function () { var v = el.value.replace(filters[id][0], '').slice(0, filters[id][1]); if (v !== el.value) el.value = v; });
     });
     var exp = qs('#exp');
     exp.addEventListener('input', function (e) {
+      // P3-3: עריכה באמצע (12/28) – הסמן נשאר אחרי אותה ספרה אחרי העיצוב מחדש
+      var caret = exp.selectionStart == null ? exp.value.length : exp.selectionStart;
+      var before = exp.value.slice(0, caret).replace(/\D/g, '').length;
       var d = exp.value.replace(/\D/g, '').slice(0, 4);
       var v = d.length > 2 || (d.length === 2 && e.inputType !== 'deleteContentBackward') ? d.slice(0, 2) + '/' + d.slice(2) : d;
-      if (v !== exp.value) exp.value = v;
+      if (v === exp.value) return;
+      exp.value = v;
+      var pos = 0, seen = 0;
+      while (pos < v.length && seen < before) { if (/\d/.test(v.charAt(pos))) seen++; pos++; }
+      if (v.charAt(pos) === '/' && pos === v.length - 1) pos++; // "12" → "12/": הסמן אחרי הלוכסן
+      try { if (document.activeElement === exp) exp.setSelectionRange(pos, pos); } catch (err) { /* */ }
     });
     CC.forEach(function (c) {
       var el = document.getElementById(c[0]);
       el.addEventListener('input', function () { if (el.getAttribute('aria-invalid') === 'true') UI.fieldError(el, null); });
     });
-    qs('#pay').addEventListener('click', pay);
+    // שלב 4 בתוך <form> (P3-3): Enter / "Go" במקלדת = תשלום; autocomplete של כרטיס עובד בטופס
+    qs('#pay-form').addEventListener('submit', function (e) { e.preventDefault(); pay(); });
     // שגיאה שנוקתה בהקלדה/סימון – הכותרת מתעדכנת
     qs('#main').addEventListener('input', updateTitle);
     qs('#main').addEventListener('change', updateTitle);
@@ -566,10 +694,24 @@
     // שלב 5
     qs('#copy-order').addEventListener('click', function () { UI.copy(qs('#order-number').textContent); });
     var cal = qs('.order__step[data-step="5"] .order-done__btns .btn--secondary');
-    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    if (cal) cal.addEventListener('click', function () { if (locked()) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    qs('#done-status').addEventListener('click', function (e) { if (locked()) e.preventDefault(); });
 
     // חזרה (כל השלבים)
     qsa('[data-back]').forEach(function (b) { b.addEventListener('click', function () { go(prevFrom(order.step)); }); });
+
+    // P3-7: מקלדת מסך פתוחה (≤640, גובה נראה קטן) ושדה טקסט בפוקוס – הסרגל הדביק לא צף (html.kb-open, pages.css)
+    function kbCheck() {
+      var a = document.activeElement, vv = window.visualViewport;
+      var typing = !!(a && a.matches && a.matches('input:not([type="radio"]):not([type="checkbox"]),textarea') && a.closest('.order__step'));
+      var h = vv ? vv.height : window.innerHeight;
+      var small = window.innerWidth <= 640 && (h < 560 || (vv && vv.height < window.innerHeight * 0.75));
+      document.documentElement.classList.toggle('kb-open', typing && !!small);
+    }
+    document.addEventListener('focusin', kbCheck);
+    document.addEventListener('focusout', function () { setTimeout(kbCheck, 0); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', kbCheck);
+    window.addEventListener('resize', kbCheck);
 
     // Back/Forward בדפדפן
     window.addEventListener('popstate', function () {
@@ -580,6 +722,7 @@
       if (method(q.get('m'))) order.method = q.get('m');
       if (UI.drawer.isOpen()) UI.drawer.close();
       ui.paying = false;
+      unlock();
       order.step = clamp(st);
       if (order.step === 5) complete();
       ui.termsErr = false;
@@ -587,6 +730,8 @@
       save();
       render();
       focusStep();
+      // P2-2: גם אם הדפדפן משחזר גלילה אחרי popstate – ראש השלב, הפוקוס ב-H1
+      requestAnimationFrame(function () { if (window.pageYOffset > 0) focusStep(); });
     });
   }
 
@@ -598,8 +743,16 @@
     var edit = p.get('edit') === '1' && saved && saved.ordered;
     // אחרי הזמנה שהושלמה: כניסה חדשה (בלי ?step=5 ובלי עריכה) מתחילה הזמנה חדשה
     if (saved && saved.ordered && stepP !== 5 && !edit && !saved.edit) saved = null;
+    // עריכה מ-S2 (?edit=1): טיוטה חדשה מההזמנה ששולמה. טיוטה קודמת שננטשה לא נמשכת (P1-4)
+    var committed = null;
+    if (edit) {
+      committed = saved.edit && saved.committed ? saved.committed : snapshot(saved);
+      var base = JSON.parse(JSON.stringify(saved));
+      COMMIT_KEYS.forEach(function (k) { if (k in committed) base[k] = committed[k]; });
+      saved = base;
+    }
     order = merge(fresh(), saved);
-    if (edit) { order.edit = true; if (!(stepP >= 1 && stepP <= 5)) order.step = 1; }
+    if (edit) { order.edit = true; order.committed = committed; if (!(stepP >= 1 && stepP <= 5)) order.step = 1; }
 
     if (stepP >= 1 && stepP <= 5) order.step = stepP;
     else if (p.get('reset') === '1' || !saved) order.step = 1;
@@ -614,7 +767,7 @@
     ui.skipcc = p.get('demo') === 'skipcc';
 
     order.step = clamp(order.step);
-    if (order.step === 5) { order.ordered = true; order.edit = false; if (!isFree()) order.paidMethod = order.method; }
+    if (order.step === 5 && (!order.ordered || order.edit)) complete(true);
     save();
     writeUrl(false);
 

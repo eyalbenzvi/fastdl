@@ -56,6 +56,7 @@
 
         <!-- ===== שלב 2 – כתובת (P06) ===== -->
         <section class="order__step" data-step="2" aria-labelledby="h-step2" hidden>
+          <form id="addr-form" class="order-form-wrap" novalidate>
           <!-- גרסה B – לא מורשה -->
           <div class="order__head" data-auth="0">
             <h1 class="h1 h1--flow" id="h-step2" tabindex="-1">הרישיון יישלח לכתובת הרשומה במשרד הפנים</h1>
@@ -74,20 +75,20 @@
           </div>
           <div class="card order-form" id="other-form" data-auth="1">
             <div class="g2 order-grid">
-              <div class="field"><label class="label" for="o-city">עיר</label><input id="o-city" class="input" autocomplete="address-level2" list="cities" data-other="city"><datalist id="cities"><option value="באר שבע"></option><option value="תל אביב-יפו"></option><option value="ירושלים"></option><option value="חיפה"></option></datalist></div>
-              <div class="field"><label class="label" for="o-st">רחוב</label><input id="o-st" class="input" autocomplete="address-line1" data-other="street"></div>
+              <div class="field"><label class="label" for="o-city">עיר</label><input id="o-city" class="input" autocomplete="address-level2" enterkeyhint="next" list="cities" data-other="city"><datalist id="cities"><option value="באר שבע"></option><option value="תל אביב-יפו"></option><option value="ירושלים"></option><option value="חיפה"></option></datalist></div>
+              <div class="field"><label class="label" for="o-st">רחוב</label><input id="o-st" class="input" autocomplete="address-line1" enterkeyhint="next" data-other="street"></div>
             </div>
             <div class="g3 order-grid">
-              <div class="field"><label class="label" for="o-h">מספר בית</label><input id="o-h" class="input" autocomplete="off" data-other="house"></div>
-              <div class="field"><label class="label" for="o-e">כניסה <span class="opt">(לא חובה)</span></label><input id="o-e" class="input" data-other="entrance"></div>
-              <div class="field"><label class="label" for="o-a">דירה <span class="opt">(לא חובה)</span></label><input id="o-a" class="input" autocomplete="off" data-other="apt"></div>
+              <div class="field"><label class="label" for="o-h">מספר בית</label><input id="o-h" class="input" autocomplete="off" enterkeyhint="next" data-other="house"></div>
+              <div class="field"><label class="label" for="o-e">כניסה <span class="opt">(לא חובה)</span></label><input id="o-e" class="input" enterkeyhint="next" data-other="entrance"></div>
+              <div class="field"><label class="label" for="o-a">דירה <span class="opt">(לא חובה)</span></label><input id="o-a" class="input" autocomplete="off" enterkeyhint="next" data-other="apt"></div>
             </div>
             <div class="g3 order-grid">
-              <div class="field"><label class="label" for="o-z">מיקוד</label><input id="o-z" class="input input--num" inputmode="numeric" autocomplete="postal-code" data-other="zip"></div>
-              <div class="field"><label class="label" for="o-c">אצל <span class="opt">(לא חובה)</span></label><input id="o-c" class="input" data-other="care_of"></div>
-              <div class="field"><label class="label" for="o-p">נייד של המקבל</label><input id="o-p" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" maxlength="11" data-other="phone"></div>
+              <div class="field"><label class="label" for="o-z">מיקוד</label><input id="o-z" class="input input--num" inputmode="numeric" autocomplete="postal-code" enterkeyhint="next" data-other="zip"></div>
+              <div class="field"><label class="label" for="o-c">אצל <span class="opt">(לא חובה)</span></label><input id="o-c" class="input" enterkeyhint="next" data-other="care_of"></div>
+              <div class="field"><label class="label" for="o-p">נייד של המקבל</label><input id="o-p" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" data-other="phone"></div>
             </div>
-            <div class="field"><label class="label" for="o-mb">מה כתוב על תיבת הדואר? <span class="opt">(שם / מספר)</span></label><input id="o-mb" class="input" data-other="mailbox"></div>
+            <div class="field"><label class="label" for="o-mb">מה כתוב על תיבת הדואר? <span class="opt">(שם / מספר)</span></label><input id="o-mb" class="input" enterkeyhint="done" data-other="mailbox"></div>
           </div>
 
           <!-- משותף: פרטים לשליח -->
@@ -111,8 +112,9 @@
 
           <div class="sticky-actions order-actions">
             <button type="button" class="link-btn back-link hide-m" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
-            <button type="button" class="btn btn--primary btn--m-block order-actions__next" id="next-2">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
+            <button type="submit" class="btn btn--primary btn--m-block order-actions__next" id="next-2">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
           </div>
+          </form>
         </section>
 
         <!-- ===== שלב 3 – מועד ייצור (P07) ===== -->
@@ -136,33 +138,37 @@
         <section class="order__step" data-step="4" aria-labelledby="h-step4" hidden>
           <h1 class="h1 h1--flow" id="h-step4" tabindex="-1">תשלום</h1>
           <details class="card order-sum" id="order-sum" open>
-            <summary class="order-sum__s"><span>סיכום ההזמנה</span> <span>סה״כ לתשלום: <span class="num" dir="ltr" data-price-num>177</span> ₪</span></summary>
+            <summary class="order-sum__s"><span>סיכום ההזמנה</span> <span><span id="sum-total-s">סה״כ לתשלום: </span><span class="num" dir="ltr" data-price-num>177</span> ₪</span></summary>
             <dl class="order-sum__dl">
               <div><dt>שיטה</dt><dd><span id="sum-method">משלוח מהיר עד הבית</span> <button type="button" class="link-btn order-sum__chg" data-goto="1">שינוי<span class="sr-only"> השיטה</span></button></dd></div>
               <div id="sum-addr-row"><dt id="sum-addr-k">כתובת</dt><dd><span id="sum-addr">רחוב העצמאות 10, באר שבע</span> <button type="button" class="link-btn order-sum__chg" data-goto="2" id="sum-addr-chg">שינוי<span class="sr-only"> הכתובת</span></button></dd></div>
               <div><dt>מתי להתחיל</dt><dd><span id="sum-prod">עכשיו</span> <button type="button" class="link-btn order-sum__chg" data-goto="3">שינוי<span class="sr-only"> מתי להתחיל</span></button></dd></div>
               <div class="order-sum__wide"><dt>מה כלול</dt><dd id="sum-incl">מסירה ביד · מעקב משלוח ב-SMS · יגיע עד יום ד׳ 26.8</dd></div>
-              <div><dt>סה״כ לתשלום</dt><dd class="order-sum__total"><span class="num" dir="ltr" data-price-num>177</span> ₪</dd></div>
+              <div id="sum-price-row" hidden><dt>מחיר השיטה</dt><dd id="sum-price"></dd></div>
+              <div id="sum-paid-row" hidden><dt>כבר שילמתם</dt><dd id="sum-paid"></dd></div>
+              <div><dt id="sum-total-k">סה״כ לתשלום</dt><dd class="order-sum__total"><span class="num" dir="ltr" data-price-num>177</span> ₪</dd></div>
             </dl>
           </details>
+          <form id="pay-form" class="order-form-wrap" novalidate>
           <div class="card order-form" id="cc-form">
             <p class="order-form__t">תשלום בכרטיס אשראי</p>
-            <div class="field"><label class="label" for="cc">מספר כרטיס</label><input id="cc" class="input input--num" inputmode="numeric" autocomplete="cc-number" maxlength="23"></div>
+            <div class="field"><label class="label" for="cc">מספר כרטיס</label><input id="cc" class="input input--num" inputmode="numeric" autocomplete="cc-number" enterkeyhint="next"></div>
             <div class="g3 order-grid order-pay-grid">
-              <div class="field"><label class="label" for="exp">תוקף <span class="opt">(MM/YY)</span></label><input id="exp" class="input input--num" inputmode="numeric" autocomplete="cc-exp" maxlength="5"></div>
-              <div class="field"><label class="label" for="cvv">CVV</label><input id="cvv" class="input input--num" inputmode="numeric" autocomplete="cc-csc" maxlength="4"></div>
-              <div class="field"><label class="label" for="hid">ת״ז בעל הכרטיס</label><input id="hid" class="input input--num" inputmode="numeric" maxlength="9" autocomplete="off"></div>
+              <div class="field"><label class="label" for="exp">תוקף <span class="opt">(MM/YY)</span></label><input id="exp" class="input input--num" inputmode="numeric" autocomplete="cc-exp" maxlength="5" enterkeyhint="next"></div>
+              <div class="field"><label class="label" for="cvv">CVV</label><input id="cvv" class="input input--num" inputmode="numeric" autocomplete="cc-csc" enterkeyhint="next"></div>
+              <div class="field"><label class="label" for="hid">ת״ז בעל הכרטיס</label><input id="hid" class="input input--num" inputmode="numeric" autocomplete="off" enterkeyhint="next"></div>
             </div>
             <div class="g2 order-grid">
-              <div class="field"><label class="label" for="inv">שם לחשבונית</label><input id="inv" class="input" autocomplete="name"></div>
-              <div class="field"><label class="label" for="mail">מייל לחשבונית <span class="opt">(לא חובה)</span></label><input id="mail" class="input input--num" type="email" autocomplete="email"></div>
+              <div class="field"><label class="label" for="inv">שם לחשבונית</label><input id="inv" class="input" autocomplete="name" enterkeyhint="next"></div>
+              <div class="field"><label class="label" for="mail">מייל לחשבונית <span class="opt">(לא חובה)</span></label><input id="mail" class="input input--num" type="email" autocomplete="email" enterkeyhint="go"></div>
             </div>
           </div>
           <p class="small order-secure"><svg class="ico ico--18" data-icon="lock" aria-hidden="true"></svg><span>תשלום מאובטח · שירות מורשה מטעם משרד התחבורה · קבלה תישלח ב-SMS <span class="tbc">[לאישור]</span></span></p>
           <div class="order-actions order-actions--static">
             <button type="button" class="link-btn back-link hide-m" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
-            <button type="button" class="btn btn--primary btn--m-block order-actions__next order-actions__next--240" id="pay"><span>לתשלום מאובטח – <span class="num" dir="ltr" data-price-num>177</span> ₪</span></button>
+            <button type="submit" class="btn btn--primary btn--m-block order-actions__next order-actions__next--240" id="pay"><span>לתשלום מאובטח – <span class="num" dir="ltr" data-price-num>177</span> ₪</span></button>
           </div>
+          </form>
         </section>
 
         <!-- ===== שלב 5 – אישור (P09) ===== -->

@@ -23,15 +23,12 @@
     var arId = document.getElementById('ar-id');
     var arPh = document.getElementById('ar-ph');
     var arBtn = document.getElementById('ar-submit');
-    [[arId, /\D/g, 9], [arPh, /[^\d-]/g, 11]].forEach(function (f) {
-      f[0].addEventListener('input', function () {
-        var v = f[0].value.replace(f[1], '').slice(0, f[2]);
-        if (v !== f[0].value) f[0].value = v;
-      });
-    });
+    // P1-1/P2-1: נרמול (רווחים, מקפים, ‎+972) ורק אז חיתוך – בלי maxlength שחותך לפני הסינון
+    Validate.bindNormalize(arId, 'id');
+    Validate.bindNormalize(arPh, 'mobile');
     arForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (arBtn.disabled) return;
+      if (arBtn.getAttribute('aria-busy') === 'true') return;
       UI.store.set('fd.login', { id: Validate.digits(arId.value), ph: arPh.value });
       if (!Validate.israeliId(arId.value) || !Validate.mobile(arPh.value)) {
         window.location.href = 'login.html?check=1';
@@ -55,16 +52,11 @@
   var action = document.getElementById('id-form-action');
   var whyBtn = document.getElementById('why-btn');
 
-  // סינון קלט: ת״ז – ספרות בלבד עד 9; נייד – ספרות ומקף עד 11. שגיאה מתנקה עם תחילת התיקון.
-  function filter(input, re, max) {
-    input.addEventListener('input', function () {
-      var v = input.value.replace(re, '').slice(0, max);
-      if (v !== input.value) input.value = v;
-      if (input.getAttribute('aria-invalid') === 'true') UI.fieldError(input, null);
-    });
-  }
-  filter(idIn, /\D/g, 9);
-  filter(phIn, /[^\d-]/g, 11);
+  // נרמול קלט (P1-1, P2-1): ת״ז – ספרות בלבד עד 9 (רווחים/מקפים יורדים); נייד – ספרות בלבד, ‎+972 → 0, עד 10.
+  // מסננים לפני שחותכים, כך ש-"052-123-4567" או מילוי אוטומטי ‎+972 לא מאבדים ספרה. שגיאה מתנקה עם תחילת התיקון.
+  function clearOnFix(input) { return function () { if (input.getAttribute('aria-invalid') === 'true') UI.fieldError(input, null); }; }
+  Validate.bindNormalize(idIn, 'id', clearOnFix(idIn));
+  Validate.bindNormalize(phIn, 'mobile', clearOnFix(phIn));
 
   function validate(focus) {
     var badId = !Validate.israeliId(idIn.value);
@@ -90,13 +82,14 @@
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (btn.disabled) return;
+    if (btn.getAttribute('aria-busy') === 'true') return;
     if (!validate(true)) return;
     var m = masked();
     // כל ת״ז וכל נייד תקינים מתקבלים; נשמרים כדי ש-otp.html יציג את המספר שהוזן ויפתח session
     UI.store.set('fd.login', { id: Validate.digits(idIn.value), ph: phIn.value });
     UI.store.set('fd.phone', Validate.digits(phIn.value));
     UI.setBusy(btn, true, 'שולחים קוד…');
+    // push (לא replace): Back ממסך הקוד חוזר לטופס לתיקון המספר. מסך הקוד עצמו מוחלף במסך המצב (auth.js, P1-5)
     setTimeout(function () { window.location.href = otpHref(m); }, 1200);
   });
 

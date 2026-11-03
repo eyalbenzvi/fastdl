@@ -31,22 +31,23 @@
           <fieldset class="auth-otp" id="otp-fieldset">
             <legend class="label">קוד אימות</legend>
             <div class="otp" dir="ltr" id="otp-boxes">
-              <input id="otp-1" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="ספרה 1 מתוך 6" aria-invalid="false">
+              <input id="otp-1" inputmode="numeric" autocomplete="one-time-code" maxlength="12" aria-label="ספרה 1 מתוך 6" aria-invalid="false">
               <input id="otp-2" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 2 מתוך 6" aria-invalid="false">
               <input id="otp-3" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 3 מתוך 6" aria-invalid="false">
               <input id="otp-4" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 4 מתוך 6" aria-invalid="false">
               <input id="otp-5" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 5 מתוך 6" aria-invalid="false">
               <input id="otp-6" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 6 מתוך 6" aria-invalid="false">
             </div>
-            <p id="otp-err" class="error" role="alert" hidden></p>
+            <p id="otp-err" class="error" role="alert" tabindex="-1" hidden></p>
           </fieldset>
           <div class="auth-otp__links">
             <p id="otp-timer" class="muted">לא קיבלתם? שליחה חוזרת בעוד <span class="num" dir="ltr">0:45</span></p>
+            <p id="otp-blocked" class="otp-blocked-call" hidden><svg class="ico ico--20" data-icon="phone" aria-hidden="true"></svg><a href="tel:0779985095">חיוג למוקד שירות <span class="num" dir="ltr">077-998-5095</span></a></p>
             <p id="otp-resend" hidden>לא קיבלתם? <button type="button" class="link-btn" id="otp-resend-btn">שלחו שוב</button></p>
             <p class="sr-only" id="otp-timer-live" aria-live="polite"></p>
             <p><button type="button" class="link-btn" id="otp-edit">המספר שגוי? חזרה לעריכה</button></p>
           </div>
-          <div class="callout callout--success" role="status" id="otp-ok" hidden><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p><strong class="callout__title">הקוד אומת.</strong> מעבירים אתכם למסך המצב.</p></div>
+          <div class="callout callout--success" role="status" id="otp-ok" tabindex="-1" hidden><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p><strong class="callout__title">הקוד אומת.</strong> מעבירים אתכם למסך המצב.</p></div>
           <button type="submit" class="btn btn--primary btn--m-block auth-card__submit" id="otp-submit">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
           <a class="btn btn--primary btn--m-block auth-card__submit" href="status.html?s=S1" id="otp-continue" hidden>המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></a>
         </form>

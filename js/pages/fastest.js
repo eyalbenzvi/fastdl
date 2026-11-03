@@ -13,8 +13,21 @@
   var DAY = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
   function label(d) { return 'יום ' + DAY[d.getDay()] + ' <span class="num" dir="ltr">' + d.getDate() + '.' + (d.getMonth() + 1) + '</span>'; }
 
+  /* P3-8: טווח סביר – "היום" של אב-הטיפוס (25.8.2026, mock-data) ועד 60 יום אחורה [לאישור] (min/max ב-HTML).
+     תאריך עתידי או רחוק מדי – הודעה ליד השדה במקום מועד שנראה אמין (למשל 1999 → "יום ב׳ 4.1") */
+  var ERR_FUTURE = 'תאריך התשלום לא יכול להיות אחרי היום.';
+  var ERR_OLD = 'התאריך רחוק מדי לחישוב. בדקו את מצב הבקשה או פנו למוקד.';
+  function rangeError(v) {
+    var d = Dates.parse(v), min = Dates.parse(input.min), max = Dates.parse(input.max);
+    if (!d) return null;
+    if (max && d > max) return ERR_FUTURE;
+    if (min && d < min) return ERR_OLD;
+    return null;
+  }
   function update() {
-    var d = Dates.fastestPickup(input.value);
+    var bad = rangeError(input.value);
+    UI.fieldError(input, bad);
+    var d = bad ? null : Dates.fastestPickup(input.value);
     if (!d) { pick.textContent = 'בחרו תאריך תשלום'; home.textContent = 'בחרו תאריך תשלום'; return; }
     pick.innerHTML = label(d);
     home.innerHTML = 'עד ' + label(d);

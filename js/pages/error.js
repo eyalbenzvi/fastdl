@@ -19,7 +19,7 @@
     var c = UI.qs('.maint__close', m);
     if (c) c.addEventListener('click', function () {
       m.remove();
-      var skip = UI.qs('.skip-link'); if (skip) skip.focus();
+      Layout.focusMain(); // P3-5: לא לקישור הדילוג
       afterMaintChange();
     });
   }
@@ -54,10 +54,21 @@
     }
   }
 
+  // P3-9: אחרי הניסיון – הודעה גלויה ב-role="status" (באב-הטיפוס השירות "עדיין לא זמין"), לא חזרה שקטה למצב הקודם
   var retry = document.getElementById('err-retry');
+  var retryMsg = document.getElementById('err-retry-msg');
+  var tries = 0;
   retry.addEventListener('click', function () {
     UI.setBusy(retry, true, 'מנסים שוב…');
-    setTimeout(function () { UI.setBusy(retry, false); retry.focus(); }, 1500);
+    if (retryMsg) retryMsg.innerHTML = '';
+    setTimeout(function () {
+      UI.setBusy(retry, false);
+      tries += 1;
+      if (retryMsg) {
+        retryMsg.innerHTML = '<div class="callout callout--warning">' + UI.icon('alert-circle') +
+          '<p>השירות עדיין לא זמין' + (tries > 1 ? ' (ניסיון <span class="num" dir="ltr">' + tries + '</span>)' : '') + '. נסו שוב בעוד כמה דקות, או חייגו למוקד <a href="' + Layout.TEL + '"><span class="num" dir="ltr">' + Layout.PHONE + '</span></a>.</p></div>';
+      }
+    }, 1500);
   });
 
   setView(view);

@@ -42,10 +42,28 @@
     return '<button type="button" class="chip" data-cat="' + esc(c) + '" aria-pressed="false">' + esc(c) + '</button>';
   }).join('');
 
+  /* P2-12: חיפוש סלחני – אותיות לטיניות בלי רישיות, בלי ניקוד, טעמים, גרש/גרשיים ומירכאות (׳ ״ ' " ’ ”),
+     אותיות סופיות = רגילות, רווחים מכווצים; וגם השוואה בלי י/ו, כך ש"רשיון" מוצא "רישיון" ו"sms" מוצא "SMS" */
+  var FINALS = { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' };
+  function norm(s) {
+    return String(s || '').toLowerCase()
+      .replace(/[\u0591-\u05C7]/g, '')
+      .replace(/[\u05F3\u05F4'"`\u2018\u2019\u201C\u201D]/g, '')
+      .replace(/[ךםןףץ]/g, function (c) { return FINALS[c]; })
+      .replace(/\s+/g, ' ').trim();
+  }
+  function loose(s) { return s.replace(/[יו]/g, ''); }
+  var HAY = F.map(function (f) { var n = norm(f[1] + ' ' + f[2]); return { n: n, l: loose(n) }; });
+  function matches(i, q) {
+    if (!q) return true;
+    if (HAY[i].n.indexOf(q) >= 0) return true;
+    var lq = loose(q);
+    return !!lq.trim() && HAY[i].l.indexOf(lq) >= 0;
+  }
   function visible() {
-    var q = state.q.trim();
+    var q = norm(state.q);
     return F.map(function (f, i) { return { f: f, i: i }; }).filter(function (x) {
-      return (state.cat === ALL || x.f[0] === state.cat) && (!q || (x.f[1] + ' ' + x.f[2]).indexOf(q) >= 0);
+      return (state.cat === ALL || x.f[0] === state.cat) && matches(x.i, q);
     });
   }
 

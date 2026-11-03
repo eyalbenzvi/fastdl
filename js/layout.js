@@ -142,11 +142,30 @@
       '</div></footer>';
   }
 
+  /* רכיבי ההדגמה (P2-8): במובייל (≤640) מקופלים כברירת מחדל, והבחירה נשמרת לכל הסשן (UI.store 'fd.demoOpen').
+     ?clean=1 מסתיר את סרגל ההדגמה ואת ה-pill לגמרי עד ?clean=0 (מבחני משתמשים) */
+  var mqM = null;
+  try { mqM = window.matchMedia('(max-width:640px)'); } catch (e) { /* */ }
+  function demoOpen() {
+    var v = UI.store.get('fd.demoOpen', null);
+    if (v === true || v === false) return v;
+    return !(mqM && mqM.matches);
+  }
+  function cleanMode() {
+    var c = UI.param('clean');
+    if (c === '1') UI.store.set('fd.clean', true);
+    else if (c === '0') UI.store.remove('fd.clean');
+    return UI.store.get('fd.clean', false) === true;
+  }
+  var CLEAN = cleanMode();
+  if (CLEAN) document.documentElement.classList.add('demo-clean');
+
   function pillHTML() {
+    var open = demoOpen();
     return '<div class="demo-pill" role="region" aria-label="סרגל הדגמה">' +
-      '<span class="demo-pill__body" id="demo-pill-body"><span class="demo-bar__label">מצב הדגמה – לא חלק מהאתר</span>' +
+      '<span class="demo-pill__body" id="demo-pill-body"' + (open ? '' : ' hidden') + '><span class="demo-bar__label">מצב הדגמה – לא חלק מהאתר</span>' +
       '<a href="prototype-index.html">לאינדקס המסכים</a></span>' +
-      '<button type="button" class="demo-pill__toggle" aria-expanded="true" aria-controls="demo-pill-body" aria-label="קיפול סרגל ההדגמה">' +
+      '<button type="button" class="demo-pill__toggle" aria-expanded="' + open + '" aria-controls="demo-pill-body" aria-label="' + (open ? 'קיפול סרגל ההדגמה' : 'פתיחת סרגל ההדגמה') + '">' +
       '<svg class="ico ico--18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM9 3v18"></path></svg></button></div>';
   }
 
@@ -156,8 +175,12 @@
     var slot = UI.qs('[data-slot="demo-bar"]');
     if (!slot) return;
     cfg = cfg || {};
-    var html = '<div class="demo-bar" role="region" aria-label="סרגל הדגמה"><div class="wrap demo-bar__inner">' +
-      '<span class="demo-bar__label">מצב הדגמה – לא חלק מהאתר</span>';
+    var open = demoOpen();
+    // במובייל הסרגל מקופל לשורה אחת: הכפתור "מצב הדגמה" פותח אותו (P2-8); בדסקטופ התווית הרגילה, והכול גלוי
+    var html = '<div class="demo-bar' + (open ? '' : ' is-collapsed') + '" role="region" aria-label="סרגל הדגמה"><div class="wrap demo-bar__inner" id="demo-bar-inner">' +
+      '<span class="demo-bar__label hide-m">מצב הדגמה – לא חלק מהאתר</span>' +
+      '<button type="button" class="demo-bar__toggle only-m" aria-expanded="' + open + '" aria-controls="demo-bar-inner">' +
+      '<span class="demo-bar__label">מצב הדגמה</span><span class="demo-bar__muted">– לא חלק מהאתר</span>' + I('chevron-down', { size: 18, cls: 'demo-bar__chev' }) + '</button>';
     if (cfg.prefix) html += '<span class="demo-bar__muted">' + cfg.prefix + '</span>';
     (cfg.items || []).forEach(function (it, i) {
       if (it.href) html += '<a class="demo-chip" href="' + it.href + '" aria-current="' + (it.pressed ? 'page' : 'false') + '"' + (it.title ? ' title="' + UI.esc(it.title) + '"' : '') + '>' + it.label + '</a>';
@@ -167,6 +190,13 @@
     if (cfg.index !== false) html += '<a class="demo-bar__index" href="prototype-index.html">לאינדקס</a>';
     html += '</div></div>';
     slot.innerHTML = html;
+    var tg = UI.qs('.demo-bar__toggle', slot);
+    tg.addEventListener('click', function () {
+      var now = tg.getAttribute('aria-expanded') !== 'true';
+      tg.setAttribute('aria-expanded', now ? 'true' : 'false');
+      UI.qs('.demo-bar', slot).classList.toggle('is-collapsed', !now);
+      UI.store.set('fd.demoOpen', now);
+    });
     UI.qsa('[data-demo-i]', slot).forEach(function (b) {
       b.addEventListener('click', function () {
         var it = cfg.items[Number(b.getAttribute('data-demo-i'))];
@@ -188,6 +218,22 @@
       if (isOpen) UI.show(list); else UI.hide(list);
     }
     btn.addEventListener('click', function (e) { e.stopPropagation(); set(!isOpen); });
+    // P3-10: חיצים בין הפריטים (לא גלילת העמוד); Home/End לראשון/לאחרון. ArrowDown על הכפתור פותח ומתמקד בראשון
+    function links() { return UI.qsa('a', list); }
+    function move(e, idx) { e.preventDefault(); var l = links(); if (!l.length) return; l[(idx + l.length) % l.length].focus(); }
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (!isOpen) set(true);
+        move(e, e.key === 'ArrowDown' ? 0 : -1);
+      }
+    });
+    list.addEventListener('keydown', function (e) {
+      var l = links(), i = l.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') move(e, i + 1);
+      else if (e.key === 'ArrowUp') { if (i <= 0) { e.preventDefault(); btn.focus(); } else move(e, i - 1); }
+      else if (e.key === 'Home') move(e, 0);
+      else if (e.key === 'End') move(e, -1);
+    });
     document.addEventListener('click', function (e) { if (isOpen && !list.contains(e.target) && e.target !== btn) set(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen) { set(false); btn.focus(); } });
     list.addEventListener('focusout', function (e) {
@@ -218,7 +264,39 @@
       t.setAttribute('aria-expanded', open ? 'false' : 'true');
       t.setAttribute('aria-label', open ? 'פתיחת סרגל ההדגמה' : 'קיפול סרגל ההדגמה');
       document.getElementById('demo-pill-body').hidden = open;
+      UI.store.set('fd.demoOpen', !open);
     });
+  }
+
+  // אחרי סגירת באנר התחזוקה (P3-5): הפוקוס עובר לתוכן הראשי ולא לקישור הדילוג (שהיה צץ מעל הוורדמרק)
+  function focusMain() {
+    var mn = document.getElementById('main');
+    if (!mn) return;
+    if (!mn.hasAttribute('tabindex')) mn.setAttribute('tabindex', '-1');
+    try { mn.focus({ preventScroll: true }); } catch (e) { mn.focus(); }
+  }
+
+  /* כותרת דביקה במובייל (P3-6, ≤640, לא בתהליך ההזמנה): נעלמת בגלילה למטה וחוזרת בגלילה למעלה,
+     כך שהתפריט והטלפון זמינים מכל מקום בעמוד בלי לתפוס מקום בזמן קריאה. חוזרת גם כשפוקוס נכנס אליה.
+     scroll-padding-top ב-CSS שומר שפוקוס מקלדת לא ייפול מתחתיה (UI.ensureVisible מתחשב בו) */
+  function setupStickyHeader() {
+    var hd = UI.qs('.site-header');
+    if (!hd || !mqM) return;
+    document.documentElement.classList.add('has-sticky-header');
+    var lastY = window.pageYOffset, tucked = false, ticking = false;
+    function set(t) { if (t !== tucked) { tucked = t; hd.classList.toggle('is-tucked', t); } }
+    function onScroll() {
+      ticking = false;
+      if (!mqM.matches) { set(false); return; }
+      if (document.body.style.overflow === 'hidden') return; // דיאלוג פתוח – הרקע לא באמת זז
+      var y = window.pageYOffset, dy = y - lastY;
+      if (y < hd.offsetHeight + 80) set(false);
+      else if (dy > 6) set(true);
+      else if (dy < -6) set(false);
+      if (Math.abs(dy) > 6 || y < 80) lastY = y;
+    }
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; window.requestAnimationFrame(onScroll); } }, { passive: true });
+    hd.addEventListener('focusin', function () { set(false); });
   }
 
   function init() {
@@ -229,7 +307,7 @@
       var mc = UI.qs('.maint__close', h);
       if (mc) mc.addEventListener('click', function () {
         var m = UI.qs('.maint', h); if (m) m.remove();
-        var skip = UI.qs('.skip-link'); if (skip) skip.focus();
+        focusMain();
         if (window.Layout.onMaintClose) window.Layout.onMaintClose();
       });
       if (!FLOW) document.body.insertAdjacentHTML('beforeend', menuHTML());
@@ -240,16 +318,20 @@
     var f = UI.qs('[data-slot="footer"]');
     if (f) {
       f.innerHTML = FLOW ? flowFooterHTML() : footerHTML();
-      if (!UI.qs('[data-slot="demo-bar"]') && !document.body.hasAttribute('data-no-pill')) document.body.insertAdjacentHTML('beforeend', pillHTML());
+      if (!CLEAN && !UI.qs('[data-slot="demo-bar"]') && !document.body.hasAttribute('data-no-pill')) {
+        document.body.insertAdjacentHTML('beforeend', pillHTML());
+        document.documentElement.classList.add('has-pill'); // מרווח בתחתית הפוטר, כדי שה-pill לא יסתיר את שורת המוקד
+      }
     }
     var setMore = setupMore();
     setupMenu();
+    if (!FLOW) setupStickyHeader();
     setupPill();
     var demo = UI.param('demo');
     if (demo === 'menu' && !FLOW) openMenu();
     if (demo === 'more' && setMore) setMore(true);
   }
 
-  window.Layout = { demoBar: demoBar, openMenu: openMenu, hoursLine: hoursLine, PHONE: PHONE, TEL: TEL, maintenanceHTML: maintenanceHTML };
+  window.Layout = { focusMain: focusMain, demoBar: demoBar, openMenu: openMenu, hoursLine: hoursLine, PHONE: PHONE, TEL: TEL, maintenanceHTML: maintenanceHTML };
   init();
 })();

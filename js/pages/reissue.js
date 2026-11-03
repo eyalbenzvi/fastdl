@@ -42,8 +42,13 @@
       var h = qs('#reissue-done-h');
       try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); }
       UI.motion.success(qs('#reissue-done'), qs('#reissue-done .order-done__circle')); // רק בפעולת משתמש, לא בטעינה עם ?done
+      // P1-3: הקשה שנייה על "אישור" נוחתת על כפתורי מסך הסיום – נבלעת ל-450ms
+      var card = qs('#reissue-done .order-done');
+      card.classList.add('fd-lock');
+      lockT = setTimeout(function () { lockT = null; card.classList.remove('fd-lock'); }, 450);
     }
   }
+  var lockT = null;
 
   function init() {
     var demo = UI.param('demo');
@@ -56,18 +61,31 @@
     });
     var decl = qs('#decl');
     decl.addEventListener('change', function () { if (decl.checked) UI.fieldError(decl, null); formTitle(); });
+    var sent = false;
     qs('#reissue-submit').addEventListener('click', function () {
+      if (sent) return; // אישור אחד בלבד
       if (!decl.checked) { UI.fieldError(decl, MSG); decl.focus(); formTitle(); return; }
       UI.store.set('fd.reissue', {
         method: cur().id, number: qs('#reissue-done .order-done__num .num').textContent,
         extras: { entrance: qs('#r-e').value.trim(), care_of: qs('#r-c').value.trim(), mailbox: qs('#r-mb').value.trim() }
       });
+      sent = true;
       showDone(true);
     });
     var cal = qs('#reissue-done .order-done__btns .btn--secondary');
-    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    if (cal) cal.addEventListener('click', function () { if (lockT) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    qs('#reissue-done a.btn--primary').addEventListener('click', function (e) { if (lockT) e.preventDefault(); });
     if (demo === 'error') { UI.fieldError(decl, MSG); formTitle(); }
     if (demo === 'done') showDone(false);
+    // P2-4: ההזמנה החוזרת כבר נשלחה (רענון / Back / Forward) – מציגים את מסך הסיום ולא טופס ריק שאפשר לשלוח שוב
+    if (!demo) {
+      var done = UI.store.get('fd.reissue', null);
+      if (done && done.method) {
+        for (var i = 0; i < OPTS.length; i++) if (OPTS[i].id === done.method) state.m = done.method;
+        sent = true;
+        showDone(false);
+      }
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

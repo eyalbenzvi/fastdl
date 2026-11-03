@@ -2,7 +2,7 @@
    פרמטרים: s, ans (S0), docs=1 (S0), reveal=1 (S7), method=express (S3), demo=toast (S4),
    doc=license|tag|boat (סוג התעודה; נבחר ב-S9 – משנה גם את שם המסמך בכל הטקסטים).
    מסע בדיקה (J): אם יש session/הזמנה/הנפקה חוזרת שמורים (fd.session, fd.order, fd.reissue) וה-URL לא נושא פרמטרי
-   הדגמה מעבר ל-s/step/doc – S2/S3 מציגים את מה שנבחר בפועל, וברירת המחדל/S1 עוברת ל-S2 (ייצור בהמתנה) או S3.
+   הדגמה מעבר ל-s/step/doc ולפרמטרים שנכתבים מפעולת משתמש (ans/docs/reveal, P2-3) – S2/S3 מציגים את מה שנבחר בפועל, וברירת המחדל/S1 עוברת ל-S2 (ייצור בהמתנה) או S3.
    עם פרמטרי הדגמה מפורשים מוצגים תמיד נתוני ההדמיות.
    ציר: תאריך מתחת לכל שלב (בפועל או "צפוי"), מחושב מהשיטה שנבחרה (ETA) וממועד הייצור. במובייל – ציר קומפקטי
    עם כפתור "כל השלבים" (UX_RECOMMENDATIONS החלטה 4). */
@@ -85,16 +85,26 @@
   /* ---------- מסע בדיקה: נתונים שמורים ---------- */
   var J = (function () {
     var demoParam = false;
-    UI.params().forEach(function (v, k) { if (['s', 'step', 'doc'].indexOf(k) < 0) demoParam = true; });
+    // ans/docs/reveal נכתבים ל-URL מפעולת משתמש (תשובה ב-S0, "לא קיבלתי" ב-S7) – לא מבטלים את נתוני המסע אחרי רענון (P2-3)
+    UI.params().forEach(function (v, k) { if (['s', 'step', 'doc', 'ans', 'docs', 'reveal'].indexOf(k) < 0) demoParam = true; });
     if (demoParam) return null;
     var session = UI.store.get('fd.session', null);
-    var order = UI.store.get('fd.order', null);
+    var order = committedView(UI.store.get('fd.order', null));
     var re = UI.store.get('fd.reissue', null);
     if (order && !(order.ordered && methodById(order.method))) order = null;
     if (re && !methodById(re.method)) re = null;
     if (!session && !order && !re) return null;
     return { session: session, order: order, re: re };
   })();
+  // עריכה שלא הושלמה (P1-4): מסך המצב מציג את ההזמנה ששולמה (committed), לא את הטיוטה
+  function committedView(o) {
+    if (!o || !o.edit || !o.committed) return o;
+    var v = {}, k;
+    for (k in o) v[k] = o[k];
+    for (k in o.committed) v[k] = o.committed[k];
+    v.edit = false; v.committed = null; v.step = 5;
+    return v;
+  }
   function methodById(id) {
     var all = D.delivery_methods || [];
     for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
@@ -120,9 +130,12 @@
     }
     return ['כתובת למשלוח', moinWithExtras(o.extras)];
   }
-  function amount(m) {
-    if (!m.price) return 'ללא עלות';
-    return n((Number.isInteger(m.price) ? String(m.price) : m.price.toFixed(2)) + ' ₪');
+  function amount(m, o) {
+    // מה ששולם בפועל (אחרי עריכה – המחיר הקודם + ההפרש, order.js paidTotal)
+    var x = o && typeof o.paidTotal === 'number' ? o.paidTotal : m.price;
+    x = Math.round(x * 100) / 100;
+    if (!x) return 'ללא עלות';
+    return n((Number.isInteger(x) ? String(x) : x.toFixed(2)) + ' ₪');
   }
 
   /* ---------- State ---------- */
@@ -143,6 +156,9 @@
       // הזמנה קיימת: S1/ברירת מחדל → S2 (ייצור בהמתנה, אפשר לערוך) או S3; בלי הזמנה – התרחיש שנבחר באימות
       if ((s === null || s === 'S1') && J.order) st.s = J.order.prod === 'wait' ? 'S2' : 'S3';
       else if (s === null && J.session && KEYS.indexOf(J.session.scenario) >= 0) st.s = J.session.scenario;
+      if (st.s === 'S2' && J.order && J.order.prod !== 'wait') st.s = 'S3'; // הייצור כבר התחיל – אין יותר מה לערוך
+      // P2-4: הנפקה חוזרת כבר הוזמנה – S7 (גם ?reveal=1 מ-Back) עובר ל-S3 שמציג אותה, ולא מציע להזמין שוב
+      if (st.s === 'S7' && J.re) { st.s = 'S3'; st.reveal = false; if (UI.param('reveal')) UI.setParams({ reveal: null }); }
       if (st.s !== s) UI.setParams({ s: st.s });
       if (!UI.param('doc') && J.session && DOC_TYPES[J.session.doc]) st.doc = J.session.doc;
     }
@@ -250,7 +266,7 @@
       tone: 'info', icon: 'order-done', badge: 'הזמנה בוצעה', h1: function () { return 'ההזמנה שלכם התקבלה'; }, tl: true,
       kv: function () {
         var c = ctx('S2'), m = methodById(c.mid);
-        if (c.order) return [['שיטת מסירה', esc(m.name)], addrRow(c.order, m), ['מספר הזמנה', n(ORDER_NO)], ['שולם', amount(m)]];
+        if (c.order) return [['שיטת מסירה', esc(m.name)], addrRow(c.order, m), ['מספר הזמנה', n(ORDER_NO)], ['שולם', amount(m, c.order)]];
         return [['שיטת מסירה', 'איסוף מנתב״ג'], ['עמדת איסוף', 'נתב״ג, טרמינל 3, עמדת ״על הקו״'], ['מספר הזמנה', n(ORDER_NO)], ['שולם', n('118 ₪')]];
       },
       help: [['עמדות איסוף ושעות', 'pickup.html'], ['שאלות על הזמנה ומשלוח', 'faq.html']],
@@ -262,7 +278,7 @@
         var c = ctx('S3'), m = methodById(c.mid);
         if (c.re) return [['סוג הזמנה', 'הנפקה חוזרת – ללא עלות'], ['שיטת מסירה', esc(m.name)], ['כתובת למשלוח', moinWithExtras(c.re.extras)],
           ['מספר הזמנה', n(esc(c.re.number || 'FD-2026-0841274'))]];
-        if (c.order) return [['שיטת מסירה', esc(m.name)], addrRow(c.order, m), ['מספר הזמנה', n(ORDER_NO)], ['שולם', amount(m)]];
+        if (c.order) return [['שיטת מסירה', esc(m.name)], addrRow(c.order, m), ['מספר הזמנה', n(ORDER_NO)], ['שולם', amount(m, c.order)]];
         if (c.moved) return [['שיטת מסירה', 'איסוף מנתב״ג'], ['עמדת איסוף', 'נתב״ג, טרמינל 3, עמדת ״על הקו״'], ['מספר הזמנה', n(ORDER_NO)], ['שולם', n('118 ₪')]];
         return [['שיטת מסירה', c.ordered ? esc(m.name) : 'דואר רגיל (לא בוצעה הזמנה)'], ['כתובת למשלוח', rich(ADDR)]];
       },
@@ -422,7 +438,7 @@
   function nowS1() {
     var countdown = REQ.countdown_reliable === true ? '<p class="muted">' + rich(REQ.remaining_display || 'נותרו כ-27 שעות') + '</p>' : '';
     return timeCard('clock', '<p class="time-card__t">אפשר להזמין עד <strong>' + fd(T.close, T.closeTime) + '</strong></p>' + countdown) +
-      '<a class="btn btn--primary btn--m-block status-self-start" href="order.html?reset=1">לבחירת משלוח או איסוף' + I('chevron-forward-rtl', { size: 20 }) + '</a>' +
+      '<a class="btn btn--primary btn--m-block status-self-start" href="order.html">לבחירת משלוח או איסוף' + I('chevron-forward-rtl', { size: 20 }) + '</a>' +
       '<div class="callout callout--warning" role="note">' + I('alert-triangle') + '<p>אם לא תבחרו עד המועד הזה, ' + N() + ' יישלח בדואר רגיל: <strong>עד ' + n('14') + ' ימי עסקים, ללא מעקב</strong>, ויימסר לתיבת הדואר רק אם יש עליה שם מזהה.</p></div>' +
       '<div class="st-choices"><p class="status-strong">מה אפשר לבחור:</p><ul class="st-list">' +
       '<li>' + I('truck', { size: 20 }) + '<span>משלוח מהיר עד הבית – מחר, ' + fd('2026-08-26') + ' · ' + n('177 ₪') + '</span></li>' +
@@ -434,11 +450,11 @@
 
   function nowS2() {
     var c = ctx('S2'), m = methodById(c.mid), e = ETA[c.mid] || {};
-    var paid = m && m.price ? ' (' + amount(m) + ')' : '';
+    var paid = m && amount(m, c.order) !== 'ללא עלות' ? ' (' + amount(m, c.order) + ')' : '';
     return timeCard('clock', '<p class="time-card__t">אפשר לשנות את ההזמנה עד <strong>' + fd(T.close, T.closeTime) + '</strong></p>') +
       '<p>אחרי המועד הזה הייצור מתחיל, ו' + N() + ' ' + etaText(c.mid, c.prod, 'will') + '.</p>' +
       '<div class="st-block"><p class="status-strong">רוצים לקבל מהר יותר?</p>' +
-      '<p>אפשר לשנות לשיטה אחרת עד אותו מועד. ' + (m && m.price ? 'בשיטה יקרה יותר משלמים את המחיר המלא בניכוי מה ששילמתם' + paid + '. ' + tbc() : 'אם תבחרו שיטה בתשלום, תשלמו עליה בזמן השינוי.') + '</p>' +
+      '<p>אפשר לשנות לשיטה אחרת עד אותו מועד. ' + (paid ? 'בשיטה יקרה יותר משלמים את המחיר המלא בניכוי מה ששילמתם' + paid + '. ' + tbc() : 'אם תבחרו שיטה בתשלום, תשלמו עליה בזמן השינוי.') + '</p>' +
       '<a class="btn btn--primary btn--m-block status-self-start" href="order.html?edit=1">עריכת ההזמנה</a></div>' +
       '<div class="st-block st-block--sep"><button type="button" class="btn btn--secondary btn--m-block status-self-start" id="prod-btn"' + act('prod') + '>אין לי מה לשנות – להתחיל עכשיו</button>' +
       '<p class="small muted">' + (e.shift ? 'כך ' + N() + ' יגיע יום מוקדם יותר. ' : '') + 'אחרי זה לא יהיה אפשר לשנות.</p></div>';
@@ -514,7 +530,7 @@
     function card(title, b, btn) { return '<li class="pick-card"><p class="pick-card__t">' + title + '</p>' + b + btn + '</li>'; }
     return '<p>בחרו את הבקשה שתרצו לראות.</p><ul class="g2 pick-grid">' +
       card('רישיון נהיגה', badge('success', 'check', 'אפשר להזמין'),
-        '<a class="btn btn--primary btn--m-block" href="order.html?reset=1"' + act('pickorder', ' data-doc="license"') + '>לבחירת משלוח לרישיון' + I('chevron-forward-rtl', { size: 20 }) + '</a>' +
+        '<a class="btn btn--primary btn--m-block" href="order.html"' + act('pickorder', ' data-doc="license"') + '>לבחירת משלוח לרישיון' + I('chevron-forward-rtl', { size: 20 }) + '</a>' +
         '<button type="button" class="link-btn"' + act('pick', ' data-s="S1" data-doc="license"') + '>לפרטי הבקשה</button>') +
       card('תג חניה לנכה', badge('navy', 'gear-production', 'בייצור'),
         '<button type="button" class="btn btn--secondary btn--m-block"' + act('pick', ' data-s="S3" data-doc="tag"') + '>לפרטי התג</button>') + '</ul>';
@@ -574,6 +590,15 @@
     }
   }
 
+  // P1-3: אחרי מעבר מצב מפעולת משתמש – הקשה שנייה באותה נקודה לא מפעילה כפתור במצב החדש (שכבת .fd-lock, 450ms)
+  var lockT = null;
+  function lockRoot() {
+    clearTimeout(lockT);
+    root.classList.add('fd-lock');
+    lockT = setTimeout(function () { lockT = null; root.classList.remove('fd-lock'); }, 450);
+  }
+  function locked() { return !!lockT; }
+
   function go(k, opt) {
     opt = opt || {};
     st.moved = !!opt.moved;
@@ -581,11 +606,39 @@
     if (opt.method !== undefined) st.method = opt.method; else st.method = '';
     var docP = UI.param('doc');
     if (opt.doc) { st.doc = opt.doc; docP = opt.doc; } // נבחר ב-S9: נשמר ב-URL (גם license) כדי להציג "החלפת בקשה"
-    UI.setParams({ s: k, ans: null, docs: null, reveal: null, demo: null, method: st.method || null, doc: docP || null });
+    // opt.push: ניווט בתוך המסך (S9 → פרטי בקשה, "החלפת בקשה") נכנס להיסטוריה – Back חוזר לרשימה (P1-5)
+    UI.setParams({ s: k, ans: null, docs: null, reveal: null, demo: null, method: st.method || null, doc: docP || null }, !!opt.push);
     render();
     renderDemoBar();
-    if (!opt.keepFocus) { var h = document.getElementById('status-h1'); if (h) { UI.focus(h); } window.scrollTo(0, 0); }
+    if (!opt.keepFocus) focusH1();
+    if (opt.lock) lockRoot();
   }
+  function focusH1() {
+    window.scrollTo(0, 0);
+    var h = document.getElementById('status-h1');
+    if (h) { try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } }
+  }
+
+  /* Back/Forward בין מצבים שנכנסו להיסטוריה: מרנדרים את המצב מה-URL (בלי לכתוב היסטוריה) */
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) { /* */ }
+  window.addEventListener('popstate', function () {
+    UI.setParams({}); // מאפס את המטמון של UI.params() לפי ה-URL הנוכחי (replace לאותה כתובת)
+    var s = UI.param('s');
+    if (KEYS.indexOf(s) < 0) return;
+    if (UI.modal.isOpen()) UI.modal.close();
+    st.moved = false;
+    st.s = s;
+    var a = Number(UI.param('ans'));
+    st.ans = UI.param('ans') !== null && a >= 0 && a <= 3 ? a : -1;
+    st.docs = false; st.reveal = UI.param('reveal') === '1';
+    st.smsDone = false; st.notifyDone = false; st.gotIt = false;
+    st.method = UI.param('method') === 'express' ? 'express' : '';
+    if (DOC_TYPES[UI.param('doc')]) st.doc = UI.param('doc');
+    render();
+    renderDemoBar();
+    focusH1();
+    requestAnimationFrame(function () { if (window.pageYOffset > 0) window.scrollTo(0, 0); });
+  });
 
   function openDocs(btn) {
     st.docs = true;
@@ -602,6 +655,7 @@
   root.addEventListener('click', function (e) {
     var b = e.target.closest('[data-action]');
     if (!b || !root.contains(b)) return;
+    if (locked()) { e.preventDefault(); return; }
     var a = b.getAttribute('data-action');
     if (a === 'logout') { // ממשיכים ל-index.html; מנקים את מסע הבדיקה
       ['fd.session', 'fd.order', 'fd.reissue', 'fd.scenario', 'fd.login', 'fd.phone'].forEach(function (k) { UI.store.remove(k); });
@@ -611,7 +665,7 @@
       if (J && J.session) { J.session.doc = b.getAttribute('data-doc'); UI.store.set('fd.session', J.session); }
       return;
     }
-    if (a === 'switch') { e.preventDefault(); go('S9'); return; }
+    if (a === 'switch') { e.preventDefault(); go('S9', { push: true, lock: true }); return; }
     if (a === 'tl') {
       st.tlOpen = !st.tlOpen;
       var card = b.closest('.status-tl');
@@ -660,17 +714,21 @@
       UI.copy(b.getAttribute('data-copy'));
     } else if (a === 'pick') {
       if (J && J.session) { J.session.doc = b.getAttribute('data-doc'); UI.store.set('fd.session', J.session); }
-      go(b.getAttribute('data-s'), { doc: b.getAttribute('data-doc') });
+      go(b.getAttribute('data-s'), { doc: b.getAttribute('data-doc'), push: true, lock: true });
     }
   });
   root.addEventListener('change', function (e) {
     if (e.target.id === 'sms-consent' && e.target.checked) UI.fieldError(e.target, null);
   });
 
+  // "כן, להתחיל עכשיו" – פעולה בלתי הפיכה: replace ולא push (Back לא מחזיר למצב S2 שכבר לא נכון); נעילה נגד הקשה כפולה
+  var prodBusy = false;
   document.getElementById('prod-confirm').addEventListener('click', function () {
+    if (prodBusy) return;
+    prodBusy = true; setTimeout(function () { prodBusy = false; }, 450);
     UI.modal.close();
-    if (J && J.order) { J.order.prod = 'now'; J.order.edit = false; UI.store.set('fd.order', J.order); } // S3 ממשיך להציג את אותה הזמנה
-    go('S3', { method: '', moved: !(J && J.order) });
+    if (J && J.order) { J.order.prod = 'now'; J.order.edit = false; J.order.committed = null; UI.store.set('fd.order', J.order); } // S3 ממשיך להציג את אותה הזמנה
+    go('S3', { method: '', moved: !(J && J.order), lock: true });
     UI.toast('ההזמנה הועברה לייצור');
   });
 

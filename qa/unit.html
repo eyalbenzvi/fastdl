@@ -63,6 +63,29 @@
     eq("Validate.mobile('0541234')", function () { return Validate.mobile('0541234'); }, false);
     eq("Validate.mobile('0641234567')", function () { return Validate.mobile('0641234567'); }, false);
     eq("Validate.maskMobile('0541234567')", function () { return Validate.maskMobile('0541234567'); }, '054-•••-4567');
+    group('Validate – נרמול קלט (P1-1, P2-1)');
+    eq("Validate.normalizeMobile('052-123-4567')", function () { return Validate.normalizeMobile('052-123-4567'); }, '0521234567');
+    eq("Validate.normalizeMobile('052 123 4567')", function () { return Validate.normalizeMobile('052 123 4567'); }, '0521234567');
+    eq("Validate.normalizeMobile('+972521234567')", function () { return Validate.normalizeMobile('+972521234567'); }, '0521234567');
+    eq("Validate.normalizeMobile('+972 52-123-4567')", function () { return Validate.normalizeMobile('+972 52-123-4567'); }, '0521234567');
+    eq("Validate.normalizeMobile('972521234567')", function () { return Validate.normalizeMobile('972521234567'); }, '0521234567');
+    eq("Validate.normalizeMobile('00972521234567')", function () { return Validate.normalizeMobile('00972521234567'); }, '0521234567');
+    eq("Validate.normalizeMobile('+972-0-52-123-4567')", function () { return Validate.normalizeMobile('+972-0-52-123-4567'); }, '0521234567');
+    eq("Validate.normalizeMobile('+972')", function () { return Validate.normalizeMobile('+972'); }, '+972');
+    eq("Validate.normalizeMobile('9725212')", function () { return Validate.normalizeMobile('9725212'); }, '9725212');
+    eq("Validate.normalizeMobile('05212345678')", function () { return Validate.normalizeMobile('05212345678'); }, '0521234567');
+    eq("Validate.normalizeMobile('(052) 123-4567')", function () { return Validate.normalizeMobile('(052) 123-4567'); }, '0521234567');
+    eq("Validate.normalizeMobile('')", function () { return Validate.normalizeMobile(''); }, '');
+    eq("Validate.mobile(Validate.normalizeMobile('+972 52-123-4567'))", function () { return Validate.mobile(Validate.normalizeMobile('+972 52-123-4567')); }, true);
+    eq("Validate.normalizeId('123 456 782')", function () { return Validate.normalizeId('123 456 782'); }, '123456782');
+    eq("Validate.normalizeId('12345678-2')", function () { return Validate.normalizeId('12345678-2'); }, '123456782');
+    eq("Validate.normalizeId(' 123456782')", function () { return Validate.normalizeId(' 123456782'); }, '123456782');
+    eq("Validate.normalizeId('1234567890')", function () { return Validate.normalizeId('1234567890'); }, '123456789');
+    eq("Validate.normalizeId('12.345.678-2')", function () { return Validate.normalizeId('12.345.678-2'); }, '123456782');
+    eq("Validate.israeliId(Validate.normalizeId('12345678-2'))", function () { return Validate.israeliId(Validate.normalizeId('12345678-2')); }, true);
+    eq("bindNormalize: הקלדת '052-123-4567' בשדה", function () {
+      var i = document.createElement('input'); document.body.appendChild(i); Validate.bindNormalize(i, 'mobile');
+      i.value = '052-123-4567'; i.dispatchEvent(new Event('input')); var v = i.value; i.remove(); return v; }, '0521234567');
 
     /* ---------- Dates (מחשבון P12) ---------- */
     group('Dates');
