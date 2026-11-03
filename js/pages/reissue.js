@@ -1,4 +1,5 @@
-/* reissue.js – P10 הנפקה חוזרת ללא עלות (reissue.html). ?demo=error|done. state בזיכרון בלבד. */
+/* reissue.js – P10 הנפקה חוזרת ללא עלות (reissue.html). ?demo=error|done.
+   אישור אמיתי (לא ?demo) נשמר ב-UI.store 'fd.reissue' {method, extras, number} – מסך המצב S3 מציג אותו. */
 (function () {
   'use strict';
   var qs = UI.qs, qsa = UI.qsa;
@@ -48,8 +49,14 @@
     decl.addEventListener('change', function () { if (decl.checked) UI.fieldError(decl, null); });
     qs('#reissue-submit').addEventListener('click', function () {
       if (!decl.checked) { UI.fieldError(decl, MSG); decl.focus(); return; }
+      UI.store.set('fd.reissue', {
+        method: cur().id, number: qs('#reissue-done .order-done__num .num').textContent,
+        extras: { entrance: qs('#r-e').value.trim(), care_of: qs('#r-c').value.trim(), mailbox: qs('#r-mb').value.trim() }
+      });
       showDone(true);
     });
+    var cal = qs('#reissue-done .order-done__btns .btn--secondary');
+    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]'); });
     if (demo === 'error') UI.fieldError(decl, MSG);
     if (demo === 'done') showDone(false);
   }

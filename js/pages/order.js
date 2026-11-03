@@ -38,13 +38,15 @@
     }).join('');
   }
 
-  /* ---------- State ---------- */
+  /* ---------- State ----------
+     ordered=true – ההזמנה הושלמה (status.js מציג ממנה את S2/S3). edit=true – עריכת הזמנה קיימת (?edit=1 מ-S2):
+     הבחירות נשמרות, ואם השיטה לא השתנתה לא משלמים שוב (paidMethod). */
   function fresh() {
     return {
       step: 1, method: null, group: 'all', auth: false, addr: 'moin',
       extras: { entrance: '', care_of: '', mailbox: '' },
       other: { city: '', street: '', house: '', entrance: '', apt: '', zip: '', care_of: '', phone: '', mailbox: '' },
-      prod: 'now', terms: false, ordered: false
+      prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null
     };
   }
   function merge(base, saved) {
@@ -62,13 +64,14 @@
   function cur() { return method(order.method); }
   function needsAddr() { var m = cur(); return m ? m.needs_address : true; }
   function isFree() { var m = cur(); return m ? m.price === 0 : false; }
-  function nextFrom(n) { if (n === 1) return needsAddr() ? 2 : 3; if (n === 3) return isFree() ? 5 : 4; return n + 1; }
+  function noPay() { return isFree() || (order.edit && !!order.method && order.paidMethod === order.method); }
+  function nextFrom(n) { if (n === 1) return needsAddr() ? 2 : 3; if (n === 3) return noPay() ? 5 : 4; return n + 1; }
   function prevFrom(n) { if (n === 3) return needsAddr() ? 2 : 1; if (n === 4) return 3; return Math.max(1, n - 1); }
   function clamp(n) {
     n = Math.min(5, Math.max(1, n || 1));
     if (n >= 2 && !cur()) order.method = 'express_home'; // שלב מתקדם בלי שיטה (קישור הדגמה) – ברירת מחדל כמו בעיצוב
     if (n === 2 && !needsAddr()) n = 3;
-    if (n === 4 && isFree()) n = 3;
+    if (n === 4 && noPay()) n = 3;
     return n;
   }
   function statusUrl() { return 'status.html?s=' + (order.prod === 'wait' ? 'S2' : 'S3'); }
@@ -88,12 +91,20 @@
     opt = opt || {};
     n = clamp(n);
     order.step = n;
-    if (n === 5) order.ordered = true;
+    if (n === 5) complete();
     ui.termsErr = false;
     save();
     writeUrl(!opt.replace);
     render();
     focusStep();
+  }
+
+  // ההזמנה הושלמה: מסך המצב יציג אותה (S2/S3); הנפקה חוזרת קודמת כבר לא רלוונטית
+  function complete() {
+    order.ordered = true;
+    order.edit = false;
+    if (!isFree()) order.paidMethod = order.method;
+    UI.store.remove('fd.reissue');
   }
 
   function focusStep() {
@@ -137,7 +148,7 @@
 
   function renderStepper() {
     var m = cur();
-    var skipped = [false, !!m && !m.needs_address, false, !!m && m.price === 0];
+    var skipped = [false, !!m && !m.needs_address, false, !!m && noPay()];
     var html = STEP_NAMES.map(function (name, i) {
       var n = i + 1, isCur = order.step === n, done = order.step > n && !skipped[i];
       var cls = 'stepper__item' + (done ? ' stepper__item--done' : isCur ? ' stepper__item--current' : '') + (skipped[i] ? ' stepper__item--skipped' : '');
@@ -173,6 +184,8 @@
       '</div>';
   }
   function renderStep1() {
+    var back = qs('.order__step[data-step="1"] .back-link');
+    if (back) back.setAttribute('href', order.edit || order.ordered ? 'status.html?s=S2' : 'status.html?s=S1');
     qsa('.order-chips .chip').forEach(function (c) { c.setAttribute('aria-pressed', c.getAttribute('data-group') === order.group ? 'true' : 'false'); });
     var list = METHODS.filter(function (m) { return order.group === 'all' || m.g === order.group; });
     qs('#method-list').innerHTML = list.map(methodCard).join('');
@@ -212,7 +225,7 @@
     var t = qs('#terms');
     t.checked = !!order.terms;
     UI.fieldError(t, ui.termsErr ? 'כדי להמשיך יש לאשר את תנאי השימוש.' : null);
-    qs('#next-3').textContent = isFree() ? 'אישור ההזמנה' : 'המשך לתשלום';
+    qs('#next-3').textContent = noPay() ? 'אישור ההזמנה' : 'המשך לתשלום';
   }
 
   /* --- שלב 4 --- */
@@ -369,6 +382,8 @@
 
     // שלב 5
     qs('#copy-order').addEventListener('click', function () { UI.copy(qs('#order-number').textContent); });
+    var cal = qs('.order__step[data-step="5"] .order-done__btns .btn--secondary');
+    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]'); });
 
     // חזרה (כל השלבים)
     qsa('[data-back]').forEach(function (b) { b.addEventListener('click', function () { go(prevFrom(order.step)); }); });
@@ -378,12 +393,12 @@
       var q;
       try { q = new URLSearchParams(window.location.search); } catch (e) { return; }
       var st = parseInt(q.get('step'), 10) || 1;
-      if (order.ordered && st < 5) { window.location.replace(statusUrl()); return; } // מהאישור חוזרים למסך המצב
+      if (order.ordered && !order.edit && st < 5) { window.location.replace(statusUrl()); return; } // מהאישור חוזרים למסך המצב
       if (method(q.get('m'))) order.method = q.get('m');
       if (UI.drawer.isOpen()) UI.drawer.close();
       ui.paying = false;
       order.step = clamp(st);
-      if (order.step === 5) order.ordered = true;
+      if (order.step === 5) complete();
       ui.termsErr = false;
       save();
       render();
@@ -396,9 +411,11 @@
     var p = UI.params();
     var stepP = parseInt(p.get('step'), 10);
     var saved = p.get('reset') === '1' ? null : UI.store.get(KEY, null);
-    // אחרי הזמנה שהושלמה: כניסה חדשה (בלי ?step=5) מתחילה הזמנה חדשה
-    if (saved && saved.ordered && stepP !== 5) saved = null;
+    var edit = p.get('edit') === '1' && saved && saved.ordered;
+    // אחרי הזמנה שהושלמה: כניסה חדשה (בלי ?step=5 ובלי עריכה) מתחילה הזמנה חדשה
+    if (saved && saved.ordered && stepP !== 5 && !edit && !saved.edit) saved = null;
     order = merge(fresh(), saved);
+    if (edit) { order.edit = true; if (!(stepP >= 1 && stepP <= 5)) order.step = 1; }
 
     if (stepP >= 1 && stepP <= 5) order.step = stepP;
     else if (p.get('reset') === '1' || !saved) order.step = 1;
@@ -413,7 +430,7 @@
     ui.skipcc = p.get('demo') === 'skipcc';
 
     order.step = clamp(order.step);
-    if (order.step === 5) order.ordered = true;
+    if (order.step === 5) { order.ordered = true; order.edit = false; if (!isFree()) order.paidMethod = order.method; }
     save();
     writeUrl(false);
 

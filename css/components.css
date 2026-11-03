@@ -29,6 +29,8 @@ button,.btn,.chip,.demo-chip{-webkit-user-select:none;user-select:none} /* לח�
 body{margin:0;background:var(--c-bg);color:var(--c-text);font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
 html[lang="ar"] body{font-family:var(--font-ar);line-height:1.7}
 h1,h2,h3,h4,p,ul,ol,dl,dd,figure{margin:0}
+h1,h2,h3,h4,legend{text-wrap:balance} /* בלי מילה יתומה בשורה האחרונה של כותרת; הנוסח לא משתנה */
+p,li,dd,figcaption,blockquote{text-wrap:pretty}
 ul,ol{padding:0;list-style:none}
 img{max-width:100%;display:block}
 a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
@@ -185,7 +187,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .timeline__step--current{font-weight:var(--fw-bold);color:var(--c-primary)}
 .timeline__step--future{color:var(--c-text-muted)}
 .timeline__step--warn .timeline__dot{background:var(--c-warning-marker);border-color:var(--c-warning-marker);color:#fff}
-.timeline__step--warn{font-weight:var(--fw-bold);color:var(--c-warning-marker)}
+.timeline__step--warn{font-weight:var(--fw-bold);color:var(--c-warning-text)} /* הנקודה נשארת --c-warning-marker; התווית בטוקן הטקסט (#B26B00 על לבן = 4.2:1, מתחת ל-AA) */
 .timeline__step--fail .timeline__dot{background:var(--c-danger);border-color:var(--c-danger);color:#fff}
 .timeline__step--fail{font-weight:var(--fw-bold);color:var(--c-danger)}
 /* פעימה בשלב הנוכחי (08 §8.1). טבעת ב-::before שגדלה ודועכת – transform+opacity בלבד, במקום box-shadow שמצייר מחדש כל פריים.
@@ -255,6 +257,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .demo-chip{min-height:36px;padding:0 12px;border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:transparent;font:inherit;font-weight:var(--fw-semibold);color:#fff;cursor:pointer}
 .demo-chip[aria-pressed="true"]{background:var(--c-demo-accent);border-color:var(--c-demo-accent);color:var(--c-demo-bg)}
 .demo-pill{position:fixed;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:16px;left:calc(16px + env(safe-area-inset-left,0px));z-index:70;display:flex;align-items:center;gap:10px;background:var(--c-demo-bg);color:#fff;border-radius:var(--radius-pill);padding:6px 8px 6px 16px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+@media (max-width:380px){.demo-pill{max-width:calc(100% - 32px)}} /* ב-320 לא נצמד לקצה הימני */
 
 /* ---------- Responsive helpers ---------- */
 .only-t,.only-m{display:none!important}

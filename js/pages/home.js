@@ -7,6 +7,10 @@
   var MSG_PH = 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.';
   var demo = UI.param('demo');
 
+  // קישורי "התחלה" במסלולי הבדיקה (prototype-index): ?reset=1 מנקה את המסע, ?scenario=S7 מגדיר תרחיש מראש
+  if (UI.param('reset') === '1') ['fd.session', 'fd.order', 'fd.reissue', 'fd.login', 'fd.phone', 'fd.scenario'].forEach(function (k) { UI.store.remove(k); });
+  if (/^S[0-9]$/.test(UI.param('scenario') || '')) UI.store.set('fd.scenario', UI.param('scenario'));
+
   /* ---------- Accordion ---------- */
   var accRoot = document.getElementById('home-acc');
   if (accRoot) UI.accordion(accRoot, { openIndex: demo === 'acc3' ? 3 : -1 });
@@ -58,7 +62,9 @@
     if (btn.disabled) return;
     if (!validate(true)) return;
     var m = masked();
-    UI.store.set('fd.phone', m);
+    // כל ת״ז וכל נייד תקינים מתקבלים; נשמרים כדי ש-otp.html יציג את המספר שהוזן ויפתח session
+    UI.store.set('fd.login', { id: Validate.digits(idIn.value), ph: phIn.value });
+    UI.store.set('fd.phone', Validate.digits(phIn.value));
     UI.setBusy(btn, true, 'שולחים קוד…');
     setTimeout(function () { window.location.href = otpHref(m); }, 1200);
   });
@@ -75,7 +81,7 @@
     idIn.value = '000000018';
     phIn.value = '0541234567';
     var m = masked();
-    UI.store.set('fd.phone', m);
+    UI.store.set('fd.phone', Validate.digits(phIn.value));
     showSent(m);
   } else if (demo === 'why') {
     UI.drawer.open('why-drawer', { returnFocus: whyBtn });

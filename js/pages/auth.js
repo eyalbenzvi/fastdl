@@ -1,19 +1,53 @@
-/* auth.js – P02 הזדהות (login.html) + P03 אימות קוד SMS (otp.html) */
+/* auth.js – P02 הזדהות (login.html) + P03 אימות קוד SMS (otp.html)
+   אב-טיפוס: כל ת״ז תקינה וכל נייד תקין מתקבלים; כל קוד בן 6 ספרות מתקבל חוץ מ-111111 (= קוד שגוי).
+   בסרגל ההדגמה בוחרים "תרחיש אחרי האימות" (S0–S9) – UI.store 'fd.scenario'. אחרי אימות: 'fd.session' {id, phoneMasked, scenario}.
+   ?reset=1 מנקה את מסע הבדיקה; ?scenario=S7 מגדיר תרחיש מראש (קישורי "התחלה" באינדקס). */
 (function () {
   'use strict';
   var page = document.body.getAttribute('data-page');
   var demo = UI.param('demo');
-  var CODE = '123456';
+  var DEMO_CODE = '123456';   // מוצג במצב ?demo=verified בלבד
+  var WRONG = '111111';       // הקוד היחיד שנחשב שגוי
   var ERR_ID = 'מספר תעודת הזהות לא תקין. בדקו שהזנתם 9 ספרות.';
   var ERR_PH = 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.';
+  var SCENARIOS = [ // הכותרות = התגים במסך המצב (status.js STATE_UI)
+    ['S0', 'לא נמצאה בקשה'], ['S1', 'אפשר להזמין'], ['S2', 'הזמנה בוצעה'], ['S3', 'בייצור'], ['S4', 'בדרך אליכם'],
+    ['S5', 'מחכה לכם'], ['S6', 'נמסרה'], ['S7', 'לא אושרה מסירה'], ['S8', 'המסירה נכשלה'], ['S9', '2 בקשות']
+  ];
+  function validScenario(s) { return SCENARIOS.some(function (x) { return x[0] === s; }); }
+
+  if (UI.param('reset') === '1') ['fd.session', 'fd.order', 'fd.reissue', 'fd.login', 'fd.phone', 'fd.scenario'].forEach(function (k) { UI.store.remove(k); });
+  if (validScenario(UI.param('scenario'))) UI.store.set('fd.scenario', UI.param('scenario'));
+  function scenario() { var s = UI.store.get('fd.scenario', 'S1'); return validScenario(s) ? s : 'S1'; }
 
   Layout.demoBar({
     items: [
       { label: 'P02 · הזדהות', href: 'login.html', pressed: page === 'login' },
       { label: 'P03 · קוד SMS', href: 'otp.html', pressed: page === 'otp' }
     ],
-    note: 'ת״ז לדוגמה <span class="num" dir="ltr">000000018</span> · קוד <span class="num" dir="ltr">123456</span>'
+    note: 'כל ת״ז תקינה (למשל <span class="num" dir="ltr">000000018</span>) · כל קוד בן 6 ספרות · <span class="num" dir="ltr">111111</span> = קוד שגוי'
   });
+  scenarioPicker();
+
+  /* בורר תרחיש בסרגל ההדגמה */
+  function scenarioPicker() {
+    var inner = UI.qs('[data-slot="demo-bar"] .demo-bar__inner');
+    if (!inner) return;
+    var wrap = document.createElement('span');
+    wrap.className = 'demo-scn';
+    var cur = scenario();
+    wrap.innerHTML = '<label class="demo-bar__muted" for="demo-scn">תרחיש אחרי האימות:</label>' +
+      '<select id="demo-scn" class="demo-select">' + SCENARIOS.map(function (x) {
+        return '<option value="' + x[0] + '"' + (x[0] === cur ? ' selected' : '') + '>' + x[0] + ' · ' + x[1] + '</option>';
+      }).join('') + '</select>';
+    var idx = UI.qs('.demo-bar__index', inner);
+    inner.insertBefore(wrap, idx || null);
+    UI.qs('#demo-scn', wrap).addEventListener('change', function (e) {
+      UI.store.set('fd.scenario', e.target.value);
+      var c = document.getElementById('otp-continue');
+      if (c) c.setAttribute('href', 'status.html?s=' + e.target.value);
+    });
+  }
 
   if (page === 'login') initLogin();
   if (page === 'otp') initOtp();
@@ -52,7 +86,7 @@
       if (btn.disabled) return;
       var bad = validate();
       if (bad) { bad.focus(); return; }
-      UI.store.set('fd.login', { id: id.value, ph: ph.value });
+      UI.store.set('fd.login', { id: Validate.digits(id.value), ph: ph.value });
       UI.store.set('fd.phone', Validate.digits(ph.value));
       UI.setBusy(btn, true, 'שולחים קוד…');
       setTimeout(function () { window.location.href = 'otp.html'; }, 1200);
@@ -85,7 +119,8 @@
 
     // מספר הנייד הממוסך: מה שהוזן ב-login, או ?ph=, או ברירת המחדל
     var phone = Validate.digits(UI.store.get('fd.phone', '') || UI.param('ph') || '');
-    if (Validate.mobile(phone)) document.getElementById('otp-phone').textContent = Validate.maskMobile(phone);
+    var masked = Validate.mobile(phone) ? Validate.maskMobile(phone) : ((UI.param('ph') || '').indexOf('•') > 0 ? UI.param('ph') : '');
+    if (masked) document.getElementById('otp-phone').textContent = masked;
 
     document.getElementById('otp-edit').addEventListener('click', function () { window.location.href = 'login.html'; });
 
@@ -114,6 +149,14 @@
         fill(d.length >= 6 ? 0 : i, d.slice(0, 6));
       });
       b.addEventListener('keydown', function (e) {
+        // ספרה בתיבה מלאה מחליפה את הקיימת (גם כשהסמן לא מסמן אותה, למשל אחרי קוד שגוי)
+        if (/^\d$/.test(e.key) && b.value && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          e.preventDefault();
+          b.value = e.key;
+          clearError();
+          if (i < boxes.length - 1) boxes[i + 1].focus();
+          return;
+        }
         if (e.key === 'Backspace' && !b.value && i > 0) {
           e.preventDefault();
           boxes[i - 1].value = '';
@@ -167,8 +210,18 @@
     });
 
     /* אימות */
+    function startSession() {
+      var login = UI.store.get('fd.login', null) || {};
+      var id = login.id || '000000018';
+      var prev = UI.store.get('fd.session', null);
+      // משתמש אחר = נתונים אחרים: הזמנה/הנפקה קודמת נשמרת רק לאותה ת״ז
+      if (!prev || prev.id !== id) { UI.store.remove('fd.order'); UI.store.remove('fd.reissue'); }
+      UI.store.set('fd.session', { id: id, phoneMasked: masked || document.getElementById('otp-phone').textContent, scenario: scenario() });
+    }
     function setVerified(auto) {
       verified = true;
+      cont.setAttribute('href', 'status.html?s=' + scenario());
+      if (auto) startSession(); else cont.addEventListener('click', startSession);
       clearError();
       ok.hidden = false;
       submit.hidden = true;
@@ -183,7 +236,9 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (verified || attempts <= 0) return;
-      if (code() === CODE) { setVerified(true); return; }
+      var c = code();
+      if (c.length < 6) { showError('יש להזין את כל 6 הספרות של הקוד.'); boxes.filter(function (b) { return !b.value; })[0].focus(); return; }
+      if (c !== WRONG) { setVerified(true); return; }
       attempts -= 1;
       if (attempts === 2) showError('הקוד לא נכון. נותרו 2 ניסיונות.');
       else if (attempts === 1) showError('הקוד לא נכון. נותר ניסיון אחד.');
@@ -200,7 +255,7 @@
     } else if (demo === 'resend') {
       startTimer(0);
     } else if (demo === 'verified') {
-      CODE.split('').forEach(function (d, i) { boxes[i].value = d; });
+      DEMO_CODE.split('').forEach(function (d, i) { boxes[i].value = d; });
       startTimer(30);
       setVerified(false);
     } else {

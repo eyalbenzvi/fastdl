@@ -35,6 +35,22 @@ main:focus{outline:none}
   .h1--status{font-size:26px}
 }
 
+/* ---------- Polish (taste-skill pass): hit areas, figures, measure ---------- */
+/* קישורי טקסט עצמאיים: אזור לחיצה של 44px לפחות בלי לשנות את הפריסה – ::after שקוף שמתרחב אנכית סביב הקישור */
+.wordmark,.header-phone,.status-id a,.status-actions a:not(.btn),a.status-self-start:not(.btn),.status-help__list a,.about-links a,.contact-call__phone,.menu-call__phone,.home-alt__link,.info-bar__link,.home-trust__phone,.drawer a:not(.btn),.docs-modal>.ext-link{position:relative}
+.wordmark::after,.header-phone::after,.status-id a::after,.status-actions a:not(.btn)::after,a.status-self-start:not(.btn)::after,.status-help__list a::after,.about-links a::after,.contact-call__phone::after,.menu-call__phone::after,.home-alt__link::after,.info-bar__link::after,.home-trust__phone::after,.drawer a:not(.btn)::after,.docs-modal>.ext-link::after,.demo-pill a::after,.demo-bar__index::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,var(--tap-min));transform:translateY(-50%)}
+/* רשימות צפופות (Footer) וכרום ההדגמה: מרחיבים עד אמצע הרווח שבין הפריטים, כדי שאזורי הלחיצה לא יחפפו */
+.site-footer__list a,.demo-chip,.demo-pill__toggle,.demo-pill a,.demo-bar__index{position:relative}
+.site-footer__list a::after{content:"";position:absolute;inset-inline:0;inset-block:-4px}
+.demo-chip::after{content:"";position:absolute;inset-inline:0;inset-block:-5.5px} /* 36px + 1.5px מסגרת → 44px */
+.demo-pill__toggle::after{content:"";position:absolute;inset:-6px}
+/* מחירים, תאריכים ושעות: ספרות ברוחב אחיד כדי שיתיישרו בטבלאות ובכרטיסים */
+.dl-price,.dl-card__price,.order-opt__price,.order-tbl__price,.ds-opt__price,.fast-calc__date{font-variant-numeric:tabular-nums}
+/* כותרת ה-Hero בשתי שורות מאולצות (<br>): החלק השני מאוזן בפני עצמו, בלי מילה יתומה ב-390/320 */
+.home-hero__title .accent,html[lang="ar"] .h1 .accent{display:inline-block}
+/* תשובות באקורדיון: אורך שורה קריא (~70 תווים) גם בכרטיס רחב */
+.acc__panel p{max-width:68ch}
+
 /* ---------- Maintenance banner ---------- */
 .maint{background:var(--c-warning-bg);border-bottom:1px solid var(--c-warning-border)}
 .maint__bar{display:flex;align-items:center;gap:12px;min-height:52px;padding-block:8px}
@@ -308,7 +324,7 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .ds-opt__ibox{background:var(--c-navy-50);color:var(--c-navy);border-radius:var(--radius-md)}
 .opt-card:has(input:checked) .ds-opt__ibox{background:#fff;color:var(--c-primary)}
 .ds-opt input[type=radio]{margin-top:4px}
-.ds-opt__body{flex:1;display:flex;flex-direction:column;gap:2px}
+.ds-opt__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .ds-opt__head{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
 .ds-opt__t{font-weight:var(--fw-bold);font-size:18px}
 .ds-opt__eta{font-size:20px;font-weight:var(--fw-bold)}
@@ -921,3 +937,19 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
   .status-help{padding:20px}
   .status-self-start.btn--m-block{align-self:stretch}
 }
+
+/* ---------- Guided test journeys (prototype-index) + scenario picker (login/otp demo bar) ---------- */
+.pi-jr__intro{max-width:820px}
+.pi-jr{display:flex;flex-direction:column;gap:12px;padding:20px;height:100%}
+.pi-jr__head{display:flex;gap:12px;align-items:flex-start}
+.pi-jr__titles{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pi-jr__t{font-size:var(--fs-body,17px);font-weight:var(--fw-bold);line-height:1.35}
+.pi-jr__who{color:var(--c-text-muted)}
+.pi-jr__steps{list-style:decimal;padding-inline-start:22px;display:flex;flex-direction:column;gap:6px;font-size:var(--fs-small);line-height:1.5;flex:1}
+.pi-jr__steps li::marker{color:var(--c-navy);font-weight:var(--fw-bold)}
+.pi-jr__go{align-self:flex-start}
+.demo-scn{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.demo-select{min-height:36px;border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:var(--c-demo-bg);color:#fff;font:inherit;font-weight:var(--fw-semibold);padding-inline:12px 8px;cursor:pointer}
+.demo-select:focus-visible{outline:3px solid var(--c-focus,#FFB020);outline-offset:2px}
+@media (max-width:640px){.pi-jr__go{align-self:stretch}}
+.pi-jr__steps .num{white-space:nowrap}

@@ -1,5 +1,8 @@
 /* status.js – מסך המצב P04 (S0–S9 + טעינה). תבנית אחת, טבלת STATE_UI אחת.
-   פרמטרים: s, ans (S0), docs=1 (S0), reveal=1 (S7), method=express (S3), demo=toast (S4), doc=tag (סוג תעודה מ-S9). */
+   פרמטרים: s, ans (S0), docs=1 (S0), reveal=1 (S7), method=express (S3), demo=toast (S4), doc=tag (סוג תעודה מ-S9).
+   מסע בדיקה (J): אם יש session/הזמנה/הנפקה חוזרת שמורים (fd.session, fd.order, fd.reissue) וה-URL לא נושא פרמטרי
+   הדגמה מעבר ל-s/step/doc – S2/S3 מציגים את מה שנבחר בפועל, וברירת המחדל/S1 עוברת ל-S2 (ייצור בהמתנה) או S3.
+   עם פרמטרי הדגמה מפורשים מוצגים תמיד נתוני ההדמיות. */
 (function () {
   'use strict';
 
@@ -18,6 +21,79 @@
       I('external-link', { size: iconSize || 16 }) + '<span class="sr-only">(נפתח בלשונית חדשה)</span></a>';
   }
   function act(name, extra) { return ' data-action="' + name + '"' + (extra || ''); }
+  function esc(s) { return UI.esc(String(s == null ? '' : s)); }
+  function rich(s) { // escape + מספרים ב-LTR + [לאישור] מודגש
+    return String(s == null ? '' : s).split(/(\[[^\]]*\])/).map(function (part) {
+      if (/^\[.*\]$/.test(part)) return tbc(esc(part));
+      return esc(part).replace(/\d+(?:[.:,\/-]\d+)*/g, function (x) { return n(x); });
+    }).join('');
+  }
+
+  /* ---------- מסע בדיקה: נתונים שמורים ---------- */
+  var J = (function () {
+    var demoParam = false;
+    UI.params().forEach(function (v, k) { if (['s', 'step', 'doc'].indexOf(k) < 0) demoParam = true; });
+    if (demoParam) return null;
+    var session = UI.store.get('fd.session', null);
+    var order = UI.store.get('fd.order', null);
+    var re = UI.store.get('fd.reissue', null);
+    if (order && !(order.ordered && methodById(order.method))) order = null;
+    if (re && !methodById(re.method)) re = null;
+    if (!session && !order && !re) return null;
+    return { session: session, order: order, re: re };
+  })();
+  function methodById(id) {
+    var all = D.delivery_methods || [];
+    for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
+    return null;
+  }
+  var ORDER_NO = (D.order_example && D.order_example.order_number) || 'FD-2026-0841273';
+  function moinWithExtras(x) {
+    x = x || {};
+    var parts = [rich(ADDR)];
+    if (x.entrance) parts.push('כניסה ' + rich(x.entrance));
+    if (x.care_of) parts.push('אצל ' + rich(x.care_of));
+    if (x.mailbox) parts.push('על תיבת הדואר: ' + rich(x.mailbox));
+    return parts.join(' · ');
+  }
+  function addrRow(o, m) {
+    if (!m.needs_address) return ['עמדה', rich(m.address || '')];
+    if (o.auth && o.addr === 'other' && o.other && o.other.street) {
+      var a = o.other;
+      var line = 'רחוב ' + a.street + ' ' + (a.house || '') + (a.entrance ? ', כניסה ' + a.entrance : '') + (a.apt ? ', דירה ' + a.apt : '') +
+        (a.city ? ', ' + a.city : '') + (a.zip ? ' ' + a.zip : '');
+      return ['כתובת', rich(line.replace(/\s+/g, ' ').trim()) + (a.care_of ? ' · אצל ' + rich(a.care_of) : '') + (a.mailbox ? ' · על תיבת הדואר: ' + rich(a.mailbox) : '')];
+    }
+    return ['כתובת', moinWithExtras(o.extras)];
+  }
+  function amount(m) {
+    if (!m.price) return 'ללא עלות';
+    return n((Number.isInteger(m.price) ? String(m.price) : m.price.toFixed(2)) + ' ₪');
+  }
+  function prodText(o) {
+    return o.prod === 'wait' ? 'אחרי סגירת החלון – ' + n('26.8.2026') + ', ' + n('07:00') : 'ייצור מיידי – ' + n('25.8.2026') + ', ' + n('07:00');
+  }
+  function jRows(state) { // שורות "פרטי הבקשה" מהמסע, או null (= נתוני ההדמיה)
+    if (!J) return null;
+    if (state === 'S3' && J.re) {
+      var rm = methodById(J.re.method);
+      return [['סוג הזמנה', 'הנפקה חוזרת – ללא עלות'], ['הועבר לייצור', 'בקובץ הייצור הקרוב'], ['שיטת מסירה', esc(rm.name)],
+        ['כתובת', moinWithExtras(J.re.extras)], ['מספר הזמנה', n(esc(J.re.number || 'FD-2026-0841274'))], ['סכום ששולם', 'ללא עלות']];
+    }
+    if (!J.order) return null;
+    var o = J.order, m = methodById(o.method);
+    if (state === 'S2') return [['שיטת מסירה', esc(m.name)], addrRow(o, m), ['מועד ייצור', prodText(o)], ['מספר הזמנה', n(ORDER_NO)], ['סכום ששולם', amount(m)]];
+    if (state === 'S3') {
+      return [['התקבלה', n('24.8.2026') + ', ' + n('05:12')], ['הועבר לייצור', o.prod === 'wait' ? n('26.8.2026') + ', ' + n('07:00') : n('25.8.2026') + ', ' + n('07:00')],
+        ['שיטת מסירה', esc(m.name)], addrRow(o, m), ['מספר הזמנה', n(ORDER_NO)], ['סכום ששולם', amount(m)]];
+    }
+    return null;
+  }
+  function s3MethodId() { // להערת "דואר רגיל" ב-S3
+    if (J && J.re) return J.re.method;
+    if (J && J.order) return J.order.method;
+    return st.method === 'express' ? 'express_home' : 'regular_mail';
+  }
 
   /* ---------- State ---------- */
   var st = {
@@ -33,6 +109,13 @@
     st.reveal = UI.param('reveal') === '1';
     st.method = UI.param('method') === 'express' ? 'express' : '';
     st.doc = DOC_TYPES[UI.param('doc')] ? UI.param('doc') : 'license';
+    if (J) {
+      // הזמנה קיימת: S1/ברירת מחדל → S2 (ייצור בהמתנה, אפשר לערוך) או S3; בלי הזמנה – התרחיש שנבחר באימות
+      if ((s === null || s === 'S1') && J.order) st.s = J.order.prod === 'wait' ? 'S2' : 'S3';
+      else if (s === null && J.session && KEYS.indexOf(J.session.scenario) >= 0) st.s = J.session.scenario;
+      if (st.s !== s) UI.setParams({ s: st.s });
+      if (!UI.param('doc') && J.session && DOC_TYPES[J.session.doc]) st.doc = J.session.doc;
+    }
   })();
 
   /* ---------- STATE_UI ---------- */
@@ -54,7 +137,7 @@
     S2: {
       tone: 'info', icon: 'order-done', badge: 'הזמנה בוצעה', h1: 'ההזמנה שלכם התקבלה', step: 2,
       kv: function () {
-        return [['שיטת מסירה', 'איסוף מנתב״ג'], ['עמדה', 'נתב״ג, טרמינל 3, עמדת ״על הקו״'], ['מספר הזמנה', n('FD-2026-0841273')], ['סכום ששולם', n('118 ₪')]];
+        return jRows('S2') || [['שיטת מסירה', 'איסוף מנתב״ג'], ['עמדה', 'נתב״ג, טרמינל 3, עמדת ״על הקו״'], ['מספר הזמנה', n('FD-2026-0841273')], ['סכום ששולם', n('118 ₪')]];
       },
       help: [['עמדות איסוף ושעות', 'pickup.html'], ['שאלות על הזמנה ומשלוח', 'faq.html']],
       now: nowS2
@@ -62,7 +145,7 @@
     S3: {
       tone: 'navy', icon: 'gear-production', badge: 'בייצור', h1: 'הרישיון שלכם בייצור', step: 3,
       kv: function () {
-        return [['התקבלה', n('24.8.2026') + ', ' + n('05:12')], ['הועבר לייצור', n('25.8.2026') + ', ' + n('07:00')],
+        return jRows('S3') || [['התקבלה', n('24.8.2026') + ', ' + n('05:12')], ['הועבר לייצור', n('25.8.2026') + ', ' + n('07:00')],
           ['שיטת מסירה', st.method === 'express' ? 'משלוח מהיר עד הבית' : 'דואר רגיל (לא בוצעה הזמנה)'], ['כתובת', ADDR]];
       },
       help: [['למה אי אפשר לשנות עכשיו?', 'faq.html']],
@@ -169,7 +252,7 @@
     var h = '';
     if (withConsent) {
       h += '<div class="field"><label class="check" for="sms-consent"><input type="checkbox" id="sms-consent">' +
-        '<span>אני מסכים/ה לקבל עדכון ב-SMS על הבקשה שלי לנייד ' + n((D.citizen && D.citizen.mobile_masked) || '054-•••-4567') + '</span></label></div>';
+        '<span>אני מסכים/ה לקבל עדכון ב-SMS על הבקשה שלי לנייד ' + n(J && J.session && J.session.phoneMasked ? esc(J.session.phoneMasked) : ((D.citizen && D.citizen.mobile_masked) || '054-•••-4567')) + '</span></label></div>';
     }
     return h + '<button type="button" class="btn btn--primary btn--m-block status-self-start"' + act('sms') + '>עדכנו אותי ב-SMS</button>';
   }
@@ -214,7 +297,7 @@
 
   function nowS2() {
     return '<p>בחרתם להשאיר אפשרות לשינוי. אפשר לעדכן את ההזמנה עד <strong>' + n('26.8.2026') + ' בשעה ' + n('05:12') + '</strong>. אחרי זה הרישיון יורד לייצור.</p>' +
-      '<div class="status-actions"><a class="btn btn--primary btn--m-block" href="order.html">עריכת ההזמנה</a>' +
+      '<div class="status-actions"><a class="btn btn--primary btn--m-block" href="order.html?edit=1">עריכת ההזמנה</a>' +
       '<button type="button" class="btn btn--secondary btn--m-block" id="prod-btn"' + act('prod') + '>העבירו לייצור עכשיו</button></div>';
   }
 
@@ -222,7 +305,7 @@
     return '<p>בשלב הזה כבר אי אפשר לשנות כתובת או שיטת משלוח – זה סימן שהתהליך מתקדם, לא תקלה.</p>' +
       (st.notifyDone ? doneNote('נשלח לכם עדכון כשהרישיון יוצא.')
         : '<button type="button" class="btn btn--secondary btn--m-block status-self-start"' + act('notify') + '>' + I('message', { size: 20 }) + 'שלחו לי עדכון כשהרישיון יוצא</button>') +
-      (st.method === 'express' ? '' : '<p class="small muted">דואר רגיל נמסר לתיבת הדואר רק אם מופיע עליה שם מזהה, כמו שם משפחה.</p>');
+      (s3MethodId() !== 'regular_mail' ? '' : '<p class="small muted">דואר רגיל נמסר לתיבת הדואר רק אם מופיע עליה שם מזהה, כמו שם משפחה.</p>');
   }
 
   function nowS4() {
@@ -295,7 +378,7 @@
     if (st.s === 'loading') { root.innerHTML = skeleton(); return; }
     var d = STATE_UI[st.s];
     root.innerHTML =
-      '<div class="status-id"><p class="muted">שלום, ישראלה · ' + docType() + '</p><a href="index.html">יציאה</a></div>' +
+      '<div class="status-id"><p class="muted">שלום, ישראלה · ' + docType() + '</p><a href="index.html"' + act('logout') + '>יציאה</a></div>' +
       '<div class="status-head">' + badge(d.tone, d.icon, d.badge) + '<h1 class="h1" id="status-h1" tabindex="-1">' + d.h1 + '</h1></div>' +
       (d.step >= 0 ? timeline(d) : '') +
       '<section class="card status-now" aria-labelledby="now-h"><h2 id="now-h" class="h2">מה עכשיו?</h2>' + d.now() + '</section>' +
@@ -349,6 +432,10 @@
     var b = e.target.closest('[data-action]');
     if (!b || !root.contains(b)) return;
     var a = b.getAttribute('data-action');
+    if (a === 'logout') { // ממשיכים ל-index.html; מנקים את מסע הבדיקה
+      ['fd.session', 'fd.order', 'fd.reissue', 'fd.scenario', 'fd.login', 'fd.phone'].forEach(function (k) { UI.store.remove(k); });
+      return;
+    }
     if (a === 'ans') {
       st.ans = Number(b.getAttribute('data-i')); st.smsDone = false;
       UI.setParams({ ans: st.ans, docs: null });
@@ -383,6 +470,7 @@
     } else if (a === 'copy') {
       UI.copy(b.getAttribute('data-copy'));
     } else if (a === 'pick') {
+      if (J && J.session) { J.session.doc = b.getAttribute('data-doc'); UI.store.set('fd.session', J.session); }
       go(b.getAttribute('data-s'), { doc: b.getAttribute('data-doc') });
     }
   });
@@ -392,6 +480,7 @@
 
   document.getElementById('prod-confirm').addEventListener('click', function () {
     UI.modal.close();
+    if (J && J.order) { J.order.prod = 'now'; J.order.edit = false; UI.store.set('fd.order', J.order); } // S3 ממשיך להציג את אותה הזמנה
     go('S3', { method: '' });
     UI.toast('ההזמנה הועברה לייצור');
   });

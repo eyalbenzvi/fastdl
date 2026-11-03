@@ -2,3 +2,4 @@ node_modules/
 qa/screens/
 qa/tmp/
 qa/compare.html
+.taste-skill/

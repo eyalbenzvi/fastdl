@@ -22,6 +22,85 @@
           <h1 class="pi-head__title">רישיון עד הבית – אינדקס אב-טיפוס</h1>
           <p class="muted pi-head__persona">כל המסכים והמצבים של האתר. דמות ההדגמה: ישראלה ישראלי, ת״ז <span class="num" dir="ltr">000000018</span>, נייד <span class="num" dir="ltr">054-1234567</span>. ״עכשיו״ באב-הטיפוס = יום ג׳, <span class="num" dir="ltr">25.8.2026, 02:12</span>.</p>
         </header>
+        <section class="pi-group pi-journeys" aria-labelledby="pi-gj">
+          <h2 class="pi-group__t" id="pi-gj">מסלולי בדיקה מודרכים</h2>
+          <p class="muted pi-jr__intro">כל מסלול מתחיל נקי („התחלה״ מאפס את הנתונים השמורים) ועובר במסכים כמו משתמש אמיתי שהנתונים שלו קיימים במערכת. כל ת״ז תקינה וכל נייד תקין מתקבלים; כל קוד בן 6 ספרות מתקבל חוץ מ-<span class="num" dir="ltr">111111</span>. את התרחיש שיוצג אחרי האימות (<span class="num" dir="ltr">S0–S9</span>) בוחרים בסרגל ההדגמה במסך ההזדהות.</p>
+          <ul class="g3 pi-grid pi-jr-grid">
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">A</span><div class="pi-jr__titles"><h3 class="pi-jr__t">יוסי – הזמנה מהירה</h3><p class="pi-lnk__d">משלוח מהיר עד הבית + תשלום</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">123456782</span> · נייד <span class="num" dir="ltr">052-1234567</span> · תרחיש <span class="num" dir="ltr">S1</span></p>
+              <ol class="pi-jr__steps">
+                <li>בעמוד הבית: ת״ז <span class="num" dir="ltr">123456782</span>, נייד <span class="num" dir="ltr">0521234567</span> ← „שלחו לי קוד אימות״</li>
+                <li>קוד: כל 6 ספרות (למשל <span class="num" dir="ltr">246810</span>) ← „המשך״</li>
+                <li>מסך המצב S1 ← „לבחירת משלוח או איסוף״</li>
+                <li>בוחרים „משלוח מהיר עד הבית״ ← כתובת משרד הפנים (אפשר להוסיף כניסה / אצל)</li>
+                <li>„ייצור מיידי״ + אישור תנאים ← תשלום (כרטיס <span class="num" dir="ltr">4580 1234 5678 9012</span>, תוקף <span class="num" dir="ltr">12/28</span>, CVV <span class="num" dir="ltr">123</span>, ת״ז ושם לחשבונית)</li>
+                <li>אישור ← „למסך המצב״: S3 מציג משלוח מהיר, הכתובת, <span class="num" dir="ltr">177 ₪</span> ומספר ההזמנה</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="index.html?reset=1&amp;scenario=S1">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – יוסי – הזמנה מהירה</span></a>
+            </li>
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">B</span><div class="pi-jr__titles"><h3 class="pi-jr__t">איסוף חינם מבארי</h3><p class="pi-lnk__d">דילוג על כתובת ותשלום</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">203040506</span> · נייד <span class="num" dir="ltr">050-1112233</span> · תרחיש <span class="num" dir="ltr">S1</span></p>
+              <ol class="pi-jr__steps">
+                <li>הזדהות: ת״ז <span class="num" dir="ltr">203040506</span>, נייד <span class="num" dir="ltr">0501112233</span> ← קוד כלשהו</li>
+                <li>S1 ← „לבחירת משלוח או איסוף״ ← סינון „איסוף עצמי״</li>
+                <li>בוחרים „איסוף מדפוס בארי״ ← המשך: שלב הכתובת מדולג (מסומן „לא נדרש״)</li>
+                <li>אישור תנאים ← „אישור ההזמנה״ (בלי שלב תשלום)</li>
+                <li>„למסך המצב״: S3 עם עמדת האיסוף ו„ללא עלות״</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="login.html?reset=1&amp;scenario=S1">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – איסוף חינם מבארי</span></a>
+            </li>
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">C</span><div class="pi-jr__titles"><h3 class="pi-jr__t">הזמנה עם אפשרות לשינוי</h3><p class="pi-lnk__d">עריכה ← העברה לייצור</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">314159260</span> · נייד <span class="num" dir="ltr">054-9876543</span> · תרחיש <span class="num" dir="ltr">S1</span></p>
+              <ol class="pi-jr__steps">
+                <li>הזדהות: ת״ז <span class="num" dir="ltr">314159260</span>, נייד <span class="num" dir="ltr">0549876543</span> ← קוד כלשהו ← S1 ← לבחירת משלוח</li>
+                <li>„משלוח רגיל עד הבית״ ← כתובת: כניסה ב׳, אצל כהן</li>
+                <li>מועד ייצור: „להשאיר אפשרות לשינוי״ ← תשלום <span class="num" dir="ltr">41 ₪</span></li>
+                <li>„למסך המצב״: S2 עם השיטה, הכתובת והתוספות ← „עריכת ההזמנה״</li>
+                <li>הבחירות שמורות; משנים פרט בכתובת ← אישור (בלי לשלם שוב) ← S2 מעודכן</li>
+                <li>„העבירו לייצור עכשיו״ ← אישור ← S3 עם אותם פרטים</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="login.html?reset=1&amp;scenario=S1">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – הזמנה עם אפשרות לשינוי</span></a>
+            </li>
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">D</span><div class="pi-jr__titles"><h3 class="pi-jr__t">דנה – הרישיון לא הגיע</h3><p class="pi-lnk__d">S7 ← הנפקה חוזרת</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">222222226</span> · נייד <span class="num" dir="ltr">053-2223344</span> · תרחיש <span class="num" dir="ltr">S7</span></p>
+              <ol class="pi-jr__steps">
+                <li>בסרגל ההדגמה כבר נבחר „תרחיש אחרי האימות: S7״</li>
+                <li>הזדהות: ת״ז <span class="num" dir="ltr">222222226</span>, נייד <span class="num" dir="ltr">0532223344</span> ← קוד כלשהו (נסו גם <span class="num" dir="ltr">111111</span> = קוד שגוי)</li>
+                <li>S7 ← „לא קיבלתי את הרישיון״ ← בדיקת זכאות</li>
+                <li>„להזמנת הנפקה חוזרת״ ← בוחרים „דואר רשום״, מסמנים הצהרה ← אישור</li>
+                <li>„למסך המצב״: S3 עם מספר ההנפקה החוזרת <span class="num" dir="ltr">FD-2026-0841274</span> והשיטה שנבחרה</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="login.html?reset=1&amp;scenario=S7">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – דנה – הרישיון לא הגיע</span></a>
+            </li>
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">E</span><div class="pi-jr__titles"><h3 class="pi-jr__t">אברהם – מה עלי לעשות?</h3><p class="pi-lnk__d">צריך להצטלם? מדריך ← S0 ← דוגמאות</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">555555556</span> · נייד <span class="num" dir="ltr">050-5556677</span> · תרחיש <span class="num" dir="ltr">S0</span></p>
+              <ol class="pi-jr__steps">
+                <li>בעמוד הבית ← „מה עלי לעשות עכשיו?״ ← „שילמתי – האם אני צריך גם להצטלם?״: דוגמאות המסמכים</li>
+                <li>„השלמתי תשלום״ ← „להרשמה לעדכון ב-SMS״ ← הזדהות: ת״ז <span class="num" dir="ltr">555555556</span>, נייד <span class="num" dir="ltr">0505556677</span> ← קוד כלשהו</li>
+                <li>S0 „לא נמצאה בקשה״ ← „לפני 1–3 ימים״</li>
+                <li>„איך יודעים אם צריך להצטלם?״ ← מודאל עם שתי דוגמאות המסמכים</li>
+                <li>אפשר גם „עדכנו אותי ב-SMS״ (רואים את הנייד שהוזן) ← „יציאה״</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="index.html?reset=1&amp;scenario=S0">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – אברהם – מה עלי לעשות?</span></a>
+            </li>
+            <li class="card pi-jr">
+              <div class="pi-jr__head"><span class="pi-code" dir="ltr">F</span><div class="pi-jr__titles"><h3 class="pi-jr__t">מוחמד – ערבית ובחזרה</h3><p class="pi-lnk__d">עמוד הבית בערבית ← עברית</p></div></div>
+              <p class="small pi-jr__who">ת״ז <span class="num" dir="ltr">000000018</span> · נייד <span class="num" dir="ltr">054-1234567</span> · תרחיש <span class="num" dir="ltr">S1</span></p>
+              <ol class="pi-jr__steps">
+                <li>בעמוד הבית ← „العربية״ בכותרת (במובייל: בתפריט)</li>
+                <li>עוברים על עמוד הבית בערבית (RTL, גופן ערבי)</li>
+                <li>„أرسلوا لي رمز التحقق״ ← מסך ההזדהות (בעברית)</li>
+                <li>או „עברית״ בכותרת ← חזרה לעמוד הבית בעברית</li>
+              </ol>
+              <a class="btn btn--secondary btn--sm pi-jr__go" href="index.html?reset=1">התחלה<svg class="ico ico--18" data-icon="chevron-forward-rtl" aria-hidden="true"></svg><span class="sr-only"> – מוחמד – ערבית ובחזרה</span></a>
+            </li>
+          </ul>
+        </section>
         <section class="pi-group" aria-labelledby="pi-g1">
           <h2 class="pi-group__t" id="pi-g1">בסיס ועמוד הבית</h2>
           <ul class="g3 pi-grid">
