@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>שיטות מסירה ומחירון – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd p,.fd ul,.fd ol,.fd dl,.fd dd{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i20{width:20px;height:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:12px;font-family:inherit;font-weight:600;font-size:16px;line-height:1.2;text-decoration:none;cursor:pointer;white-space:nowrap}
+.fd a.btn{text-decoration:none}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.h1{font-size:38px;font-weight:700;line-height:1.2}
+.h2{font-size:22px;font-weight:700}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;line-height:1.6}
+.qb{width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:#0351E0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.qb:hover{background:#E6EEFC}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th,.tbl td{text-align:start;padding:16px 18px;border-bottom:1px solid #D9E4EA;vertical-align:middle}
+.tbl thead th{font-size:15px;color:#4F5F6B;font-weight:700;background:#F7F9FB}
+.scrim{position:fixed;inset:0;background:rgba(21,50,74,.5);z-index:80}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(460px,100%);background:#fff;z-index:90;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:18px;box-shadow:0 8px 32px rgba(21,50,74,.2)}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.h1{font-size:28px}.hide-m{display:none!important}.only-m{display:flex!important}.wrap{padding:0 16px}.drawer{top:auto;left:0;right:0;width:100%;max-height:88vh;border-radius:20px 20px 0 0}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<main id="main" style="flex: 1; padding: 44px 0 72px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 8px"><h1 class="h1">שיטות מסירה ומחירון</h1><p class="muted" style="font-size: 18px; max-width: 760px">האגרה משולמת למשרד התחבורה. כאן תראו רק את עלות המשלוח – אם בחרתם במשלוח בתשלום.</p></div>
+
+<div class="card hide-m" style="overflow-x: auto">
+<table class="tbl">
+<caption class="sr" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">השוואה בין שיטות המסירה</caption>
+<thead><tr><th scope="col">שיטה</th><th scope="col">זמן אספקה</th><th scope="col">מחיר</th><th scope="col">מעקב</th><th scope="col"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">פעולה</span></th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<tr>
+<th scope="row" style="font-weight: 700"><span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">{{r.name}}<sc-for list="{{r.tags}}" as="t" hint-placeholder-count="1"><span class="tag" style="{{t.st}}">{{t.t}}</span></sc-for><button type="button" class="qb" aria-label="{{r.q}}" onClick="{{r.info}}"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg></button></span></th>
+<td>{{r.time}}</td>
+<td style="font-weight: 700; white-space: nowrap; {{r.pst}}">{{r.price}}</td>
+<td>{{r.trk}}</td>
+<td><a class="btn btn-s" href="Auth.dc.html">להזמנה</a></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+
+<ul class="only-m" style="flex-direction: column; gap: 12px">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+<li class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; gap: 8px; align-items: flex-start"><p style="font-weight: 700; font-size: 18px">{{r.name}}</p><button type="button" class="qb" aria-label="{{r.q}}" onClick="{{r.info}}"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg></button></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{r.tags}}" as="t" hint-placeholder-count="1"><span class="tag" style="{{t.st}}">{{t.t}}</span></sc-for></div>
+<p>{{r.time}} · מעקב: {{r.trk}}</p>
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-weight: 800; font-size: 20px; {{r.pst}}">{{r.price}}</span><a class="btn btn-s" href="Auth.dc.html">להזמנה</a></div>
+</li>
+</sc-for>
+</ul>
+
+<div role="note" style="display: flex; gap: 12px; background: #FFF6E8; border: 1px solid #E7A13B; border-radius: 12px; padding: 16px 20px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #8A5A12"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg><p>לא בחרתם עד סוף 48 השעות? הרישיון יישלח בדואר רגיל, ללא מעקב.</p></div>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+<sc-if value="{{dr}}" hint-placeholder-val="{{ false }}">
+<div class="scrim" onClick="{{close}}"></div>
+<aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-h" onKeyDown="{{onKey}}">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 id="dr-h" class="h2">{{drName}}</h2><button type="button" aria-label="סגירה" onClick="{{close}}" style="width: 44px; height: 44px; border: 0; background: #EDF3F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<dl style="display: flex; flex-direction: column; gap: 12px"><sc-for list="{{drRows}}" as="x" hint-placeholder-count="4"><div><dt class="small muted">{{x.k}}</dt><dd style="font-weight: 600">{{x.v}}</dd></div></sc-for></dl>
+<sc-if value="{{drPickup}}" hint-placeholder-val="{{ false }}"><a href="Pickup.dc.html">לכל פרטי עמדות האיסוף</a></sc-if>
+</aside>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { i: -1 }; }
+  renderVals() {
+    const TAG = { free: ['ללא עלות', 'background: #F1FAF4; color: #1E7F52'], fast: ['הכי מהיר', 'background: #0351E0; color: #fff'], notrack: ['ללא מעקב', 'background: #EEF2F4; color: #4F5F6B'] };
+    const R = [
+      { name: 'איסוף מדפוס בארי', time: 'למחרת יום ההזמנה מ-11:00', price: 'ללא עלות', trk: '—', tags: ['free', 'fast'], fit: 'למי שגר/ה בדרום ורוצה את הרישיון מהר ובחינם', where: '[כתובת לאישור]', hours: '[שעות לאישור]' },
+      { name: 'איסוף מנתב״ג', time: 'זמין תוך יום עסקים', price: '118 ₪', trk: '—', tags: [], fit: 'למי שגר/ה במרכז או עובר/ת בנתב״ג', where: 'טרמינל 3, אולם מקבלי הפנים, ליד שער יציאה 1, עמדת ״על הקו״', hours: 'א׳–ה׳ 07:00–22:00 · שישי וערבי חג עד 15:00' },
+      { name: 'משלוח מהיר עד הבית', time: 'עד יום עסקים אחד', price: '177 ₪', trk: 'כן, שליח', tags: ['fast'], fit: 'למי שצריך/ה את הרישיון מחר, בלי לצאת מהבית' },
+      { name: 'משלוח רגיל עד הבית', time: '2–5 ימי עסקים', price: '41 ₪', trk: 'כן, שליח', tags: [], fit: 'מסירה ביד עם מעקב, בלי לחץ זמן' },
+      { name: 'דואר רשום', time: 'עד 14 ימי עסקים', price: '14.99 ₪', trk: 'מעקב דואר', tags: [], fit: 'מעקב דואר במחיר נמוך' },
+      { name: 'דואר רגיל', time: 'עד 14 ימי עסקים', price: 'ללא עלות', trk: 'ללא מעקב', tags: ['free', 'notrack'], fit: 'נמסר לתיבה רק אם יש עליה שם מזהה' }
+    ];
+    const cur = R[this.state.i];
+    return {
+      rows: R.map((r, i) => ({ name: r.name, time: r.time, price: r.price, trk: r.trk, pst: r.price === 'ללא עלות' ? 'color: #1E7F52' : '', q: 'פרטים נוספים על ' + r.name, tags: r.tags.map((t) => ({ t: TAG[t][0], st: TAG[t][1] })), info: () => this.setState({ i }) })),
+      dr: !!cur, drName: cur ? cur.name : '', drPickup: !!(cur && cur.where),
+      drRows: cur ? [['זמן אספקה', cur.time], ['מחיר', cur.price], ['מעקב', cur.trk], ['מתאים ל…', cur.fit]].concat(cur.where ? [['כתובת', cur.where], ['שעות', cur.hours]] : []).map((x) => ({ k: x[0], v: x[1] })) : [],
+      close: () => this.setState({ i: -1 }), onKey: (e) => { if (e.key === 'Escape') this.setState({ i: -1 }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

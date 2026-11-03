@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>מה עלי לעשות עכשיו? – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd p,.fd ul,.fd ol,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i16{width:16px;height:16px}.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i28{width:28px;height:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wrap{width:100%;max-width:1048px;margin:0 auto;padding:0 24px}
+.h1{font-size:38px;font-weight:700;line-height:1.2}
+.h2{font-size:24px;font-weight:700;line-height:1.35}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.sit{display:flex;gap:14px;align-items:center;width:100%;min-height:88px;padding:18px 20px;background:#fff;border:1.5px solid #B8CBD6;border-radius:16px;font-family:inherit;font-size:18px;font-weight:700;color:#15324A;text-align:start;cursor:pointer}
+.sit:hover{border-color:#5B1FA7}
+.sit[aria-expanded="true"]{border:2px solid #5B1FA7;background:#F4EEFC}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.g2{grid-template-columns:minmax(0,1fr)}.h1{font-size:28px}.btn-mf{width:100%}.hide-m{display:none!important}.only-m{display:flex!important}.wrap{padding:0 16px}.card-p{padding:20px!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<main id="main" style="flex: 1; padding: 44px 0 72px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 26px">
+<div style="display: flex; gap: 16px; align-items: center"><span class="ibox" style="width: 60px; height: 60px; border-radius: 50%; background: #F4EEFC; color: #5B1FA7"><svg class="ico i28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/></svg></span><div><h1 class="h1">מה עלי לעשות עכשיו?</h1><p class="muted" style="font-size: 18px">בחרו את המצב שהכי מתאר אתכם.</p></div></div>
+
+<ul class="g2">
+<sc-for list="{{sits}}" as="s" hint-placeholder-count="4">
+<li><button type="button" class="sit" aria-expanded="{{s.exp}}" aria-controls="ans" onClick="{{s.go}}"><span class="ibox" style="width: 44px; height: 44px; background: #F4EEFC; color: #5B1FA7; font-weight: 800">{{s.n}}</span><span style="flex: 1">{{s.t}}</span><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true" style="color: #5B1FA7; {{s.r}}"><path d="m6 9 6 6 6-6"/></svg></button></li>
+</sc-for>
+</ul>
+
+<section id="ans" aria-live="polite">
+<sc-if value="{{none}}" hint-placeholder-val="{{ false }}"><p class="muted" style="text-align: center; padding: 8px">בחרו מצב כדי לראות מה לעשות.</p></sc-if>
+<sc-if value="{{a0}}" hint-placeholder-val="{{ false }}"><div class="card card-p" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<h2 class="h2">פג תוקף הרישיון / קיבלתי דיוור לתשלום אגרה</h2>
+<p>התשלום מתבצע באתר התשלומים הממשלתי או במכונות ״רישיומט״.</p>
+<a class="btn btn-p btn-mf" href="#" target="_blank" rel="noopener">לתשלום האגרה<svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span class="sr">(נפתח בלשונית חדשה)</span></a>
+</div></sc-if>
+<sc-if value="{{a1}}" hint-placeholder-val="{{ true }}"><div class="card card-p" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<h2 class="h2">שילמתי – האם אני צריך גם להצטלם?</h2>
+<p>בטופס האגרה וברישיון הזמני שנשלח במייל יש ריבוע אדום בצד שמאל. אם כתוב שם שצריך להצטלם – גשו לתחנת צילום מורשית.</p>
+<div class="g2" style="width: 100%">
+<figure style="display: flex; flex-direction: column; gap: 8px"><img src="assets/temp_license_photo_REQUIRED_example.jpg" alt="דוגמה מושחרת של רישיון זמני: בריבוע האדום כתוב שיש לשלם את האגרה ולהצטלם בתחנת הצילום" style="width: 100%; height: 320px; object-fit: contain; background: #F4F6F8; border-radius: 12px; border: 1px solid #D9E4EA"><figcaption style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #8A5A12"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>צריך להצטלם</figcaption></figure>
+<figure style="display: flex; flex-direction: column; gap: 8px"><img src="assets/fee_letter_photo_ON_FILE_example.jpg" alt="דוגמה מושחרת של טופס אגרה: בריבוע האדום כתוב שתמונתכם נמצאת במחשב" style="width: 100%; height: 320px; object-fit: contain; background: #F4F6F8; border-radius: 12px; border: 1px solid #D9E4EA"><figcaption style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1E7F52"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>לא צריך להצטלם</figcaption></figure>
+</div>
+<a class="btn btn-s btn-mf" href="#" target="_blank" rel="noopener">לרשימת תחנות הצילום<svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span class="sr">(נפתח בלשונית חדשה)</span></a>
+</div></sc-if>
+<sc-if value="{{a2}}" hint-placeholder-val="{{ false }}"><div class="card card-p" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<h2 class="h2">השלמתי תשלום (וצילום, אם נדרש)</h2>
+<p>הבקשה תגיע אלינו ביום העסקים הבא בבוקר. מי שמסר נייד בתחנת הצילום יקבל מאיתנו SMS. מי שלא – כדאי להירשם כאן ונעדכן אתכם.</p>
+<a class="btn btn-p btn-mf" href="Auth.dc.html">להרשמה לעדכון ב-SMS</a>
+</div></sc-if>
+<sc-if value="{{a3}}" hint-placeholder-val="{{ false }}"><div class="card card-p" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+<h2 class="h2">קיבלתי מכם SMS</h2>
+<p>הבקשה שלכם אצלנו. עכשיו אפשר לבחור משלוח או איסוף.</p>
+<a class="btn btn-p btn-mf" href="Auth.dc.html">לבדיקת מצב והזמנה<svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+</div></sc-if>
+</section>
+
+<div class="card card-p" style="padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<p style="font-weight: 700; font-size: 18px">צריכים את הרישיון בדחיפות?</p>
+<a href="Fastest.dc.html" style="font-weight: 600">למסלול הקצר ביותר ←</a>
+</div>
+
+<figure style="display: flex; flex-direction: column; gap: 10px">
+<div role="img" aria-label="מקום לסרטון הסבר" style="position: relative; width: 100%; aspect-ratio: 16 / 9; background: #15324A; border-radius: 16px; display: flex; align-items: center; justify-content: center">
+<button type="button" aria-label="הפעלת הסרטון (בקרוב)" style="width: 84px; height: 84px; border-radius: 50%; border: 0; background: #fff; color: #15324A; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" style="fill: #15324A; margin-left: 6px"><path d="M7 4v16l13-8z"/></svg></button>
+<span style="position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,.14); color: #fff; font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px">placeholder</span>
+</div>
+<figcaption class="muted">סרטון: איך מקבלים את הרישיון – 60 שניות</figcaption>
+</figure>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { a: 1 }; }
+  renderVals() {
+    const s = this.state;
+    const T = ['פג תוקף הרישיון / קיבלתי דיוור לתשלום אגרה', 'שילמתי – האם אני צריך גם להצטלם?', 'השלמתי תשלום (וצילום, אם נדרש)', 'קיבלתי מכם SMS'];
+    return {
+      sits: T.map((t, i) => ({ t, n: i + 1, exp: s.a === i ? 'true' : 'false', r: s.a === i ? 'transform: rotate(180deg)' : '', go: () => this.setState({ a: s.a === i ? -1 : i }) })),
+      none: s.a < 0, a0: s.a === 0, a1: s.a === 1, a2: s.a === 2, a3: s.a === 3
+    };
+  }
+}
+</script>
+</body>
+</html>

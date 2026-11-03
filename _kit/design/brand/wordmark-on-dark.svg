@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="64" viewBox="0 0 260 64" role="img" aria-label="רישיון עד הבית – מבית דפוס בארי">
+  <!-- RTL wordmark: text on the right, three cyan speed bars on the left. Font: Heebo (fallback Arial). For the site, prefer the HTML version (see docs/04_components.md). -->
+  <g fill="#10A9E0"><rect x="8" y="16" width="34" height="6" rx="3"/><rect x="16" y="28" width="26" height="6" rx="3"/><rect x="24" y="40" width="18" height="6" rx="3"/></g>
+  <text x="252" y="33" text-anchor="end" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="800" font-size="26" fill="#FFFFFF">רישיון עד הבית</text>
+  <text x="252" y="54" text-anchor="end" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="500" font-size="15" fill="#CFE0EA">מבית דפוס בארי</text>
+</svg>

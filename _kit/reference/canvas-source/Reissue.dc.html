@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>הנפקה חוזרת ללא עלות – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd p,.fd ul,.fd ol,.fd dl,.fd dd{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd :focus-visible,.optcard:focus-within{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i48{width:48px;height:48px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.lbl{display:block;font-weight:600;margin-bottom:6px}
+.inp{display:block;width:100%;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font-family:inherit;font-size:18px;color:#15324A;background:#fff}
+.inp:focus{outline:3px solid #FFB020;outline-offset:2px}
+.err{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:#B53A3A;margin-top:6px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.wrap-f{width:100%;max-width:768px;margin:0 auto;padding:0 24px}
+.h1{font-size:32px;font-weight:700;line-height:1.25}
+.h2{font-size:22px;font-weight:700;line-height:1.35}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.callout{display:flex;gap:12px;border-radius:12px;padding:16px 20px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px}
+.kv dt{font-size:15px;color:#4F5F6B}.kv dd{font-weight:600}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.optcard{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid #B8CBD6;border-radius:16px;padding:18px 20px;cursor:pointer;width:100%}
+.optcard.on{background:#F1F5FE;border:2px solid #0351E0}
+.optcard input{width:22px;height:22px;margin:3px 0 0;accent-color:#0351E0;flex:none}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.kv,.g3{grid-template-columns:minmax(0,1fr)}.h1{font-size:26px}.btn-mf{width:100%}.hide-m{display:none!important}.only-m{display:flex!important}.wrap-f{padding:0 16px}.card-p{padding:20px!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<main id="main" style="flex: 1; padding: 36px 0 72px">
+<div class="wrap-f" style="display: flex; flex-direction: column; gap: 22px">
+<sc-if value="{{form}}" hint-placeholder-val="{{ true }}">
+<a href="Status.dc.html" style="display: flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 44px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>חזרה למסך המצב</a>
+<h1 class="h1">הזמנת הנפקה חוזרת – ללא עלות</h1>
+<section class="card card-p" aria-labelledby="el-h" style="padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+<h2 id="el-h" class="h2">בדיקת זכאות</h2>
+<dl class="kv">
+<div><dt>תאריך משלוח</dt><dd><span class="num" dir="ltr">26.8.2026</span></dd></div>
+<div><dt>שיטה</dt><dd>דואר רגיל</dd></div>
+<div><dt>ימי עסקים שעברו</dt><dd>21</dd></div>
+<div><dt>סטטוס מסירה</dt><dd>אין תיעוד מסירה</dd></div>
+</dl>
+<div role="status" class="callout" style="background: #F1FAF4"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #1E7F52"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><p style="font-weight: 700; color: #1E7F52">אתם זכאים להנפקה חוזרת ללא עלות.</p></div>
+</section>
+<section class="card card-p" aria-labelledby="dm-h" style="padding: 24px 28px; display: flex; flex-direction: column; gap: 14px">
+<h2 id="dm-h" class="h2">איך לשלוח את הרישיון החדש?</h2>
+<p class="small muted">רק שיטות עם מעקב <span class="tbc">[לאישור]</span></p>
+<div role="radiogroup" aria-label="שיטת מסירה" style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="3">
+<label class="optcard {{o.on}}"><input type="radio" name="rm" checked="{{o.c}}" onChange="{{o.pick}}"><span style="flex: 1; display: flex; flex-direction: column"><span style="font-weight: 700">{{o.name}}</span><span class="small muted">{{o.eta}} · עם מעקב</span></span><span style="font-weight: 700; color: #1E7F52">ללא עלות</span></label>
+</sc-for>
+</div>
+</section>
+<section class="card card-p" aria-labelledby="ad-h" style="padding: 24px 28px; display: flex; flex-direction: column; gap: 14px">
+<h2 id="ad-h" class="h2">כתובת למשלוח</h2>
+<div style="display: flex; gap: 14px; align-items: center"><span class="ibox" style="width: 44px; height: 44px; background: #EDF3F6"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><p style="font-size: 20px; font-weight: 700">רחוב העצמאות 10, באר שבע</p></div>
+<p class="small muted">הכתובת הרשומה במשרד הפנים.</p>
+<div class="g3"><div><label class="lbl" for="r-e">מספר כניסה</label><input id="r-e" class="inp"></div><div><label class="lbl" for="r-c">אצל</label><input id="r-c" class="inp"></div><div><label class="lbl" for="r-mb">מה כתוב על תיבת הדואר?</label><input id="r-mb" class="inp"></div></div>
+</section>
+<div>
+<label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-weight: 600"><input type="checkbox" checked="{{decl}}" onChange="{{toggleDecl}}" aria-invalid="{{declInv}}" style="width: 22px; height: 22px; margin: 2px 0 0; accent-color: #0351E0; flex: none">אני מצהיר/ה שלא קיבלתי את הרישיון שנשלח ב-<span class="num" dir="ltr">26.8.2026</span>.</label>
+<sc-if value="{{declErr}}" hint-placeholder-val="{{ false }}"><p role="alert" class="err"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>כדי להמשיך יש לאשר את ההצהרה.</p></sc-if>
+</div>
+<button type="button" class="btn btn-p btn-mf" onClick="{{confirm}}" style="align-self: flex-start; min-width: 240px">אישור הזמנה חוזרת</button>
+</sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<div class="card card-p" style="padding: 40px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start">
+<span class="ibox" style="width: 76px; height: 76px; border-radius: 50%; background: #F1FAF4; color: #1E7F52"><svg class="ico i48" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M20 6 9 17l-5-5"/></svg></span>
+<h1 class="h1">ההזמנה החוזרת התקבלה!</h1>
+<p style="font-size: 18px">מספר הזמנה: <strong class="num" dir="ltr">FD-2026-0841274</strong></p>
+<div style="width: 100%; background: #F4F6F8; border-radius: 14px; padding: 20px"><p style="font-weight: 700; margin-bottom: 6px">מה קורה עכשיו</p><p>ייצור בקובץ הקרוב ← {{doneName}} ← {{doneEta}}</p></div>
+<p>שלחנו לכם SMS עם הפרטים.</p>
+<div style="display: flex; gap: 16px; flex-wrap: wrap"><a class="btn btn-p btn-mf" href="Status.dc.html">למסך המצב</a><button type="button" class="btn btn-s btn-mf">הוסיפו ליומן</button></div>
+</div>
+</sc-if>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { m: 'express_home', decl: false, declErr: false, done: false }; }
+  renderVals() {
+    const s = this.state;
+    const O = [
+      { id: 'express_home', name: 'משלוח מהיר עד הבית', eta: 'עד יום עסקים אחד' },
+      { id: 'regular_home', name: 'משלוח רגיל עד הבית', eta: '2–5 ימי עסקים' },
+      { id: 'registered_mail', name: 'דואר רשום', eta: 'עד 14 ימי עסקים' }
+    ];
+    const cur = O.find((o) => o.id === s.m);
+    return {
+      form: !s.done, done: s.done,
+      opts: O.map((o) => ({ name: o.name, eta: o.eta, c: s.m === o.id, on: s.m === o.id ? 'on' : '', pick: () => this.setState({ m: o.id }) })),
+      decl: s.decl, declErr: s.declErr, declInv: s.declErr ? 'true' : 'false',
+      toggleDecl: () => this.setState({ decl: !s.decl, declErr: false }),
+      confirm: () => { if (!s.decl) { this.setState({ declErr: true }); return; } this.setState({ done: true }); },
+      doneName: cur.name, doneEta: cur.eta
+    };
+  }
+}
+</script>
+</body>
+</html>

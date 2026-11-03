@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Footer – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i18{width:18px;height:18px}.i20{width:20px;height:20px}
+.ftr a{color:#fff}.ftr a:hover{color:#CFE6F2}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:860px){.g3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.wrap{padding:0 16px}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="width: 100%; font-family: 'Heebo', Arial, sans-serif; color: #fff">
+<footer class="ftr" style="background: #15324A; color: #fff; padding: 56px 0 24px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 36px">
+<div class="g3" style="gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 22px; font-weight: 800">רישיון עד הבית</span><span style="font-size: 14px; color: #CFE0EA">מבית דפוס בארי</span></span>
+<span aria-hidden="true" style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end"><span style="display: block; width: 28px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 21px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 14px; height: 5px; border-radius: 3px; background: #10A9E0"></span></span>
+</div>
+<p style="display: flex; gap: 8px; color: #E3EDF3; font-size: 15px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true" style="margin-top: 3px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</p>
+</div>
+<nav aria-label="קישורי שירות"><p style="font-weight: 700; margin-bottom: 10px">שירות</p><ul style="display: flex; flex-direction: column; gap: 8px">
+<li><a href="Faq.dc.html">שאלות ותשובות</a></li>
+<li><a href="Contact.dc.html">צור קשר</a></li>
+<li><a href="Pickup.dc.html">עמדות איסוף</a></li>
+<li><a href="Delivery.dc.html">שיטות מסירה</a></li>
+</ul></nav>
+<nav aria-label="מידע משפטי"><p style="font-weight: 700; margin-bottom: 10px">מידע</p><ul style="display: flex; flex-direction: column; gap: 8px">
+<li><a href="Accessibility.dc.html">הצהרת נגישות</a></li>
+<li><a href="#">מדיניות פרטיות</a></li>
+<li><a href="#">תנאי שימוש</a></li>
+<li><a href="About.dc.html">איך תדעו שזה אנחנו</a></li>
+</ul></nav>
+</div>
+<div style="border-top: 1px solid #2E4C64; padding-top: 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 15px; color: #E3EDF3">
+<span>© דפוס בארי</span>
+<span>מוקד שירות: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></span>
+</div>
+</div>
+</footer>
+<sc-if value="{{showDemo}}" hint-placeholder-val="{{ false }}">
+<div role="region" aria-label="סרגל הדגמה" style="position: fixed; bottom: 16px; left: 16px; z-index: 70; display: flex; align-items: center; gap: 10px; background: #2B2F36; color: #fff; border-radius: 999px; padding: 6px 8px 6px 16px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.25)">
+<sc-if value="{{open}}" hint-placeholder-val="{{ true }}">
+<span style="font-weight: 700; color: #FFD27A">מצב הדגמה – לא חלק מהאתר</span>
+<a href="Index.dc.html" style="color: #fff; font-weight: 600">לאינדקס המסכים</a>
+</sc-if>
+<button type="button" onClick="{{toggle}}" aria-expanded="{{exp}}" aria-label="קיפול סרגל ההדגמה" style="width: 32px; height: 32px; border-radius: 50%; border: 0; background: #444A53; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM9 3v18"/></svg></button>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"hideDemo":{"editor":"boolean","default":false},"$preview":{"width":1280,"height":400}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { open: true }; }
+  renderVals() {
+    const h = this.props.hideDemo;
+    return {
+      showDemo: !(h === true || h === 'true' || h === '1'),
+      open: this.state.open, exp: this.state.open ? 'true' : 'false',
+      toggle: () => this.setState({ open: !this.state.open })
+    };
+  }
+}
+</script>
+</body>
+</html>

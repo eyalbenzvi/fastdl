@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head>
+<meta charset="utf-8">
+<title>הזמנת משלוח או איסוף – רישיון עד הבית</title>
+
+<style>@font-face{font-family:"Heebo";font-weight:400;font-display:block;src:url(fonts/heebo-hebrew-400-normal.woff2) format("woff2");unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}@font-face{font-family:"Heebo";font-weight:400;font-display:block;src:url(fonts/heebo-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Heebo";font-weight:500;font-display:block;src:url(fonts/heebo-hebrew-500-normal.woff2) format("woff2");unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}@font-face{font-family:"Heebo";font-weight:500;font-display:block;src:url(fonts/heebo-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Heebo";font-weight:600;font-display:block;src:url(fonts/heebo-hebrew-600-normal.woff2) format("woff2");unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}@font-face{font-family:"Heebo";font-weight:600;font-display:block;src:url(fonts/heebo-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Heebo";font-weight:700;font-display:block;src:url(fonts/heebo-hebrew-700-normal.woff2) format("woff2");unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}@font-face{font-family:"Heebo";font-weight:700;font-display:block;src:url(fonts/heebo-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Heebo";font-weight:800;font-display:block;src:url(fonts/heebo-hebrew-800-normal.woff2) format("woff2");unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}@font-face{font-family:"Heebo";font-weight:800;font-display:block;src:url(fonts/heebo-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Noto Sans Arabic";font-weight:400;font-display:block;src:url(fonts/noto-sans-arabic-arabic-400-normal.woff2) format("woff2")}@font-face{font-family:"Noto Sans Arabic";font-weight:600;font-display:block;src:url(fonts/noto-sans-arabic-arabic-600-normal.woff2) format("woff2")}@font-face{font-family:"Noto Sans Arabic";font-weight:700;font-display:block;src:url(fonts/noto-sans-arabic-arabic-700-normal.woff2) format("woff2")}@font-face{font-family:"Noto Sans Arabic";font-weight:800;font-display:block;src:url(fonts/noto-sans-arabic-arabic-800-normal.woff2) format("woff2")}@font-face{font-family:"Noto Sans Arabic";font-weight:500;font-display:block;src:url(fonts/noto-sans-arabic-arabic-600-normal.woff2) format("woff2")}</style><style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible,.optcard:focus-within{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i16{width:16px;height:16px}.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i28{width:28px;height:28px}.i48{width:48px;height:48px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;border-color:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE;color:#0241B5}
+.btn-d{background:#15324A;color:#fff;border:2px solid #15324A}
+.btn[disabled]{background:#C5CED6;border-color:#C5CED6;color:#3E4B55;cursor:not-allowed}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.lbl{display:block;font-weight:600;margin-bottom:6px}
+.opt{font-weight:400;color:#4F5F6B}
+.inp{display:block;width:100%;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font-family:inherit;font-size:18px;color:#15324A;background:#fff}
+.inp-n{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.inp:focus{outline:3px solid #FFB020;outline-offset:2px;border-color:#0351E0}
+.err{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:#B53A3A;margin-top:6px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:#0351E0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px;text-align:start}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.wrap-f{width:100%;max-width:768px;margin:0 auto;padding:0 24px}
+.h1{font-size:32px;font-weight:700;line-height:1.25}
+.h2{font-size:22px;font-weight:700;line-height:1.35}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;line-height:1.6}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.callout{display:flex;gap:12px;border-radius:12px;padding:16px 20px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #6E8292;background:#fff;font-family:inherit;font-size:16px;font-weight:600;color:#15324A;cursor:pointer}
+.chip[aria-pressed="true"]{background:#15324A;border-color:#15324A;color:#fff}
+.dchip{min-height:36px;padding:0 12px;border-radius:999px;border:1.5px solid #6B7280;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:#fff;cursor:pointer}
+.dchip[aria-pressed="true"]{background:#FFD27A;border-color:#FFD27A;color:#2B2F36}
+.optcard{position:relative;display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid #B8CBD6;border-radius:16px;padding:20px 22px;cursor:pointer;width:100%;color:#15324A}
+.optcard:hover{border-color:#0351E0}
+.optcard.on{background:#F1F5FE;border:2px solid #0351E0}
+.optcard input[type=radio]{width:22px;height:22px;margin:3px 0 0;accent-color:#0351E0;flex:none}
+.qbtn{position:absolute;top:12px;left:12px;width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:#0351E0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+.qbtn:hover{background:#E6EEFC}
+.scrim{position:fixed;inset:0;background:rgba(21,50,74,.5);z-index:80}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(520px,100%);background:#fff;z-index:90;overflow:auto;box-shadow:0 8px 32px rgba(21,50,74,.2);padding:24px;display:flex;flex-direction:column;gap:18px}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th,.tbl td{text-align:start;padding:10px 8px;border-bottom:1px solid #D9E4EA;vertical-align:top}
+.tbl th{font-weight:700;color:#4F5F6B;font-size:14px}
+.sticky-bar{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .8s linear infinite}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#15324A;color:#fff;padding:10px 20px;border-radius:10px;z-index:95;font-weight:600}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.g2,.g3{grid-template-columns:minmax(0,1fr)}.h1{font-size:26px}.btn-mf{width:100%}.hide-m{display:none!important}.only-m{display:flex!important}.wrap,.wrap-f{padding:0 16px}.card-p{padding:20px!important}.drawer{top:auto;left:0;right:0;width:100%;max-height:88vh;border-radius:20px 20px 0 0}.sticky-bar{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:0 -4px 16px rgba(21,50,74,.12);padding:12px 16px;margin:0 -16px;flex-direction:column-reverse;align-items:stretch}}
+@media (prefers-reduced-motion: reduce){.fd *{animation:none!important;transition:none!important}}
+</style><style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i28{width:28px;height:28px}.i32{width:32px;height:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;border-color:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE;color:#0241B5}
+.btn[disabled]{background:#C5CED6;border-color:#C5CED6;color:#3E4B55;cursor:not-allowed}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.lbl{display:block;font-weight:600;margin-bottom:6px}
+.inp{display:block;width:100%;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font-family:inherit;font-size:18px;color:#15324A;background:#fff}
+.inp-n{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.inp:focus{outline:3px solid #FFB020;outline-offset:2px;border-color:#0351E0}
+.inp[aria-invalid="true"]{border-color:#B53A3A;border-width:2px}
+.err{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:#B53A3A;margin-top:6px}
+.help{font-size:15px;color:#4F5F6B;margin-top:6px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.acc{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 24px;background:none;border:0;font-family:inherit;font-size:18px;font-weight:600;color:#15324A;text-align:start;cursor:pointer}
+.acc:hover{background:#F7F9FB}
+.skip{position:absolute;right:16px;top:-80px;z-index:100;background:#15324A;color:#fff!important;padding:12px 16px;border-radius:8px}
+.skip:focus{top:12px}
+.navlink{color:#15324A!important;text-decoration:none!important;font-weight:500;padding:10px 2px;border-bottom:2px solid transparent;white-space:nowrap}
+.navlink:hover{border-bottom-color:#0351E0}
+.ftr a{color:#fff}.ftr a:hover{color:#CFE6F2}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.wrap-f{width:100%;max-width:688px;margin:0 auto;padding:0 24px}
+.h1{font-size:40px;font-weight:700;line-height:1.2}
+.h2{font-size:28px;font-weight:700;line-height:1.3}
+.h3{font-size:20px;font-weight:700;line-height:1.4}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;line-height:1.6}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.callout{display:flex;gap:12px;border-radius:12px;padding:16px 20px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px}
+.kv dt{font-size:15px;color:#4F5F6B}.kv dd{font-weight:600}
+.scrim{position:fixed;inset:0;background:rgba(21,50,74,.5);z-index:80}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(460px,100%);background:#fff;z-index:90;overflow:auto;box-shadow:0 8px 32px rgba(21,50,74,.2);padding:24px;display:flex;flex-direction:column;gap:20px}
+.drawer-r{left:auto;right:0}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #B8CBD6;background:#fff;font-family:inherit;font-size:16px;font-weight:600;color:#15324A;cursor:pointer}
+.chip[aria-pressed="true"]{background:#15324A;border-color:#15324A;color:#fff}
+.optcard{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid #B8CBD6;border-radius:16px;padding:20px 22px;cursor:pointer;text-align:start;width:100%;font-family:inherit;color:#15324A}
+.optcard:hover{border-color:#0351E0}
+.optcard.on{background:#F1F5FE;border:2px solid #0351E0}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid #6E8292;flex:none;margin-top:3px;display:flex;align-items:center;justify-content:center;background:#fff}
+.on .radio{border-color:#0351E0}
+.on .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:#0351E0}
+.skel{background:linear-gradient(90deg,#E6ECF0 0%,#F2F5F7 50%,#E6ECF0 100%);background-size:200% 100%;animation:sk 1.4s linear infinite;border-radius:8px}
+@keyframes sk{to{background-position:-200% 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .8s linear infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(3,81,224,.35)}70%{box-shadow:0 0 0 10px rgba(3,81,224,0)}100%{box-shadow:0 0 0 0 rgba(3,81,224,0)}}
+.pulse{animation:pulse 2s ease-out infinite}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:860px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g-hero{grid-template-columns:minmax(0,1fr)!important}}
+@media (max-width:640px){.g2,.g3,.g4,.kv{grid-template-columns:minmax(0,1fr)}.h1{font-size:28px}.h2{font-size:22px}.h3{font-size:18px}.btn-mf{width:100%}.hide-m{display:none!important}.only-m{display:flex!important}.wrap,.wrap-f{padding:0 16px}.card-p{padding:20px!important}.drawer{top:auto;left:0;right:0;width:100%;max-height:88vh;border-radius:20px 20px 0 0}.sticky-m{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:0 -4px 16px rgba(21,50,74,.12);padding:12px 16px;margin:0 -16px}.tl-h{display:none!important}.tl-v{display:flex!important}}
+@media (prefers-reduced-motion: reduce){.fd *{animation:none!important;transition:none!important}}
+</style><style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i18{width:18px;height:18px}.i20{width:20px;height:20px}
+.ftr a{color:#fff}.ftr a:hover{color:#CFE6F2}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media (max-width:860px){.g3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.wrap{padding:0 16px}}
+</style><style>body>*{} [style*="position: fixed"][aria-label="סרגל הדגמה"]{display:none!important} *{animation:none!important;transition:none!important}</style></head>
+<body>
+
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+
+
+<div class="fd" dir="rtl" style="position: relative; width: 100%; background: #fff; font-family: 'Heebo', Arial, sans-serif; color: #15324A">
+<a class="skip" href="#main">דלג לתוכן הראשי</a>
+<header style="border-bottom: 1px solid #D9E4EA; background: #fff">
+<div class="wrap" style="height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px">
+<a href="HomeB.dc.html" aria-label="רישיון עד הבית – מבית דפוס בארי, לעמוד הבית" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #15324A; flex: none">
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 22px; font-weight: 800">רישיון עד הבית</span><span style="font-size: 14px; color: #4F5F6B; font-weight: 500">מבית דפוס בארי</span></span>
+<span aria-hidden="true" style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end"><span style="display: block; width: 28px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 21px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 14px; height: 5px; border-radius: 3px; background: #10A9E0"></span></span>
+</a>
+<nav class="hide-t" aria-label="ניווט ראשי" style="display: flex; align-items: center; gap: 22px; position: relative">
+<a class="navlink" href="Auth.dc.html">בדיקת מצב והזמנה</a>
+<a class="navlink" href="Guide.dc.html">מה עלי לעשות?</a>
+<a class="navlink" href="Fastest.dc.html">רישיון הכי מהיר</a>
+<a class="navlink" href="Delivery.dc.html">שיטות מסירה ומחירון</a>
+<button type="button" aria-expanded="false" style="display: flex; align-items: center; gap: 4px; min-height: 44px; background: none; border: 0; font-family: inherit; font-size: 17px; font-weight: 500; color: #15324A; cursor: pointer">עוד<svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button>
+
+</nav>
+<div class="hide-t" style="display: flex; align-items: center; gap: 14px; flex: none">
+<a href="tel:0779985095" style="display: flex; align-items: center; gap: 8px; color: #15324A; text-decoration: none; font-weight: 700"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true" style="color: #0351E0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg><span class="num" dir="ltr">077-998-5095</span></a>
+<a href="HomeB-ar.dc.html" lang="ar" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1.5px solid #B8CBD6; border-radius: 10px; color: #15324A; text-decoration: none; font-weight: 600"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>العربية</a>
+<button type="button" aria-label="אפשרויות נגישות" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: #0351E0; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.5"></circle><path d="M5 8l7 1.5L19 8M12 9.5V14l-3 6M12 14l3 6"></path></svg></button>
+</div>
+<div class="only-t" style="align-items: center; gap: 4px">
+<a href="tel:0779985095" aria-label="חיוג למוקד 077-998-5095" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #0351E0; border-radius: 10px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></a>
+<button type="button" aria-expanded="false" style="height: 44px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #EDF3F6; border: 0; border-radius: 10px; font-family: inherit; font-size: 16px; font-weight: 600; color: #15324A; cursor: pointer"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>תפריט</button>
+</div>
+</div>
+</header>
+<div style="background: #EDF3F6; border-bottom: 1px solid #D9E4EA">
+<div class="wrap" style="min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 15px; font-weight: 500">
+<div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 8px 0">
+<span style="display: flex; align-items: center; gap: 8px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true" style="color: #0A6E92"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg><span class="hide-m">השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</span><span class="only-m">בהרשאת משרד התחבורה</span></span>
+<span class="hide-m" style="display: flex; align-items: center; gap: 8px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true" style="color: #0A6E92"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>המידע שלכם מאובטח</span>
+</div>
+<span class="hide-t" style="display: flex; align-items: center; justify-content: center; height: 34px; padding: 0 12px; border: 1.5px dashed #6E8292; border-radius: 8px; color: #4F5F6B; font-size: 13px; font-weight: 600; white-space: nowrap">לוגו משרד התחבורה – בכפוף לאישור</span>
+</div>
+</div>
+
+</div>
+
+<div role="region" aria-label="סרגל הדגמה" style="background: #2B2F36; color: #fff">
+<div class="wrap" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+<span style="font-weight: 700; color: #FFD27A">מצב הדגמה – לא חלק מהאתר</span>
+<button type="button" class="dchip" aria-pressed="false">P05 משלוח</button><button type="button" class="dchip" aria-pressed="false">P06 כתובת</button><button type="button" class="dchip" aria-pressed="true">P07 ייצור</button><button type="button" class="dchip" aria-pressed="false">P08 תשלום</button><button type="button" class="dchip" aria-pressed="false">P09 אישור</button>
+<button type="button" class="dchip" aria-pressed="false">מורשה לשנות כתובת (הצטלם)</button>
+<a href="Index.dc.html" style="color: #fff; margin-inline-start: auto">לאינדקס</a>
+</div>
+</div>
+
+<main id="main" style="flex: 1; padding: 32px 0 64px">
+<div class="wrap-f" style="display: flex; flex-direction: column; gap: 22px">
+
+
+<nav aria-label="שלבי ההזמנה">
+<ol class="hide-m" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+
+<li aria-current="false" style="display: flex; align-items: center; gap: 8px"><span style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; background: #1E7F52; color: #fff">✓</span><span style="color: #4F5F6B">משלוח<span style="font-size: 13px"></span></span><span aria-hidden="true" style="width: 24px; height: 2px; background: #B8CBD6; "></span></li>
+
+<li aria-current="false" style="display: flex; align-items: center; gap: 8px"><span style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; background: #1E7F52; color: #fff">✓</span><span style="color: #4F5F6B">כתובת<span style="font-size: 13px"></span></span><span aria-hidden="true" style="width: 24px; height: 2px; background: #B8CBD6; "></span></li>
+
+<li aria-current="step" style="display: flex; align-items: center; gap: 8px"><span style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; background: #0351E0; color: #fff">3</span><span style="font-weight: 700">מועד ייצור<span style="font-size: 13px"></span></span><span aria-hidden="true" style="width: 24px; height: 2px; background: #B8CBD6; "></span></li>
+
+<li aria-current="false" style="display: flex; align-items: center; gap: 8px"><span style="width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; border: 2px solid #8796A2; color: #4F5F6B">4</span><span style="color: #4F5F6B">תשלום<span style="font-size: 13px"></span></span><span aria-hidden="true" style="width: 24px; height: 2px; background: #B8CBD6; display: none"></span></li>
+
+</ol>
+<div class="only-m" style="flex-direction: column; gap: 8px">
+<p style="font-weight: 700">שלב 3 מתוך 4 – מועד ייצור</p>
+<div role="progressbar" aria-valuenow="3" aria-valuemin="1" aria-valuemax="4" aria-label="התקדמות בהזמנה" style="height: 6px; border-radius: 3px; background: #D9E4EA; overflow: hidden"><div style="width: 75%; height: 100%; background: #0351E0"></div></div>
+</div>
+</nav>
+
+
+
+
+
+
+
+<h1 class="h1">כמעט סיימנו – מתי להעביר את הרישיון לייצור?</h1>
+<div role="radiogroup" aria-label="מועד ייצור" style="display: flex; flex-direction: column; gap: 12px">
+<label class="optcard on"><input type="radio" name="prod" checked="" style=""><span style="flex: 1; display: flex; flex-direction: column; gap: 8px"><span style="display: flex; align-items: center; gap: 8px"><span style="font-weight: 700; font-size: 19px">ייצור מיידי</span><span class="tag" style="background: #1E7F52; color: #fff">מומלץ</span></span><span>הרישיון ייכנס לקובץ הייצור הקרוב (כל בוקר ב-<span class="num" dir="ltr">07:00</span>). אחרי האישור לא ניתן יהיה לשנות כתובת או שיטת משלוח.</span><span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 15px; font-weight: 600; color: #0A6E92">היום ← ייצור <span class="num" dir="ltr">25.8</span> ב-<span class="num" dir="ltr">07:00</span> ← מגיע עד 26.8</span></span></label>
+<label class="optcard "><input type="radio" name="prod" style=""><span style="flex: 1; display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700; font-size: 19px">השאירו לי אפשרות לשנות</span><span>אפשר לחזור ולשנות פרטים עד <span class="num" dir="ltr">26.8</span> בשעה <span class="num" dir="ltr">05:12</span>. הייצור יתחיל רק אחרי המועד הזה.</span><span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 15px; font-weight: 600; color: #0A6E92">עד <span class="num" dir="ltr">26.8, 05:12</span> אפשר לשנות ← ייצור <span class="num" dir="ltr">26.8</span> ב-<span class="num" dir="ltr">07:00</span> ← מאוחר ביום</span></span></label>
+</div>
+<div>
+<label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"><input type="checkbox" checked="" aria-invalid="false" aria-describedby="terms-e" style="width: 22px; height: 22px; margin: 2px 0px 0px; accent-color: rgb(3, 81, 224); flex: 0 0 auto;"><span>קראתי ואני מסכים/ה ל<button type="button" class="linkbtn" style="min-height: 0; font-weight: 700">תנאי השימוש</button></span></label>
+
+</div>
+<div class="sticky-bar">
+<button type="button" class="linkbtn" style="display: flex; align-items: center; gap: 6px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>חזרה</button>
+<button type="button" class="btn btn-p btn-mf" style="min-width: 220px">המשך לתשלום</button>
+</div>
+
+
+
+
+
+</div>
+</main>
+
+
+<div class="fd" dir="rtl" style="width: 100%; font-family: 'Heebo', Arial, sans-serif; color: #fff">
+<footer class="ftr" style="background: #15324A; color: #fff; padding: 56px 0 24px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 36px">
+<div class="g3" style="gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 22px; font-weight: 800">רישיון עד הבית</span><span style="font-size: 14px; color: #CFE0EA">מבית דפוס בארי</span></span>
+<span aria-hidden="true" style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end"><span style="display: block; width: 28px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 21px; height: 5px; border-radius: 3px; background: #10A9E0"></span><span style="display: block; width: 14px; height: 5px; border-radius: 3px; background: #10A9E0"></span></span>
+</div>
+<p style="display: flex; gap: 8px; color: #E3EDF3; font-size: 15px"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true" style="margin-top: 3px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</p>
+</div>
+<nav aria-label="קישורי שירות"><p style="font-weight: 700; margin-bottom: 10px">שירות</p><ul style="display: flex; flex-direction: column; gap: 8px">
+<li><a href="Faq.dc.html">שאלות ותשובות</a></li>
+<li><a href="Contact.dc.html">צור קשר</a></li>
+<li><a href="Pickup.dc.html">עמדות איסוף</a></li>
+<li><a href="Delivery.dc.html">שיטות מסירה</a></li>
+</ul></nav>
+<nav aria-label="מידע משפטי"><p style="font-weight: 700; margin-bottom: 10px">מידע</p><ul style="display: flex; flex-direction: column; gap: 8px">
+<li><a href="Accessibility.dc.html">הצהרת נגישות</a></li>
+<li><a href="#">מדיניות פרטיות</a></li>
+<li><a href="#">תנאי שימוש</a></li>
+<li><a href="About.dc.html">איך תדעו שזה אנחנו</a></li>
+</ul></nav>
+</div>
+<div style="border-top: 1px solid #2E4C64; padding-top: 18px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 15px; color: #E3EDF3">
+<span>© דפוס בארי</span>
+<span>מוקד שירות: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></span>
+</div>
+</div>
+</footer>
+
+</div>
+
+
+
+
+</div>
+</body></html>

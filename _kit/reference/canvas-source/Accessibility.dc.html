@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>הצהרת נגישות – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd p{margin:0}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.wrap{width:100%;max-width:848px;margin:0 auto;padding:0 24px}
+.h1{font-size:38px;font-weight:700;line-height:1.2}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.h1{font-size:28px}.hide-m{display:none!important}.only-m{display:flex!important}.wrap{padding:0 16px}.card-p{padding:20px!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<main id="main" style="flex: 1; padding: 44px 0 72px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 24px">
+<h1 class="h1">הצהרת נגישות</h1>
+<article class="card card-p" style="padding: 32px; display: flex; flex-direction: column; gap: 26px">
+<section style="display: flex; flex-direction: column; gap: 8px"><h2 style="font-size: 22px; font-weight: 700">רמת הנגישות באתר</h2><p><span class="tbc">[טקסט לאישור – רמת התאימות לתקן ולהנחיות WCAG]</span></p></section>
+<section style="display: flex; flex-direction: column; gap: 8px"><h2 style="font-size: 22px; font-weight: 700">התאמות שבוצעו</h2><p><span class="tbc">[טקסט לאישור – ניווט במקלדת, ניגודיות, טקסט חלופי, הגדלת טקסט]</span></p></section>
+<section style="display: flex; flex-direction: column; gap: 8px"><h2 style="font-size: 22px; font-weight: 700">הסדרי נגישות במוקד</h2><p><span class="tbc">[טקסט לאישור]</span></p></section>
+<section style="display: flex; flex-direction: column; gap: 8px"><h2 style="font-size: 22px; font-weight: 700">פרטי רכז/ת הנגישות</h2><p><span class="tbc">[שם, טלפון ומייל לאישור]</span></p></section>
+<section style="display: flex; flex-direction: column; gap: 8px"><h2 style="font-size: 22px; font-weight: 700">תאריך עדכון</h2><p><span class="tbc">[תאריך לאישור]</span></p></section>
+</article>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

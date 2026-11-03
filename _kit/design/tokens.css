@@ -1,0 +1,102 @@
+/* =========================================================
+   רישיון עד הבית – Design Tokens (גרסת בנייה)
+   מבוסס על 04_design-tokens.css המקורי + ערכים שנוספו בעיצוב בקנבס.
+   כל זוג טקסט/רקע כאן עומד ב-WCAG AA (4.5:1 לטקסט, 3:1 לרכיבי ממשק).
+   ========================================================= */
+:root {
+  /* ---------- Brand ---------- */
+  --c-navy:            #15324A;  /* כותרות, טקסט ראשי, Footer */
+  --c-navy-50:         #EDF3F6;  /* פס אמון, רקעים שקטים, כרטיס כתובת */
+  --c-navy-100:        #E3EAF0;  /* תג "בייצור" */
+  --c-brand-cyan:      #10A9E0;  /* דקורטיבי בלבד: פסי הוורדמרק, איורים. לעולם לא טקסט/רקע כפתור */
+  --c-brand-cyan-dark: #0A6E92;  /* גרסה נגישה של התכלת: אייקונים בפס האמון, טקסט info */
+  --c-hero-circle:     #DCEEF6;  /* העיגול מאחורי איור הכרטיס */
+
+  /* ---------- Action ---------- */
+  --c-primary:         #0351E0;  /* כל כפתורי ה-Primary באתר + קישורים */
+  --c-primary-hover:   #0241B5;
+  --c-primary-50:      #F1F5FE;  /* רקע כרטיס נבחר, אייקון-בוקס */
+  --c-primary-100:     #E6EEFC;  /* hover של כפתור אייקון */
+  --c-focus:           #FFB020;  /* טבעת פוקוס 3px, offset 2px */
+
+  /* ---------- Gate accents (אייקונים/כותרות בלבד) ---------- */
+  --c-gate-status:     #0B6E61;  --c-gate-status-50: #E6F3F1;
+  --c-gate-order:      #0351E0;  --c-gate-order-50:  #F1F5FE;
+  --c-guide:           #5B1FA7;  --c-guide-50:       #F4EEFC;
+
+  /* ---------- Semantic ---------- */
+  --c-success: #1E7F52;  --c-success-bg: #F1FAF4;
+  --c-warning-text: #8A5A12;  --c-warning-bg: #FFF6E8;  --c-warning-border: #E7A13B;
+  --c-warning-marker: #B26B00; /* נקודת אזהרה בציר (S7) */
+  --c-danger: #B53A3A;  --c-danger-bg: #FDF1F1;
+  --c-info: #0A6E92;    --c-info-bg: #EAF6FB;
+  --c-neutral-badge: #5A6772; --c-neutral-bg: #EEF2F4;
+
+  /* ---------- [לאישור] marker ---------- */
+  --c-tbc-bg: #FFF6E8; --c-tbc-text: #8A5A12; --c-tbc-border: #C98A2E;
+
+  /* ---------- Text & surfaces ---------- */
+  --c-text:          #15324A;
+  --c-text-muted:    #4F5F6B;
+  --c-border:        #D9E4EA;  /* קווי הפרדה */
+  --c-border-strong: #B8CBD6;  /* מסגרת כרטיס בחירה לא נבחר */
+  --c-input-border:  #6E8292;  /* מסגרת שדה קלט (3:1 מול לבן) */
+  --c-step-future:   #8796A2;  /* עיגול שלב עתידי בציר */
+  --c-disabled-bg:   #C5CED6;  --c-disabled-text: #3E4B55;
+  --c-bg:            #F4F6F8;
+  --c-surface:       #FFFFFF;
+  --c-row-hover:     #F7F9FB;
+  --c-scrim:         rgba(21, 50, 74, .5);
+  --c-footer-line:   #2E4C64;  --c-footer-muted: #E3EDF3;
+
+  /* ---------- Demo bar (אב-טיפוס בלבד) ---------- */
+  --c-demo-bg: #2B2F36; --c-demo-accent: #FFD27A; --c-demo-chip-border: #6B7280;
+
+  /* ---------- Type ---------- */
+  --font-sans: "Heebo", "Assistant", "Arial Hebrew", Arial, sans-serif;
+  --font-ar:   "Noto Sans Arabic", "Heebo", Arial, sans-serif;
+  --fs-hero:  44px;  /* H1 בעמוד הבית בדסקטופ בלבד (משקל 800) */
+  --fs-h1:    40px;  --fs-h1-m: 28px;
+  --fs-h1-page: 38px; /* H1 בעמודי מידע */
+  --fs-h1-flow: 32px; /* H1 בתהליך ההזמנה / מסך מצב (34) */
+  --fs-h2:    28px;  --fs-h2-m: 22px;
+  --fs-h3:    20px;  --fs-h3-m: 18px;
+  --fs-body:  17px;  --fs-lead: 18px;
+  --fs-small: 15px;  --fs-tag: 13px;
+  --lh-body: 1.6;  --lh-heading: 1.2;
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700; --fw-black: 800;
+
+  /* ---------- Spacing (4px grid) ---------- */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
+  --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-14: 56px; --sp-16: 64px;
+
+  /* ---------- Shape & elevation ---------- */
+  --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px; --radius-pill: 999px;
+  --shadow-card:   0 1px 2px rgba(21,50,74,.06), 0 4px 16px rgba(21,50,74,.06);
+  --shadow-raised: 0 8px 32px rgba(21,50,74,.12);
+  --shadow-drawer: 0 8px 32px rgba(21,50,74,.20);
+  --shadow-sticky: 0 -4px 16px rgba(21,50,74,.12);
+
+  /* ---------- Controls ---------- */
+  --control-h: 52px;   /* כפתור/שדה רגיל */
+  --control-h-sm: 44px;/* כפתור משני קטן, צ'יפ */
+  --tap-min: 44px;
+
+  /* ---------- Layout ---------- */
+  --container: 1200px;     /* תוכן מקסימלי (wrap = 1248 כולל ריפוד 24) */
+  --container-text: 1000px;/* עמודי מידע */
+  --container-status: 880px;
+  --container-form: 720px; /* תהליך הזמנה */
+  --header-h: 76px; --header-h-m: 64px; --trust-h: 46px;
+
+  /* ---------- Breakpoints (לשימוש ב-@media, כאן לתיעוד) ----------
+     375 בסיס מובייל · 640 (≤640 = מובייל) · 860 (≤860 גרידים מצטמצמים) · 1024 (≤1023 = תפריט המבורגר) · 1280 דסקטופ */
+
+  /* ---------- Motion ---------- */
+  --dur-fast: 150ms; --dur-base: 200ms;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; }
+}

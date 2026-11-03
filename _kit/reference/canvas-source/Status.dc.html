@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>מצב הבקשה – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i16{width:16px;height:16px}.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i28{width:28px;height:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;border-color:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE;color:#0241B5}
+.btn-sm{min-height:44px;font-size:16px;padding:0 16px}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:#0351E0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px;text-align:start}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.wrap-s{width:100%;max-width:928px;margin:0 auto;padding:0 24px}
+.h1{font-size:34px;font-weight:700;line-height:1.25}
+.h2{font-size:22px;font-weight:700;line-height:1.35}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.callout{display:flex;gap:12px;border-radius:12px;padding:16px 20px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px}
+.kv dt{font-size:15px;color:#4F5F6B}.kv dd{font-weight:600}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.chip{min-height:36px;padding:0 12px;border-radius:999px;border:1.5px solid #6B7280;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:#fff;cursor:pointer}
+.chip[aria-pressed="true"]{background:#FFD27A;border-color:#FFD27A;color:#2B2F36}
+.ans{min-height:60px;padding:12px 18px;border-radius:12px;border:1.5px solid #6E8292;background:#fff;font-family:inherit;font-size:17px;font-weight:600;color:#15324A;cursor:pointer;text-align:start}
+.ans:hover{border-color:#0351E0}
+.ans[aria-pressed="true"]{border:2px solid #0351E0;background:#F1F5FE}
+.tl{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tl-li{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.tl-track{position:absolute;top:15px;right:10%;left:10%;height:3px;background:#D9E4EA;border-radius:2px}
+.dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.scrim{position:fixed;inset:0;background:rgba(21,50,74,.5);z-index:80}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(860px,94vw);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;z-index:90;padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:0 8px 32px rgba(21,50,74,.25)}
+.skel{background:linear-gradient(90deg,#E6ECF0 0%,#F2F5F7 50%,#E6ECF0 100%);background-size:200% 100%;animation:sk 1.4s linear infinite;border-radius:8px}
+@keyframes sk{to{background-position:-200% 0}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(3,81,224,.35)}70%{box-shadow:0 0 0 10px rgba(3,81,224,0)}100%{box-shadow:0 0 0 0 rgba(3,81,224,0)}}
+.pulse{animation:pulse 2s ease-out infinite}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#15324A;color:#fff;padding:10px 20px;border-radius:10px;z-index:95;font-weight:600}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:640px){.kv,.g2{grid-template-columns:minmax(0,1fr)}.h1{font-size:26px}.btn-mf{width:100%}.hide-m{display:none!important}.wrap,.wrap-s{padding:0 16px}.card-p{padding:20px!important}.tl{grid-template-columns:minmax(0,1fr);gap:14px}.tl-li{flex-direction:row;text-align:start}.tl-track{display:none}.modal{top:auto;bottom:0;left:0;transform:none;width:100%;border-radius:20px 20px 0 0}}
+@media (prefers-reduced-motion: reduce){.fd *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<div role="region" aria-label="סרגל הדגמה" style="background: #2B2F36; color: #fff">
+<div class="wrap" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+<span style="font-weight: 700; color: #FFD27A">מצב הדגמה – לא חלק מהאתר</span>
+<span style="color: #D1D5DB">הצג מצב:</span>
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="11">
+<button type="button" class="chip" aria-pressed="{{c.p}}" onClick="{{c.go}}" title="{{c.t}}">{{c.k}}</button>
+</sc-for>
+<a href="Index.dc.html" style="color: #fff; margin-inline-start: auto">לאינדקס</a>
+</div>
+</div>
+
+<main id="main" style="flex: 1; padding: 36px 0 80px">
+<div class="wrap-s" style="display: flex; flex-direction: column; gap: 24px">
+
+<sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
+<div aria-busy="true" aria-label="טוען את מצב הבקשה" style="display: flex; flex-direction: column; gap: 20px">
+<div class="skel" style="height: 20px; width: 220px"></div>
+<div class="skel" style="height: 40px; width: 70%"></div>
+<div class="skel" style="height: 72px; width: 100%; border-radius: 16px"></div>
+<div class="skel" style="height: 180px; width: 100%; border-radius: 16px"></div>
+<div class="skel" style="height: 140px; width: 100%; border-radius: 16px"></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<p class="muted">שלום, ישראלה · {{docType}}</p>
+<a href="HomeB.dc.html">יציאה</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start">
+<span class="badge" style="background: {{bBg}}; color: {{bFg}}"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="{{bIcon}}"/></svg>{{badge}}</span>
+<h1 class="h1">{{h1}}</h1>
+</div>
+
+<sc-if value="{{showTl}}" hint-placeholder-val="{{ true }}">
+<div class="card card-p" style="padding: 24px 20px">
+<ol class="tl" aria-label="שלבי הטיפול בבקשה">
+<span class="tl-track" aria-hidden="true"></span>
+<span class="tl-track" aria-hidden="true" style="left: auto; width: {{tlW}}; background: #0351E0"></span>
+<sc-for list="{{tl}}" as="t" hint-placeholder-count="5">
+<li class="tl-li" aria-current="{{t.cur}}">
+<span class="dot {{t.cls}}" style="{{t.dot}}"><sc-if value="{{t.done}}" hint-placeholder-val="{{ false }}"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 3"><path d="M20 6 9 17l-5-5"/></svg></sc-if><sc-if value="{{t.warn}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="font-weight: 800; font-size: 18px">!</span></sc-if><sc-if value="{{t.now}}" hint-placeholder-val="{{ false }}"><span style="width: 12px; height: 12px; border-radius: 50%; background: #0351E0"></span></sc-if></span>
+<span style="font-size: 15px; {{t.lbl}}">{{t.label}}<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">{{t.sr}}</span></span>
+</li>
+</sc-for>
+</ol>
+</div>
+</sc-if>
+
+<section class="card card-p" aria-labelledby="now-h" style="padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<h2 id="now-h" class="h2">מה עכשיו?</h2>
+
+<sc-if value="{{s0}}" hint-placeholder-val="{{ false }}">
+<p>זה לא אומר שמשהו השתבש. בקשות מגיעות אלינו פעם ביום, לפנות בוקר. כדי שנכוון אתכם נכון:</p>
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px">
+<legend style="font-weight: 700; font-size: 18px; margin-bottom: 12px">מתי השלמתם את התשלום (והצילום, אם נדרש)?</legend>
+<div class="g2">
+<sc-for list="{{answers}}" as="a" hint-placeholder-count="4"><button type="button" class="ans" aria-pressed="{{a.p}}" onClick="{{a.go}}">{{a.t}}</button></sc-for>
+</div>
+</fieldset>
+<sc-if value="{{a0}}" hint-placeholder-val="{{ false }}"><div role="region" aria-live="polite" style="display: flex; flex-direction: column; gap: 14px; background: #F4F6F8; border-radius: 12px; padding: 20px">
+<p>הבקשה צפויה להגיע אלינו מחר בבוקר. נשלח לכם SMS ברגע שהיא תגיע, ואז תוכלו להזמין.</p>
+<label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer"><input type="checkbox" style="width: 22px; height: 22px; margin: 2px 0 0; accent-color: #0351E0; flex: none">אני מסכים/ה לקבל עדכון ב-SMS על הבקשה שלי לנייד <span class="num" dir="ltr">054-•••-4567</span></label>
+<button type="button" class="btn btn-p btn-mf" style="align-self: flex-start">עדכנו אותי ב-SMS</button>
+</div></sc-if>
+<sc-if value="{{a1}}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="display: flex; flex-direction: column; gap: 14px; background: #F4F6F8; border-radius: 12px; padding: 20px">
+<p style="font-weight: 700">יש שני מקרים אפשריים:</p>
+<div style="display: flex; flex-direction: column; gap: 6px"><p><strong>ייתכן שאתם צריכים להצטלם.</strong> בטופס האגרה יש ריבוע אדום שאומר אם צריך.</p><button type="button" class="btn btn-s btn-sm" onClick="{{openDocs}}" style="align-self: flex-start">איך יודעים אם צריך להצטלם?</button></div>
+<div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #D9E4EA; padding-top: 14px"><p><strong>שילמתם בסניף דואר?</strong> הנתונים מגיעים אלינו מאוחר יותר.</p><button type="button" class="btn btn-p btn-mf" style="align-self: flex-start">עדכנו אותי ב-SMS</button></div>
+</div></sc-if>
+<sc-if value="{{a2}}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="display: flex; flex-direction: column; gap: 12px; background: #F4F6F8; border-radius: 12px; padding: 20px">
+<p>אם עדיין לא הצטלמתם – גשו לתחנת צילום מורשית. אם הצטלמתם ועבר יותר משבוע, פנו למוקד משרד התחבורה <span class="num" dir="ltr">*5678</span>.</p>
+<div style="display: flex; gap: 20px; flex-wrap: wrap"><a href="#" target="_blank" rel="noopener">לרשימת תחנות הצילום<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">(נפתח בלשונית חדשה)</span></a><a href="tel:*5678">למוקד משרד התחבורה</a></div>
+</div></sc-if>
+<sc-if value="{{a3}}" hint-placeholder-val="{{ false }}"><div aria-live="polite" style="display: flex; flex-direction: column; gap: 12px; background: #F4F6F8; border-radius: 12px; padding: 20px">
+<p>ייתכן שהבקשה כבר טופלה ונשלחה, והנתונים נמחקו אצלנו (אנחנו שומרים רשומות 45 ימי עסקים). כדי לקבל רישיון חדש יש להזמין כפל רישיון במשרד התחבורה.</p>
+<a class="btn btn-s btn-sm" href="Fastest.dc.html" style="align-self: flex-start">איך מזמינים כפל רישיון</a>
+</div></sc-if>
+<p class="small" style="border-top: 1px solid #D9E4EA; padding-top: 14px">לא שילמתם עדיין את האגרה? <a href="#" target="_blank" rel="noopener">לתשלום באתר משרד התחבורה<svg class="ico i16" viewBox="0 0 24 24" aria-hidden="true" style="margin-inline-start: 4px; vertical-align: -2px"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">(נפתח בלשונית חדשה)</span></a></p>
+</sc-if>
+
+<sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 16px; align-items: center; background: #F1F5FE; border-radius: 14px; padding: 18px 20px">
+<span class="ibox" style="width: 52px; height: 52px; background: #fff; color: #0351E0"><svg class="ico i28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+<div><p style="font-size: 18px">אפשר להזמין עד <strong>יום ד׳, <span class="num" dir="ltr">26.8.2026</span> בשעה <span class="num" dir="ltr">05:12</span></strong></p><p class="muted">נותרו כ-27 שעות</p></div>
+</div>
+<div role="note" class="callout" style="background: #FFF6E8; border: 1px solid #E7A13B"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #8A5A12; margin-top: 2px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg><p>אם לא תבחרו עד המועד הזה, הרישיון יישלח בדואר רגיל ללא מעקב, לכתובת הרשומה במשרד הפנים.</p></div>
+<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap">
+<a class="btn btn-p btn-mf" href="Order.dc.html">לבחירת משלוח או איסוף<svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+<button type="button" class="btn btn-s btn-sm btn-mf"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>הוסיפו תזכורת ליומן</button>
+</div>
+</sc-if>
+
+<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+<p>בחרתם להשאיר אפשרות לשינוי. אפשר לעדכן את ההזמנה עד <strong><span class="num" dir="ltr">26.8.2026</span> בשעה <span class="num" dir="ltr">05:12</span></strong>. אחרי זה הרישיון יורד לייצור.</p>
+<div style="display: flex; gap: 16px; flex-wrap: wrap"><a class="btn btn-p btn-mf" href="Order.dc.html">עריכת ההזמנה</a><button type="button" class="btn btn-s btn-mf">העבירו לייצור עכשיו</button></div>
+</sc-if>
+
+<sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
+<p>בשלב הזה כבר אי אפשר לשנות כתובת או שיטת משלוח – זה סימן שהתהליך מתקדם, לא תקלה.</p>
+<button type="button" class="btn btn-s btn-mf" style="align-self: flex-start"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>שלחו לי עדכון כשהרישיון יוצא</button>
+<p class="small muted">דואר רגיל נמסר לתיבת הדואר רק אם מופיע עליה שם מזהה, כמו שם משפחה.</p>
+</sc-if>
+
+<sc-if value="{{s4}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 16px; align-items: center; background: #EAF6FB; border-radius: 14px; padding: 18px 20px">
+<span class="ibox" style="width: 52px; height: 52px; background: #fff; color: #0A6E92"><svg class="ico i28" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>
+<p style="font-size: 20px; font-weight: 700">צפוי להגיע עד יום ד׳, <span class="num" dir="ltr">26.8.2026</span></p>
+</div>
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
+<a class="btn btn-p btn-mf" href="#" target="_blank" rel="noopener">למעקב אחר המשלוח<svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">(נפתח בלשונית חדשה)</span></a>
+<a href="Contact.dc.html">המשלוח לא הגיע?</a>
+</div>
+</sc-if>
+
+<sc-if value="{{s5}}" hint-placeholder-val="{{ false }}">
+<div style="border: 1.5px solid #D9E4EA; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<p style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #0351E0"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>איסוף מנתב״ג – טרמינל 3</p>
+<p>אולם מקבלי הפנים, ליד שער יציאה 1, עמדת ״על הקו״</p>
+<p class="muted">א׳–ה׳ <span class="num" dir="ltr">07:00–22:00</span> · שישי וערבי חג עד <span class="num" dir="ltr">15:00</span></p>
+<p><strong>ניתן לאסוף עד <span class="tbc">[תאריך לאישור]</span></strong></p>
+<p>מה להביא: תעודה מזהה</p>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap"><a class="btn btn-p btn-mf" href="#" target="_blank" rel="noopener">ניווט לעמדה<svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">(נפתח בלשונית חדשה)</span></a><button type="button" class="btn btn-s btn-mf">הוסיפו ליומן</button></div>
+<p>מה קורה אם לא אוספים בזמן? <span class="tbc">[נוסח לאישור]</span></p>
+</sc-if>
+
+<sc-if value="{{s6}}" hint-placeholder-val="{{ false }}">
+<p style="font-size: 18px">נמסר ב-<span class="num" dir="ltr">26.8.2026</span>.</p>
+<a href="Contact.dc.html">לא קיבלתם בפועל? ספרו לנו</a>
+</sc-if>
+
+<sc-if value="{{s7}}" hint-placeholder-val="{{ false }}">
+<p style="font-size: 18px">הרישיון נשלח בדואר רגיל ב-<span class="num" dir="ltr">26.8.2026</span>, ועברו מאז 21 ימי עסקים.</p>
+<sc-if value="{{noReveal}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap"><button type="button" class="btn btn-p btn-mf" onClick="{{reveal}}" aria-expanded="false">לא קיבלתי את הרישיון</button><button type="button" class="linkbtn">קיבלתי את הרישיון</button></div>
+</sc-if>
+<sc-if value="{{revealed}}" hint-placeholder-val="{{ false }}">
+<div aria-live="polite" style="display: flex; flex-direction: column; gap: 16px">
+<div style="border: 1.5px solid #D9E4EA; border-radius: 14px; padding: 20px">
+<p style="font-weight: 700; margin-bottom: 12px">בדיקת זכאות</p>
+<dl class="kv">
+<div><dt>תאריך משלוח</dt><dd><span class="num" dir="ltr">26.8.2026</span></dd></div>
+<div><dt>שיטה</dt><dd>דואר רגיל</dd></div>
+<div><dt>ימי עסקים שעברו</dt><dd>21</dd></div>
+<div><dt>סטטוס מסירה</dt><dd>אין תיעוד מסירה</dd></div>
+</dl>
+</div>
+<div role="status" class="callout" style="background: #F1FAF4"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #1E7F52"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><p style="font-weight: 700; color: #1E7F52">אתם זכאים להנפקה חוזרת ללא עלות.</p></div>
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap"><a class="btn btn-p btn-mf" href="Reissue.dc.html">להזמנת הנפקה חוזרת<svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a><button type="button" class="linkbtn">קיבלתי את הרישיון</button></div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{s8}}" hint-placeholder-val="{{ false }}">
+<p>הרישיון חזר אלינו. <span class="tbc">[נוסח לאישור: האם אפשר לבחור מסירה מחדש / איסוף]</span>.</p>
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap"><button type="button" class="btn btn-p btn-mf">לתיאום מסירה מחדש</button><a href="tel:0779985095">למוקד <span class="num" dir="ltr">077-998-5095</span></a></div>
+</sc-if>
+
+<sc-if value="{{s9}}" hint-placeholder-val="{{ false }}">
+<p>בחרו את הבקשה שתרצו לראות.</p>
+<ul class="g2">
+<li style="border: 1.5px solid #D9E4EA; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start"><p style="font-weight: 700; font-size: 19px">רישיון נהיגה</p><span class="badge" style="background: #F1FAF4; color: #1E7F52"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>אפשר להזמין</span><button type="button" class="btn btn-s btn-sm" onClick="{{toS1}}">לפרטים</button></li>
+<li style="border: 1.5px solid #D9E4EA; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start"><p style="font-weight: 700; font-size: 19px">תג חניה לנכה</p><span class="badge" style="background: #E3EAF0; color: #15324A"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>בייצור</span><button type="button" class="btn btn-s btn-sm" onClick="{{toS3}}">לפרטים</button></li>
+</ul>
+</sc-if>
+</section>
+
+<sc-if value="{{hasKv}}" hint-placeholder-val="{{ true }}">
+<section class="card card-p" aria-labelledby="det-h" style="padding: 28px">
+<h2 id="det-h" class="h2" style="margin-bottom: 16px">פרטי הבקשה</h2>
+<dl class="kv">
+<sc-for list="{{kv}}" as="r" hint-placeholder-count="4">
+<div><dt>{{r.k}}</dt><dd style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap"><span>{{r.v}}</span><sc-if value="{{r.copy}}" hint-placeholder-val="{{ false }}"><button type="button" aria-label="העתקת מספר המעקב" onClick="{{copy}}" style="width: 44px; height: 44px; border: 0; background: none; color: #0351E0; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button></sc-if><sc-if value="{{r.tbc}}" hint-placeholder-val="{{ false }}"><span class="tbc">[לאישור]</span></sc-if></dd></div>
+</sc-for>
+</dl>
+</section>
+</sc-if>
+
+<section aria-labelledby="help-h" style="background: #EDF3F6; border-radius: 16px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="help-h" style="font-size: 20px; font-weight: 700">משהו לא ברור?</h2>
+<ul style="display: flex; flex-wrap: wrap; gap: 8px 24px">
+<sc-for list="{{help}}" as="h" hint-placeholder-count="3"><li><a href="{{h.href}}">{{h.t}}</a></li></sc-for>
+</ul>
+<p class="small">מוקד שירות: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span> · שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></p>
+</section>
+</sc-if>
+</div>
+</main>
+<dc-import name="Footer" hide-demo="1" hint-size="100%,400px"></dc-import>
+
+<sc-if value="{{docs}}" hint-placeholder-val="{{ false }}">
+<div class="scrim" onClick="{{closeDocs}}"></div>
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="docs-h" onKeyDown="{{onKey}}">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><h2 id="docs-h" class="h2">איך יודעים אם צריך להצטלם?</h2><button type="button" aria-label="סגירה" onClick="{{closeDocs}}" style="width: 44px; height: 44px; border: 0; background: #EDF3F6; border-radius: 10px; color: #15324A; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+<p>בטופס האגרה וברישיון הזמני שנשלח במייל יש ריבוע אדום בצד שמאל. הוא אומר אם צריך להצטלם.</p>
+<div class="g2">
+<figure style="display: flex; flex-direction: column; gap: 8px"><img src="assets/temp_license_photo_REQUIRED_example.jpg" alt="דוגמה מושחרת של רישיון זמני: בריבוע האדום כתוב שיש לשלם את האגרה ולהצטלם בתחנת הצילום" style="width: 100%; height: 300px; object-fit: contain; background: #F4F6F8; border-radius: 12px; border: 1px solid #D9E4EA"><figcaption style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #8A5A12"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>צריך להצטלם</figcaption></figure>
+<figure style="display: flex; flex-direction: column; gap: 8px"><img src="assets/fee_letter_photo_ON_FILE_example.jpg" alt="דוגמה מושחרת של טופס אגרה: בריבוע האדום כתוב שתמונתכם נמצאת במחשב" style="width: 100%; height: 300px; object-fit: contain; background: #F4F6F8; border-radius: 12px; border: 1px solid #D9E4EA"><figcaption style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1E7F52"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>לא צריך להצטלם</figcaption></figure>
+</div>
+<a href="#" target="_blank" rel="noopener">לרשימת תחנות הצילום<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">(נפתח בלשונית חדשה)</span></a>
+</div>
+</sc-if>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}"><div class="toast" role="status">הועתק</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"initialState":{"editor":"enum","options":["S0","S1","S2","S3","S4","S5","S6","S7","S8","S9","loading"],"default":"S1"},"$preview":{"width":1280,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { s: props.initialState || 'S1', ans: -1, reveal: false, docs: false, toast: false };
+  }
+  renderVals() {
+    const st = this.state, s = st.s;
+    const IC = {
+      check: 'M20 6 9 17l-5-5', search: 'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14M21 21l-4.3-4.3',
+      doc: 'M5 3h14v18H5zM9 12l2 2 4-4', gear: 'M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1',
+      truck: 'M2 5h12v13H2zM14 9h4l4 4v5h-8M7 18a2 2 0 1 0 0.01 0M17 18a2 2 0 1 0 0.01 0',
+      home: 'm3 10 9-7 9 7v10H3zM9 15l2 2 4-4', warn: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4M12 17h.01',
+      x: 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20M15 9l-6 6M9 9l6 6', files: 'M4 4h10v14H4zM8 8h12v14H8'
+    };
+    const T = { neutral: ['#EEF2F4', '#4F5F6B'], success: ['#F1FAF4', '#1E7F52'], info: ['#F1F5FE', '#0351E0'], navy: ['#E3EAF0', '#15324A'], ship: ['#EAF6FB', '#0A6E92'], warning: ['#FFF6E8', '#8A5A12'], danger: ['#FDF1F1', '#B53A3A'] };
+    const addr = 'רחוב העצמאות 10, באר שבע';
+    const D = {
+      S0: { badge: 'לא נמצאה בקשה', tone: 'neutral', icon: IC.search, h1: 'עדיין לא מצאנו אצלנו בקשה על שמכם', step: 0, kv: [], help: [['שאלות על אגרה ותשלום', 'Faq.dc.html'], ['מה עלי לעשות עכשיו?', 'Guide.dc.html']] },
+      S1: { badge: 'אפשר להזמין', tone: 'success', icon: IC.check, h1: 'הבקשה שלכם התקבלה – אפשר לבחור משלוח', step: 2, kv: [['סוג תעודה', 'רישיון נהיגה'], ['התקבלה אצלנו', 'יום ב׳, 24.8.2026, 05:12'], ['כתובת במשרד הפנים', addr]], help: [['השוואה בין שיטות המסירה', 'Delivery.dc.html'], ['מה קורה אם לא בוחרים?', 'Faq.dc.html']] },
+      S2: { badge: 'הזמנה בוצעה', tone: 'info', icon: IC.doc, h1: 'ההזמנה שלכם התקבלה', step: 2, kv: [['שיטת מסירה', 'איסוף מנתב״ג'], ['עמדה', 'נתב״ג, טרמינל 3, עמדת ״על הקו״'], ['מספר הזמנה', 'FD-2026-0841273'], ['סכום ששולם', '118 ₪']], help: [['עמדות איסוף ושעות', 'Pickup.dc.html'], ['שאלות על הזמנה ומשלוח', 'Faq.dc.html']] },
+      S3: { badge: 'בייצור', tone: 'navy', icon: IC.gear, h1: 'הרישיון שלכם בייצור', step: 3, kv: [['התקבלה', '24.8.2026, 05:12'], ['הועבר לייצור', '25.8.2026, 07:00'], ['שיטת מסירה', 'דואר רגיל (לא בוצעה הזמנה)'], ['כתובת', addr]], help: [['למה אי אפשר לשנות עכשיו?', 'Faq.dc.html']] },
+      S4: { badge: 'בדרך אליכם', tone: 'ship', icon: IC.truck, h1: 'הרישיון בדרך אליכם', step: 4, kv: [['נשלח', '25.8.2026'], ['שיטה', 'שליח עד הבית'], ['חברת משלוחים', '[שם חברת השילוח]', 0, 1], ['מספר מעקב', '123456789', 1], ['כתובת', addr]], help: [['המשלוח לא הגיע', 'Contact.dc.html'], ['שאלות על מסירה', 'Faq.dc.html']] },
+      S5: { badge: 'מחכה לכם', tone: 'success', icon: IC.home, h1: 'הרישיון מחכה לכם לאיסוף', step: 4, kv: [['מוכן לאיסוף מ-', '26.8.2026'], ['מספר הזמנה', 'FD-2026-0841273']], help: [['עמדות איסוף ושעות', 'Pickup.dc.html']] },
+      S6: { badge: 'נמסרה', tone: 'success', icon: IC.check, h1: 'הרישיון נמסר', step: 5, kv: [['שיטה', 'משלוח מהיר עד הבית'], ['תאריך משלוח', '25.8.2026'], ['כתובת', addr]], help: [['שאלות ותשובות', 'Faq.dc.html']] },
+      S7: { badge: 'לא אושרה מסירה', tone: 'warning', icon: IC.warn, h1: 'לא מצאנו אישור שהרישיון נמסר', step: 4, warn: true, kv: [['נשלח', '26.8.2026'], ['שיטה', 'דואר רגיל'], ['כתובת', addr]], help: [['מתי מגיעה הנפקה חוזרת?', 'Faq.dc.html'], ['צור קשר', 'Contact.dc.html']] },
+      S8: { badge: 'המסירה נכשלה', tone: 'danger', icon: IC.x, h1: 'השליח לא הצליח למסור את הרישיון', step: 4, warn: true, kv: [['שיטה', 'משלוח מהיר עד הבית'], ['נשלח', '25.8.2026'], ['כתובת', addr]], help: [['צור קשר', 'Contact.dc.html']] },
+      S9: { badge: '2 בקשות', tone: 'neutral', icon: IC.files, h1: 'מצאנו אצלנו שתי בקשות על שמכם', step: -1, kv: [], help: [['שאלות ותשובות', 'Faq.dc.html']] },
+      loading: { badge: '', tone: 'neutral', icon: '', h1: '', step: 0, kv: [], help: [] }
+    };
+    const d = D[s] || D.S1;
+    const labels = ['הבקשה התקבלה', 'בחירת משלוח', 'בייצור', 'נשלחה', 'נמסרה'];
+    const tl = labels.map((label, i) => {
+      const n = i + 1;
+      const done = d.step === 5 ? true : n < d.step;
+      const cur = n === d.step && d.step !== 5;
+      const warn = cur && d.warn;
+      const now = cur && !warn;
+      const wc = s === 'S8' ? '#B53A3A' : '#B26B00';
+      return {
+        label, done, warn, now, cur: cur ? 'step' : 'false',
+        cls: now ? 'pulse' : '',
+        dot: done ? 'background: #0351E0; color: #fff' : warn ? 'background: ' + wc + '; color: #fff' : now ? 'background: #fff; border: 3px solid #0351E0' : 'background: #fff; border: 2px solid #8796A2',
+        lbl: cur ? 'font-weight: 700; color: ' + (warn ? wc : '#0351E0') : done ? 'font-weight: 500' : 'color: #4F5F6B',
+        sr: done ? ' (הושלם)' : cur ? ' (שלב נוכחי)' : ''
+      };
+    });
+    const doneCount = d.step === 5 ? 4 : Math.max(0, d.step - 1);
+    const keys = ['S0', 'S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'loading'];
+    const ansT = ['היום', 'לפני 1–3 ימים', 'לפני יותר משבוע', 'לפני יותר מחודשיים / הרישיון לא הגיע'];
+    return {
+      chips: keys.map((k) => ({ k: k === 'loading' ? 'טעינה' : k, t: D[k].badge || 'טעינה', p: k === s ? 'true' : 'false', go: () => this.setState({ s: k, ans: -1, reveal: false }) })),
+      loading: s === 'loading', ready: s !== 'loading',
+      docType: 'רישיון נהיגה',
+      badge: d.badge, bBg: T[d.tone][0], bFg: T[d.tone][1], bIcon: d.icon, h1: d.h1,
+      showTl: d.step >= 0 && s !== 'loading', tl, tlW: (doneCount * 20) + '%',
+      s0: s === 'S0', s1: s === 'S1', s2: s === 'S2', s3: s === 'S3', s4: s === 'S4', s5: s === 'S5', s6: s === 'S6', s7: s === 'S7', s8: s === 'S8', s9: s === 'S9',
+      answers: ansT.map((t, i) => ({ t, p: st.ans === i ? 'true' : 'false', go: () => this.setState({ ans: i }) })),
+      a0: st.ans === 0, a1: st.ans === 1, a2: st.ans === 2, a3: st.ans === 3,
+      revealed: st.reveal, noReveal: !st.reveal, reveal: () => this.setState({ reveal: true }),
+      toS1: () => this.setState({ s: 'S1' }), toS3: () => this.setState({ s: 'S3' }),
+      hasKv: d.kv.length > 0, kv: d.kv.map((r) => ({ k: r[0], v: r[3] ? '' : r[1], copy: !!r[2], tbc: !!r[3] })),
+      help: d.help.map((h) => ({ t: h[0], href: h[1] })).concat([{ t: 'צור קשר', href: 'Contact.dc.html' }]).filter((h, i, a) => a.findIndex((x) => x.t === h.t) === i),
+      copy: () => { this.setState({ toast: true }); setTimeout(() => this.setState({ toast: false }), 1600); },
+      toast: st.toast,
+      docs: st.docs, openDocs: () => this.setState({ docs: true }), closeDocs: () => this.setState({ docs: false }),
+      onKey: (e) => { if (e.key === 'Escape') this.setState({ docs: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

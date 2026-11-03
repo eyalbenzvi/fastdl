@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>הזדהות – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol,.fd dl,.fd dd,.fd figure{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd a:hover{color:#0241B5}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i18{width:18px;height:18px}.i20{width:20px;height:20px}.i28{width:28px;height:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:12px;font-family:inherit;font-weight:600;font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-p,.fd a.btn-p{background:#0351E0;color:#fff;border:2px solid #0351E0}
+.btn-p:hover,.fd a.btn-p:hover{background:#0241B5;border-color:#0241B5;color:#fff}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn[disabled]{background:#C5CED6;border-color:#C5CED6;color:#3E4B55;cursor:not-allowed}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.lbl{display:block;font-weight:600;margin-bottom:6px}
+.inp{display:block;width:100%;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font-family:inherit;font-size:18px;color:#15324A;background:#fff}
+.inp-n{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.inp:focus,.otp:focus{outline:3px solid #FFB020;outline-offset:2px;border-color:#0351E0}
+.inp[aria-invalid="true"],.otp[aria-invalid="true"]{border-color:#B53A3A;border-width:2px}
+.otp{width:52px;height:60px;border:1.5px solid #6E8292;border-radius:12px;text-align:center;font-family:inherit;font-size:26px;font-weight:700;color:#15324A;background:#fff;font-variant-numeric:tabular-nums}
+.err{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:#B53A3A;margin-top:6px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:#0351E0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.h1{font-size:36px;font-weight:700;line-height:1.25}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.ibox{display:flex;align-items:center;justify-content:center;flex:none;border-radius:12px}
+.callout{display:flex;gap:12px;border-radius:12px;padding:16px 20px}
+.chip{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #6B7280;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:#fff;cursor:pointer}
+.chip[aria-pressed="true"]{background:#FFD27A;border-color:#FFD27A;color:#2B2F36}
+.g-auth{display:grid;grid-template-columns:minmax(0,640px) minmax(0,380px);gap:40px;justify-content:center;align-items:start}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .8s linear infinite}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}.g-auth{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.h1{font-size:28px}.btn-mf{width:100%}.hide-m{display:none!important}.wrap{padding:0 16px}.card-p{padding:20px!important}.otp{width:44px;height:54px}}
+@media (prefers-reduced-motion: reduce){.fd *{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<div role="region" aria-label="סרגל הדגמה" style="background: #2B2F36; color: #fff">
+<div class="wrap" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+<span style="font-weight: 700; color: #FFD27A">מצב הדגמה – לא חלק מהאתר</span>
+<button type="button" class="chip" aria-pressed="{{pId}}" onClick="{{goId}}">P02 · הזדהות</button>
+<button type="button" class="chip" aria-pressed="{{pOtp}}" onClick="{{goOtp}}">P03 · קוד SMS</button>
+<span style="color: #D1D5DB">ת״ז לדוגמה <span class="num" dir="ltr">000000018</span> · קוד <span class="num" dir="ltr">123456</span></span>
+</div>
+</div>
+<main id="main" style="flex: 1; padding: 48px 0 80px">
+<div class="wrap g-auth">
+
+<sc-if value="{{isId}}" hint-placeholder-val="{{ true }}">
+<form class="card card-p" onSubmit="{{submitId}}" noValidate style="padding: 36px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 class="h1">בדיקת מצב והזמנת משלוח</h1>
+<p class="muted" style="font-size: 18px">הזינו שני פרטים ונציג לכם את המידע העדכני ביותר שיש אצלנו.</p>
+</div>
+<div>
+<label class="lbl" for="au-id">מספר תעודת זהות</label>
+<input id="au-id" class="inp inp-n" inputMode="numeric" autoComplete="off" maxLength="9" value="{{id}}" onChange="{{onId}}" aria-invalid="{{idInv}}" aria-describedby="au-id-h au-id-e">
+<p id="au-id-h" class="small muted" style="margin-top: 6px">9 ספרות, כולל ספרת ביקורת</p>
+<sc-if value="{{errId}}" hint-placeholder-val="{{ false }}"><p id="au-id-e" role="alert" class="err"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>מספר תעודת הזהות לא תקין. בדקו שהזנתם 9 ספרות.</p></sc-if>
+</div>
+<div>
+<label class="lbl" for="au-ph">מספר טלפון נייד</label>
+<input id="au-ph" class="inp inp-n" type="tel" inputMode="tel" autoComplete="tel" maxLength="11" value="{{ph}}" onChange="{{onPh}}" aria-invalid="{{phInv}}" aria-describedby="au-ph-e">
+<sc-if value="{{errPh}}" hint-placeholder-val="{{ false }}"><p id="au-ph-e" role="alert" class="err"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.</p></sc-if>
+</div>
+<button type="submit" class="btn btn-p btn-mf" disabled="{{sending}}" aria-busy="{{busy}}" style="align-self: flex-start; min-width: 260px">
+<sc-if value="{{sending}}" hint-placeholder-val="{{ false }}"><svg class="ico spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>שולחים קוד…</sc-if>
+<sc-if value="{{idle}}" hint-placeholder-val="{{ true }}">שלחו לי קוד אימות</sc-if>
+</button>
+<p class="small muted">נשלח קוד ב-SMS לנייד שהזנתם. לא נשתמש במספר לשום מטרה אחרת.</p>
+</form>
+</sc-if>
+
+<sc-if value="{{isOtp}}" hint-placeholder-val="{{ false }}">
+<form class="card card-p" onSubmit="{{submitOtp}}" noValidate style="padding: 36px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h1 class="h1">הזינו את הקוד ששלחנו</h1>
+<p class="muted" style="font-size: 18px">שלחנו קוד בן 6 ספרות לנייד <span class="num" dir="ltr">{{masked}}</span>.</p>
+</div>
+<fieldset style="border: 0; padding: 0; margin: 0">
+<legend class="lbl">קוד אימות</legend>
+<div dir="ltr" style="display: flex; gap: 8px; justify-content: flex-end">
+<sc-for list="{{boxes}}" as="b" hint-placeholder-count="6">
+<input class="otp" inputMode="numeric" autoComplete="{{b.ac}}" maxLength="1" aria-label="{{b.label}}" value="{{b.v}}" onChange="{{b.on}}" aria-invalid="{{otpInv}}">
+</sc-for>
+</div>
+<sc-if value="{{errOtp}}" hint-placeholder-val="{{ false }}"><p role="alert" class="err"><svg class="ico i18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>הקוד לא נכון. נותרו 2 ניסיונות.</p></sc-if>
+</fieldset>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<sc-if value="{{waiting}}" hint-placeholder-val="{{ true }}"><p class="muted" aria-live="polite">לא קיבלתם? שליחה חוזרת בעוד <span class="num" dir="ltr">{{timer}}</span></p></sc-if>
+<sc-if value="{{canResend}}" hint-placeholder-val="{{ false }}"><p>לא קיבלתם? <button type="button" class="linkbtn" onClick="{{resend}}">שלחו שוב</button></p></sc-if>
+<p><button type="button" class="linkbtn" onClick="{{goId}}">המספר שגוי? חזרה לעריכה</button></p>
+</div>
+<sc-if value="{{verified}}" hint-placeholder-val="{{ false }}">
+<div role="status" class="callout" style="background: #F1FAF4"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color: #1E7F52"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg><p><strong style="color: #1E7F52">הקוד אומת.</strong> מעבירים אתכם למסך המצב.</p></div>
+<a class="btn btn-p btn-mf" href="Status.dc.html" style="align-self: flex-start; min-width: 220px">המשך<svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+</sc-if>
+<sc-if value="{{notVerified}}" hint-placeholder-val="{{ true }}">
+<button type="submit" class="btn btn-p btn-mf" style="align-self: flex-start; min-width: 220px">המשך<svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+</sc-if>
+</form>
+</sc-if>
+
+<aside class="card" aria-labelledby="why-a" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; background: #EDF3F6; box-shadow: none">
+<h2 id="why-a" style="font-size: 20px; font-weight: 700">למה אנחנו מבקשים גם טלפון?</h2>
+<ul style="display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; gap: 12px"><span class="ibox" style="width: 40px; height: 40px; background: #fff; color: #0351E0"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><p style="padding-top: 6px">כדי לאמת שאתם בעלי הבקשה.</p></li>
+<li style="display: flex; gap: 12px"><span class="ibox" style="width: 40px; height: 40px; background: #fff; color: #0351E0"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><p style="padding-top: 6px">כדי לעדכן אתכם ב-SMS כשהבקשה מגיעה, כשהיא יורדת לייצור וכשהיא נשלחת.</p></li>
+<li style="display: flex; gap: 12px"><span class="ibox" style="width: 40px; height: 40px; background: #fff; color: #0351E0"><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg></span><p style="padding-top: 6px">אם הצטלמתם – כדי להשוות למספר שמסרתם בתחנת הצילום.</p></li>
+</ul>
+<p class="small" style="border-top: 1px solid #D9E4EA; padding-top: 14px">צריכים עזרה? מוקד שירות <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a></p>
+</aside>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 'id', id: '', ph: '', errId: false, errPh: false, sending: false, code: ['', '', '', '', '', ''], errOtp: false, verified: false, sec: 45 };
+  }
+  componentDidMount() {
+    this.iv = setInterval(() => { if (this.state.step === 'otp' && this.state.sec > 0) this.setState({ sec: this.state.sec - 1 }); }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  validId(v) {
+    v = (v || '').replace(/\D/g, '');
+    if (!v || v.length > 9) return false;
+    v = v.padStart(9, '0');
+    let s = 0;
+    for (let i = 0; i < 9; i++) { let d = Number(v[i]) * ((i % 2) + 1); s += d > 9 ? d - 9 : d; }
+    return s % 10 === 0;
+  }
+  renderVals() {
+    const s = this.state;
+    const digits = s.ph.replace(/\D/g, '');
+    const toOtp = () => this.setState({ step: 'otp', sec: 45, code: ['', '', '', '', '', ''], errOtp: false, verified: false });
+    return {
+      isId: s.step === 'id', isOtp: s.step === 'otp',
+      pId: s.step === 'id' ? 'true' : 'false', pOtp: s.step === 'otp' ? 'true' : 'false',
+      goId: () => this.setState({ step: 'id' }), goOtp: toOtp,
+      id: s.id, ph: s.ph, errId: s.errId, errPh: s.errPh,
+      idInv: s.errId ? 'true' : 'false', phInv: s.errPh ? 'true' : 'false',
+      sending: s.sending, idle: !s.sending, busy: s.sending ? 'true' : 'false',
+      onId: (e) => this.setState({ id: e.target.value.replace(/\D/g, '').slice(0, 9), errId: false }),
+      onPh: (e) => this.setState({ ph: e.target.value.replace(/[^\d-]/g, '').slice(0, 11), errPh: false }),
+      submitId: (e) => {
+        e.preventDefault();
+        const errId = !this.validId(s.id);
+        const errPh = !/^05\d{8}$/.test(digits);
+        if (errId || errPh) { this.setState({ errId, errPh }); return; }
+        this.setState({ sending: true });
+        setTimeout(() => { this.setState({ sending: false }); toOtp(); }, 1200);
+      },
+      masked: digits.length === 10 ? digits.slice(0, 3) + '-•••-' + digits.slice(6) : '054-•••-4567',
+      boxes: s.code.map((v, i) => ({
+        v, ac: i === 0 ? 'one-time-code' : 'off', label: 'ספרה ' + (i + 1) + ' מתוך 6',
+        on: (e) => {
+          const d = e.target.value.replace(/\D/g, '').slice(-1);
+          const code = s.code.slice(); code[i] = d;
+          this.setState({ code, errOtp: false });
+          if (d && e.target.nextElementSibling) e.target.nextElementSibling.focus();
+        }
+      })),
+      errOtp: s.errOtp, otpInv: s.errOtp ? 'true' : 'false',
+      verified: s.verified, notVerified: !s.verified,
+      submitOtp: (e) => {
+        e.preventDefault();
+        if (s.code.join('') === '123456') this.setState({ verified: true });
+        else this.setState({ errOtp: true });
+      },
+      waiting: s.sec > 0, canResend: s.sec === 0,
+      timer: '0:' + String(s.sec).padStart(2, '0'),
+      resend: () => this.setState({ sec: 45 })
+    };
+  }
+}
+</script>
+</body>
+</html>

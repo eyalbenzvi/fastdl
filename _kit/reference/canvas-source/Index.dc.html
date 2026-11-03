@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>אינדקס אב-טיפוס – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd h4,.fd p,.fd ul,.fd ol{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i20{width:20px;height:20px}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.wrap{width:100%;max-width:1248px;margin:0 auto;padding:0 24px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.lnk{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;text-decoration:none!important;color:#15324A!important;border:1.5px solid transparent;height:100%}
+.lnk:hover{border-color:#0351E0}
+.code{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;font-size:13px;font-weight:700;background:#EDF3F6;color:#15324A;border-radius:6px;padding:2px 8px;flex:none;margin-top:2px}
+@media (max-width:860px){.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.g3{grid-template-columns:minmax(0,1fr)}.wrap{padding:0 16px}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; padding: 48px 0 80px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 40px">
+<header style="display: flex; flex-direction: column; gap: 10px">
+<p style="display: inline-flex; align-self: flex-start; font-size: 14px; font-weight: 700; background: #2B2F36; color: #FFD27A; padding: 4px 12px; border-radius: 999px">מצב הדגמה – לא חלק מהאתר</p>
+<h1 style="font-size: 40px; font-weight: 800; line-height: 1.2">רישיון עד הבית – אינדקס אב-טיפוס</h1>
+<p style="color: #4F5F6B; max-width: 820px">כל המסכים והמצבים של האתר. דמות ההדגמה: ישראלה ישראלי, ת״ז <span dir="ltr" style="font-variant-numeric: tabular-nums">000000018</span>, נייד <span dir="ltr" style="font-variant-numeric: tabular-nums">054-1234567</span>. ״עכשיו״ באב-הטיפוס = יום ג׳, <span dir="ltr">25.8.2026, 02:12</span>.</p>
+</header>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 style="font-size: 24px; font-weight: 700">{{g.title}}</h2>
+<ul class="g3">
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+<li><a class="card lnk" href="{{it.href}}"><span class="code">{{it.code}}</span><span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 700">{{it.t}}</span><span style="font-size: 15px; color: #4F5F6B">{{it.d}}</span></span><svg class="ico i20" viewBox="0 0 24 24" aria-hidden="true" style="color: #0351E0; margin-top: 4px"><path d="m15 18-6-6 6-6"/></svg></a></li>
+</sc-for>
+</ul>
+</section>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = (c, t) => ({ code: c, t, d: 'מסך מצב – בחרו ' + c + ' בבורר שבסרגל ההדגמה', href: 'Status.dc.html' });
+    return {
+      groups: [
+        { title: 'בסיס ועמוד הבית', items: [
+          { code: 'DS', t: 'מערכת עיצוב', d: 'צבעים, טיפוגרפיה, כפתורים, שדות, תגים, ציר, Stepper', href: 'Main.dc.html' },
+          { code: 'P01B', t: 'עמוד בית – כניסה מאוחדת', d: 'גרסה מומלצת: הזדהות ישירה בעמוד', href: 'HomeB.dc.html' },
+          { code: 'P01A', t: 'עמוד בית – שלושה שערים', d: 'נאמן להדמיה שבמצגת', href: 'HomeA.dc.html' },
+          { code: 'P01B-AR', t: 'עמוד בית בערבית', d: 'תרגום טיוטה – לבדיקת מתרגם', href: 'HomeB-ar.dc.html' }
+        ] },
+        { title: 'הזדהות ומסך מצב', items: [
+          { code: 'P02–P03', t: 'הזדהות ואימות קוד SMS', d: 'ת״ז + נייד, קוד בן 6 ספרות, מצבי שגיאה וטעינה', href: 'Auth.dc.html' },
+          st('S0', 'לא נמצאה בקשה פעילה'), st('S1', 'הבקשה התקבלה – אפשר להזמין'),
+          st('S2', 'הוזמן, ניתן לשנות'), st('S3', 'בייצור'), st('S4', 'נשלחה'),
+          st('S5', 'ממתין לאיסוף'), st('S6', 'נמסרה'), st('S7', 'אין אישור מסירה'),
+          st('S8', 'המסירה נכשלה'), st('S9', 'יותר מתעודה אחת')
+        ].map((x, i) => i === 0 ? x : Object.assign({}, x, { d: x.t + ' · בחרו ' + x.code + ' בסרגל ההדגמה', t: 'מסך מצב · ' + x.code })) },
+        { title: 'תהליך ההזמנה', items: [
+          { code: 'P05–P09', t: 'הזמנה: משלוח, כתובת, מועד ייצור, תשלום, אישור', d: 'שומר בחירות, מדלג על כתובת באיסוף ועל תשלום בשיטה ללא עלות', href: 'Order.dc.html' },
+          { code: 'P10', t: 'הנפקה חוזרת ללא עלות', d: 'זכאות, הצהרה, בחירת מסירה ואישור', href: 'Reissue.dc.html' }
+        ] },
+        { title: 'עמודי מידע', items: [
+          { code: 'P11', t: 'מה עלי לעשות עכשיו?', d: 'מדריך לפי מצב, כולל דוגמאות המסמכים', href: 'Guide.dc.html' },
+          { code: 'P12', t: 'רישיון הכי מהיר', d: '7 שלבים + מחשבון לו״ז', href: 'Fastest.dc.html' },
+          { code: 'P13', t: 'שיטות מסירה ומחירון', d: 'טבלה בדסקטופ, כרטיסים במובייל', href: 'Delivery.dc.html' },
+          { code: 'P14', t: 'עמדות איסוף עצמי', d: 'כתובות, שעות וניווט', href: 'Pickup.dc.html' },
+          { code: 'P15', t: 'שאלות ותשובות', d: 'חיפוש חי וסינון לפי קטגוריה', href: 'Faq.dc.html' },
+          { code: 'P16', t: 'על השירות', d: 'מי אנחנו, הרשאה ואבטחה', href: 'About.dc.html' }
+        ] },
+        { title: 'קשר, נגישות ותקלות', items: [
+          { code: 'P17', t: 'צור קשר', d: 'מוקד, טופס פנייה והודעת הצלחה', href: 'Contact.dc.html' },
+          { code: 'P18', t: 'הצהרת נגישות', d: 'שלד', href: 'Accessibility.dc.html' },
+          { code: 'P19', t: 'תקלה זמנית, 404 ובאנר תחזוקה', d: 'מצבי שגיאה גלובליים', href: 'Error.dc.html' }
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

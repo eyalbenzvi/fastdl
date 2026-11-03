@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>רישיון הכי מהיר – רישיון עד הבית</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F6F8}
+a{color:#0351E0}a:hover{color:#0241B5}
+.fd{font-family:"Heebo","Assistant","Arial Hebrew",Arial,sans-serif;color:#15324A;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.fd *,.fd *::before,.fd *::after{box-sizing:border-box}
+.fd h1,.fd h2,.fd h3,.fd p,.fd ul,.fd ol{margin:0}
+.fd ul,.fd ol{padding:0;list-style:none}
+.fd a{color:#0351E0;text-decoration:underline;text-underline-offset:3px}
+.fd :focus-visible{outline:3px solid #FFB020;outline-offset:2px}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.i16{width:16px;height:16px}.i18{width:18px;height:18px}.i20{width:20px;height:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:12px;font-family:inherit;font-weight:600;font-size:16px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center}
+.fd a.btn{text-decoration:none}
+.btn-s,.fd a.btn-s{background:#fff;color:#0351E0;border:2px solid #0351E0}
+.btn-s:hover,.fd a.btn-s:hover{background:#F1F5FE}
+.card{background:#fff;border-radius:16px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06)}
+.lbl{display:block;font-weight:600;margin-bottom:6px}
+.inp{display:block;width:100%;max-width:280px;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font-family:inherit;font-size:18px;color:#15324A;background:#fff}
+.inp:focus{outline:3px solid #FFB020;outline-offset:2px}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.tbc{background:#FFF6E8;color:#8A5A12;font-weight:700;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wrap{width:100%;max-width:1048px;margin:0 auto;padding:0 24px}
+.h1{font-size:38px;font-weight:700;line-height:1.2}
+.h2{font-size:24px;font-weight:700;line-height:1.35}
+.muted{color:#4F5F6B}.small{font-size:15px}
+.g-f{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:start}
+.step{position:relative;display:flex;gap:18px;padding-bottom:26px}
+.step::before{content:"";position:absolute;right:21px;top:46px;bottom:4px;width:2px;background:#D9E4EA}
+.step:last-child::before{display:none}
+.only-t,.only-m{display:none!important}
+@media (max-width:1023px){.hide-t{display:none!important}.only-t{display:flex!important}}
+@media (max-width:860px){.g-f{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.h1{font-size:28px}.hide-m{display:none!important}.only-m{display:flex!important}.wrap{padding:0 16px}.card-p{padding:20px!important}}
+</style>
+</helmet>
+<div class="fd" dir="rtl" style="min-height: 100vh; background: #F4F6F8; display: flex; flex-direction: column">
+<dc-import name="Header" hint-size="100%,124px"></dc-import>
+<main id="main" style="flex: 1; padding: 44px 0 72px">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 28px">
+<h1 class="h1">צריכים את הרישיון מהר? זה המסלול הקצר ביותר</h1>
+<div class="g-f">
+<section class="card card-p" aria-label="שלבי המסלול" style="padding: 32px">
+<ol>
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="7">
+<li class="step">
+<span style="width: 44px; height: 44px; border-radius: 50%; background: {{s.bg}}; color: {{s.fg}}; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: none; position: relative; z-index: 1">{{s.n}}</span>
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 8px">
+<h2 style="font-size: 19px; font-weight: 700">{{s.t}}</h2>
+<p class="muted">{{s.d}}</p>
+<sc-if value="{{s.hasA}}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px"><sc-for list="{{s.acts}}" as="a" hint-placeholder-count="1"><a class="btn btn-s" href="{{a.href}}" target="{{a.tg}}">{{a.t}}</a></sc-for></div></sc-if>
+</div>
+</li>
+</sc-for>
+</ol>
+</section>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<section class="card card-p" aria-labelledby="calc-h" style="padding: 28px; display: flex; flex-direction: column; gap: 16px; border-top: 4px solid #0351E0">
+<h2 id="calc-h" class="h2">מחשבון לו״ז</h2>
+<div><label class="lbl" for="paid">מתי שילמתם?</label><input id="paid" class="inp" type="date" value="{{paid}}" onChange="{{onPaid}}" aria-describedby="calc-out"></div>
+<div id="calc-out" aria-live="polite" style="background: #F1F5FE; border-radius: 12px; padding: 18px">
+<p>הרישיון יכול להיות בידיים שלכם כבר ב-</p>
+<p style="font-size: 26px; font-weight: 800; color: #0351E0">{{result}}</p>
+<p class="small muted">באיסוף עצמי מדפוס בארי, מ-<span class="num" dir="ltr">11:00</span>. חישוב משוער לפי ימי עסקים (א׳–ה׳), להדגמה.</p>
+</div>
+</section>
+<section role="note" aria-labelledby="notes-h" style="background: #FFF6E8; border: 1px solid #E7A13B; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<h2 id="notes-h" style="display: flex; align-items: center; gap: 8px; font-size: 19px; font-weight: 700; color: #8A5A12"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></svg>שלוש הערות חשובות</h2>
+<ul style="display: flex; flex-direction: column; gap: 10px">
+<li>• בשלב 3 בהזמנה השאירו את האפשרות ״ייצור מיידי״.</li>
+<li>• החמצתם את 48 השעות? <span class="tbc">[נוסח לאישור לגבי תשלום אגרה מחדש]</span></li>
+<li>• אם הבקשה לא מגיעה – מוקד משרד התחבורה <a href="tel:*5678"><span class="num" dir="ltr">*5678</span></a></li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</main>
+<dc-import name="Footer" hint-size="100%,400px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2300}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { paid: '2026-08-23' }; }
+  renderVals() {
+    const ext = (t) => ({ t: t, href: '#', tg: '_blank' });
+    const S = [
+      ['תשלום אגרת כפל רישיון', 'באתר משרד התחבורה', [ext('לתשלום באתר משרד התחבורה')]],
+      ['בדיקה אם נדרש צילום', 'בטופס האגרה או ברישיון הזמני', [{ t: 'איך יודעים?', href: 'Guide.dc.html', tg: '_self' }, ext('לרשימת תחנות הצילום')]],
+      ['מסירת נייד / הרשמה', 'בתחנת הצילום או כאן', [{ t: 'להרשמה', href: 'Auth.dc.html', tg: '_self' }]],
+      ['הבקשה מגיעה אלינו', 'בבוקר יום העסקים הבא', []],
+      ['SMS שהבקשה התקבלה', 'נשלח לנייד שמסרתם', []],
+      ['הזמנה – בחרו איסוף עצמי', 'המהיר ביותר', [{ t: 'להזמנה', href: 'Auth.dc.html', tg: '_self' }]],
+      ['ייצור ואיסוף', 'נעדכן ב-SMS כשאפשר לאסוף', []]
+    ];
+    const nextBiz = (d) => { const x = new Date(d); do { x.setDate(x.getDate() + 1); } while (x.getDay() === 5 || x.getDay() === 6); return x; };
+    const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    let result = 'בחרו תאריך';
+    const p = this.state.paid ? new Date(this.state.paid + 'T12:00:00') : null;
+    if (p && !isNaN(p)) { const r = nextBiz(nextBiz(p)); result = 'יום ' + days[r.getDay()] + ', ' + r.getDate() + '.' + (r.getMonth() + 1) + '.' + r.getFullYear(); }
+    return {
+      steps: S.map((s, i) => ({ n: i + 1, t: s[0], d: s[1], acts: s[2], hasA: s[2].length > 0, bg: i === 5 ? '#0351E0' : '#EDF3F6', fg: i === 5 ? '#fff' : '#15324A' })),
+      paid: this.state.paid, onPaid: (e) => this.setState({ paid: e.target.value }), result
+    };
+  }
+}
+</script>
+</body>
+</html>

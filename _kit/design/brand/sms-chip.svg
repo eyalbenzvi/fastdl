@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="72" viewBox="0 0 260 72" role="img" aria-label="SMS: הבקשה התקבלה">
+  <rect x="2" y="2" width="256" height="64" rx="14" fill="#fff" stroke="#D9E4EA"/>
+  <rect x="200" y="14" width="40" height="40" rx="12" fill="#F1FAF4"/>
+  <path transform="translate(208 22)" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="#1E7F52" stroke-width="2" stroke-linejoin="round"/>
+  <text x="188" y="32" text-anchor="end" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="15" fill="#15324A">SMS: הבקשה התקבלה</text>
+  <text x="188" y="52" text-anchor="end" direction="rtl" font-family="Heebo, Arial, sans-serif" font-size="14" fill="#4F5F6B">אפשר לבחור משלוח או איסוף</text>
+</svg>
