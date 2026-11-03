@@ -44,6 +44,18 @@ colors:
   footer-muted: "#E3EDF3"
   demo-bg: "#2B2F36"
   demo-accent: "#FFD27A"
+  demo-muted: "#D1D5DB"
+  demo-toggle: "#444A53"
+  footer-hover: "#CFE6F2"
+  wordmark-sub-dark: "#CFE0EA"
+  skel: "#E6ECF0"
+  skel-shine: "#F2F5F7"
+  illus-1: "#C5DAE5"
+  illus-2: "#B6CCD8"
+  illus-3: "#9DB7C6"
+  illus-card-from: "#F7FBFD"
+  illus-card-to: "#D6EBF4"
+  illus-line: "#DCE4EA"
 typography:
   hero:
     fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
@@ -60,9 +72,24 @@ typography:
     fontSize: "38px"
     fontWeight: 700
     lineHeight: 1.2
+  h1-auth:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "36px"
+    fontWeight: 700
+    lineHeight: 1.25
+  h1-status:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "34px"
+    fontWeight: 700
+    lineHeight: 1.25
   h1-flow:
     fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
     fontSize: "32px"
+    fontWeight: 700
+    lineHeight: 1.25
+  h1-flow-mobile:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "26px"
     fontWeight: 700
     lineHeight: 1.25
   h1-mobile:
@@ -80,6 +107,11 @@ typography:
     fontSize: "20px"
     fontWeight: 700
     lineHeight: 1.4
+  title:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "19px"
+    fontWeight: 700
+    lineHeight: 1.4
   lead:
     fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
     fontSize: "18px"
@@ -90,11 +122,21 @@ typography:
     fontSize: "17px"
     fontWeight: 400
     lineHeight: 1.6
+  ui:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "16px"
+    fontWeight: 600
+    lineHeight: 1.2
   small:
     fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
     fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.6
+  xs:
+    fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
+    fontSize: "14px"
+    fontWeight: 600
+    lineHeight: 1.4
   tag:
     fontFamily: "Heebo, Assistant, Arial Hebrew, Arial, sans-serif"
     fontSize: "13px"
@@ -118,6 +160,7 @@ rounded:
   inner: "14px"
   lg: "16px"
   xl: "20px"
+  art: "18px"
   pill: "999px"
 spacing:
   sp-1: "4px"
@@ -296,15 +339,19 @@ A restrained institutional palette: navy and cool greys, one action blue, and a 
 **Character:** a single humanist-geometric Hebrew sans used at large, friendly sizes. The hierarchy comes from size and weight steps, not from a second face. Numbers use tabular figures and are isolated LTR.
 
 ### Hierarchy
-- **Hero** (800, 44px desktop / 28px ≤640, 1.2): the home H1. The second line is in Counter Blue (`.accent`) and balanced separately.
-- **H1 page / status / flow** (700, 38 / 34 / 32px desktop, 26–28px mobile, 1.2–1.25): one per page.
+- **Hero** (800, 44px desktop / 28px ≤640, 1.2): `--fs-hero`, `.h-hero` (the design-system page title). The home H1 follows mockup 02 at the H1 step (40px) in weight 800. The second line is in Counter Blue (`.accent`) and balanced separately.
+- **H1 page / auth / status / flow** (700, 38 / 36 / 34 / 32px desktop – `--fs-h1-page`, `--fs-h1-auth` (login, OTP, error), `--fs-h1-status`, `--fs-h1-flow`; 28px `--fs-h1-m` or 26px `--fs-h1-flow-m` on mobile, 1.2–1.25): one per page.
 - **H2** (700, 28px / 22px, 1.3): section headings. Card headings such as "מה עכשיו?" sit at 22–24px.
-- **H3** (700, 20px / 18px, 1.4): gate titles, card titles. An undeclared 19px card-title step recurs in pages.css (about, fastest, pickup, order).
+- **H3** (700, 20px / 18px, 1.4): gate titles, card titles.
+- **Title** (700, 19px, `--fs-title`): card titles in the info and flow pages (about, fastest, pickup, order, contact).
 - **Lead** (400, 18px, 1.6): opening paragraphs.
 - **Body** (400, 17px, 1.6): the floor for running text is 16px.
 - **Small** (400/600, 15px, 1.6): help text, dt labels, notes.
 - **Tag** (700, 13px, 1.6): pills on cards only, never running text.
-- **Button** (600, 17px; 16px for the small size).
+- **Button** (600, 17px; 16px `--fs-ui` for the small size, chips and the menu button).
+- **XS** (14px, `--fs-xs`): dense sub-lines and the demo bar only.
+
+All `--fs-*` tokens are in rem on a 16px base (17px = `1.0625rem`), so a larger browser font size scales the text; at the default the rendering is identical. Spacing, radii and control heights stay in px. Page CSS uses the tokens; the few one-off sizes without a step (21, 24, 30, 42, 64px) are written in rem.
 
 ### Named Rules
 **The Balanced Line Rule.** Headings use `text-wrap: balance` and paragraphs use `text-wrap: pretty`. Line breaks may change. The approved wording may not.
@@ -315,7 +362,7 @@ A restrained institutional palette: navy and cool greys, one action blue, and a 
 
 Mobile-first and single-column at ≤640. Content widths are set by the page's job: general 1248, information 1048, FAQ 968, status 928, forms and the order flow 768, accessibility and error 848 (max-width including 24px padding). The `wrap` gutter is 24px, and 16px at ≤640, extended by `env(safe-area-inset-*)`.
 
-Breakpoints: ≤1023 the navigation collapses to a "תפריט" button plus a phone icon. ≤860 three- and four-column grids drop to two, the hero stacks and the side grids (payment, contact, fastest) stack. ≤640 is mobile: every grid is one column, H1 is 28, primary buttons go full width, drawers become bottom sheets, the timeline goes vertical or compact ("שלב N מתוך 5" + dots), the stepper becomes "שלב X מתוך 4" + a bar, order actions become a sticky bottom bar, and the hero illustration hides. At ≤374 and ≤359 the header tightens.
+Breakpoints: ≤1023 the navigation collapses to a "תפריט" button plus a phone icon. ≤860 three- and four-column grids drop to two, the hero stacks and the side grids (payment, contact, fastest) stack. ≤640 is mobile: every grid is one column, H1 is 28, primary buttons go full width, drawers become bottom sheets, the timeline goes vertical or compact ("שלב N מתוך 5" + dots), the stepper becomes "שלב X מתוך 4" + a bar, order actions become a sticky bottom bar, and the hero illustration hides. At ≤374 and ≤359 the header tightens. At ≤300 (page zoom 200% on a 390 phone) the header wraps to two lines and dense pages (guide, fastest, contact, design system, prototype index) tighten padding so nothing scrolls sideways at 195px.
 
 Spacing runs on a 4px grid (4·8·12·16·20·24·28·32·40·48·56·64). Section rhythm is 56px (40 on mobile). Cards pad 28px (20 on mobile), and order form cards 30–36px. Header 76/64px, trust bar 46px.
 
@@ -336,7 +383,7 @@ A hybrid system: flat tonal layering (Hall Grey ground → Paper cards → Navy 
 
 ## Shapes
 
-Gently rounded, friendly but not playful: 6px for the `[לאישור]` marker, 8px small, 10px icon buttons, 12px buttons, fields and callouts, 14px inner boxes, 16px cards and option cards, 20px modals and bottom-sheet tops, 999px tags, badges, chips and the demo pill. Borders are 1px dividers, 1.5px inputs and unselected option cards, 2px the selected option card, Secondary buttons and the error input. The only gradient is the hero ground (`#FFFFFF → #EDF3F6`, 180deg). The illustration card (tilted -5°) is the only rotated element.
+Gently rounded, friendly but not playful: 6px for the `[לאישור]` marker, 8px small, 10px icon buttons, 12px buttons, fields and callouts, 14px inner boxes, 16px cards and option cards, 20px modals and bottom-sheet tops, 999px tags, badges, chips and the demo pill. Borders are 1px dividers, 1.5px inputs and unselected option cards, 2px the selected option card, Secondary buttons and the error input. The only gradient is the hero ground (`#FFFFFF → #EDF3F6`, 180deg). The illustration card (tilted -5°, `--radius-art` 18px, gradient `illus-card-from → illus-card-to`) is the only rotated element. Illustration greys (`illus-1..3`, and `illus-line` for the pickup map ground) are decorative only, never text.
 
 ## Components
 
@@ -360,7 +407,7 @@ Gently rounded, friendly but not playful: 6px for the `[לאישור]` marker, 8
 - **Internal Padding:** 28px, 20px on mobile.
 
 ### Inputs / Fields
-- **Style:** 52px, 1.5px Field Edge border, 12px radius, white, 18px text. Numeric fields are LTR with tabular figures, right-aligned. The label sits above at 600 weight; optional fields say "(לא חובה)" in muted text.
+- **Style:** 52px, 1.5px Field Edge border, 12px radius, white, 18px text. Numeric fields are LTR with tabular figures, end-aligned. The label sits above at 600 weight; optional fields say "(לא חובה)" in muted text.
 - **Focus:** the amber 3px ring plus a blue border.
 - **Error:** 2px Signal Red border, `aria-invalid`, and a 15px/600 red message with an alert-circle icon (`role="alert"`) below the help text.
 - **OTP:** six 52×60 boxes, LTR, 26px bold, shrinking to 44px below 390.
@@ -381,14 +428,14 @@ Five steps on a 3px track with 32px dots: done = solid blue with a check; curren
 Badges are 15px/600 pills with an icon (neutral, success, info, navy, ship, warning, danger). Tags are 13px/700 pills inside option cards (fast = solid blue, free = green tint, no-track = grey, rec = solid green, hand = info tint). Callouts are 12px radius, 16/20 padding, icon + bold title, in info, warning (with a 1px border) and success. The tbc marker is described under Colors.
 
 ### Drawers, modals, toast
-The info drawer enters from the left and the menu from the right, both 460px max. Modals are centred at 860px with scale .97 → 1. All become bottom sheets at ≤640 with a 20px top radius. Entry takes 200ms and exit 150ms on `cubic-bezier(.2,.7,.2,1)`, transform and opacity only. The scrim is navy at 50%. The toast is a navy pill bottom-centre, 1.6s.
+The info drawer enters from the left and the menu from the right, both 460px max. Modals are centred at 860px with scale .97 → 1. All become bottom sheets at ≤640 with a 20px top radius. Entry takes 200ms and exit 150ms on `cubic-bezier(.2,.7,.2,1)`, transform and opacity only. The scrim is navy at 50%. The toast is a navy pill bottom-centre: 1.6s for "הועתק", otherwise max(4s, 70ms per character), paused on hover; ✓ icon by default and ℹ for `[לאישור]` messages (`UI.toast(text, ms?, {icon})`).
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** keep exactly one Counter Blue Primary per screen or state, and make every other action a Secondary outline or an underlined link.
 - **Do** take every colour, size and radius from `css/tokens.css`. A new value means a new token (and an update to `_kit/docs/03_design_system.md`).
-- **Do** pair every status with an icon and a word, and keep the 3px #FFB020 focus ring with 2px offset on every interactive element.
+- **Do** pair every status with an icon and a word, and keep the 3px #FFB020 focus ring with 2px offset on every interactive element, with `--focus-halo` (2px white + navy to 7px) under it on light surfaces (incl. the OTP boxes).
 - **Do** wrap every number in `<span class="num" dir="ltr">` and use tabular figures. Mirror arrows for RTL (forward = left).
 - **Do** mark every unconfirmed fact with `<span class="tbc">[לאישור]</span>`.
 - **Do** keep hit targets ≥44px, and keep motion at 150–200ms on transform and opacity, cancelled by `prefers-reduced-motion`.
