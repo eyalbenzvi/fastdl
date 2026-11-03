@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T00:00:00Z",
+  "title": "Design System: רישיון עד הבית",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Counter Blue", "canonical": "#0351E0", "tonalRamp": ["#011A4A", "#022B7A", "#0241B5", "#0351E0", "#4C84EA", "#9DBAF3", "#E6EEFC", "#F1F5FE"] },
+      "navy": { "role": "secondary", "displayName": "Institution Navy", "canonical": "#15324A", "tonalRamp": ["#0B1B28", "#15324A", "#2E4C64", "#4F5F6B", "#8796A2", "#B8CBD6", "#E3EAF0", "#EDF3F6"] },
+      "brand-cyan": { "role": "tertiary", "displayName": "Wordmark Cyan (decorative only)", "canonical": "#10A9E0", "tonalRamp": ["#063E52", "#0A6E92", "#0D8CBA", "#10A9E0", "#5CC5EB", "#A3DEF3", "#DCEEF6", "#EAF6FB"] },
+      "bg": { "role": "neutral", "displayName": "Hall Grey", "canonical": "#F4F6F8" },
+      "success": { "role": "semantic", "displayName": "Clearance Green", "canonical": "#1E7F52" },
+      "warning-text": { "role": "semantic", "displayName": "Amber Notice", "canonical": "#8A5A12" },
+      "danger": { "role": "semantic", "displayName": "Signal Red", "canonical": "#B53A3A" },
+      "info": { "role": "semantic", "displayName": "Harbour Teal", "canonical": "#0A6E92" },
+      "focus": { "role": "utility", "displayName": "Focus Amber", "canonical": "#FFB020" }
+    },
+    "typographyMeta": {
+      "hero": { "displayName": "Hero", "purpose": "Home H1 only; second line in Counter Blue." },
+      "h1-flow": { "displayName": "Flow H1", "purpose": "Order flow / status H1 (status 34px)." },
+      "body": { "displayName": "Body", "purpose": "Running text, 16px floor." },
+      "tag": { "displayName": "Tag", "purpose": "Pills on option cards only." }
+    },
+    "shadows": [
+      { "name": "card", "value": "0 1px 2px rgba(21,50,74,.06), 0 4px 16px rgba(21,50,74,.06)", "purpose": "Every card at rest." },
+      { "name": "raised", "value": "0 8px 32px rgba(21,50,74,.12)", "purpose": "Hero ID card, SMS chip." },
+      { "name": "drawer", "value": "0 8px 32px rgba(21,50,74,.20)", "purpose": "Drawers, modals, sheets." },
+      { "name": "sticky", "value": "0 -4px 16px rgba(21,50,74,.12)", "purpose": "Mobile sticky order bar." }
+    ],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(.2,.7,.2,1)", "purpose": "All transitions." },
+      { "name": "dur-fast", "value": "150ms", "purpose": "Exit, press feedback, accordion fade." },
+      { "name": "dur-base", "value": "200ms", "purpose": "Entry of drawers/modals/toast." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "374px" },
+      { "name": "mobile", "value": "640px" },
+      { "name": "tablet", "value": "860px" },
+      { "name": "nav-collapse", "value": "1023px" },
+      { "name": "desktop", "value": "1280px" }
+    ]
+  },
+  "components": [
+    { "name": "Primary Button", "kind": "button", "refersTo": "button-primary", "description": "The single action per state.",
+      "html": "<button class=\"ds-btn-primary\">המשך</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:12px;background:var(--c-primary,#0351E0);border:2px solid var(--c-primary,#0351E0);color:#fff;font:600 17px/1.2 Heebo,Arial,sans-serif;cursor:pointer;transition:background-color 150ms cubic-bezier(.2,.7,.2,1),transform 150ms cubic-bezier(.2,.7,.2,1)}.ds-btn-primary:hover{background:#0241B5;border-color:#0241B5}.ds-btn-primary:active{transform:scale(.97)}.ds-btn-primary:focus-visible{outline:3px solid #FFB020;outline-offset:2px}" },
+    { "name": "Secondary Button", "kind": "button", "refersTo": "button-secondary", "description": "Every other action.",
+      "html": "<button class=\"ds-btn-secondary\">להזמנה</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:12px;background:#fff;border:2px solid #0351E0;color:#0351E0;font:600 17px/1.2 Heebo,Arial,sans-serif;cursor:pointer}.ds-btn-secondary:hover{background:#F1F5FE;color:#0241B5}.ds-btn-secondary:focus-visible{outline:3px solid #FFB020;outline-offset:2px}" },
+    { "name": "Text Field", "kind": "input", "refersTo": "input", "description": "Label above, 52px field, error below.",
+      "html": "<label class=\"ds-label\" for=\"ds-f\">מספר תעודת זהות</label><input id=\"ds-f\" class=\"ds-input\" inputmode=\"numeric\">",
+      "css": ".ds-label{display:block;font:600 17px/1.6 Heebo,Arial,sans-serif;color:#15324A;margin-bottom:6px}.ds-input{display:block;width:100%;height:52px;border:1.5px solid #6E8292;border-radius:12px;padding:0 16px;font:400 18px Heebo,Arial,sans-serif;color:#15324A;background:#fff;direction:ltr;text-align:right}.ds-input:focus{outline:3px solid #FFB020;outline-offset:2px;border-color:#0351E0}" },
+    { "name": "Option Card", "kind": "custom", "refersTo": "option-card", "description": "Delivery-method radio card.",
+      "html": "<label class=\"ds-opt\"><input type=\"radio\" name=\"m\" checked><span class=\"ds-opt__b\"><strong>משלוח מהיר עד הבית</strong><span>יגיע עד יום ד׳ 26.8</span></span><span class=\"ds-opt__p\">177 ₪</span></label>",
+      "css": ".ds-opt{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid #B8CBD6;border-radius:16px;padding:20px 22px;cursor:pointer;font:400 17px/1.6 Heebo,Arial,sans-serif;color:#15324A}.ds-opt:hover{border-color:#0351E0}.ds-opt:has(input:checked){background:#F1F5FE;border:2px solid #0351E0}.ds-opt input{width:22px;height:22px;accent-color:#0351E0}.ds-opt__b{flex:1;display:flex;flex-direction:column}.ds-opt__p{font-weight:700}" },
+    { "name": "Filter Chip", "kind": "chip", "refersTo": "chip", "description": "FAQ category filter.",
+      "html": "<button class=\"ds-chip\" aria-pressed=\"true\">הכל</button> <button class=\"ds-chip\" aria-pressed=\"false\">צילום</button>",
+      "css": ".ds-chip{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #6E8292;background:#fff;font:600 16px Heebo,Arial,sans-serif;color:#15324A;cursor:pointer}.ds-chip[aria-pressed=true]{background:#15324A;border-color:#15324A;color:#fff}.ds-chip:focus-visible{outline:3px solid #FFB020;outline-offset:2px}" },
+    { "name": "Card", "kind": "card", "refersTo": "card", "description": "White counter window on the grey hall.",
+      "html": "<div class=\"ds-card\"><h3>מה עכשיו?</h3><p>אפשר להזמין עד יום ד׳ 26.8 בשעה 05:12</p></div>",
+      "css": ".ds-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 2px rgba(21,50,74,.06),0 4px 16px rgba(21,50,74,.06);font:400 17px/1.6 Heebo,Arial,sans-serif;color:#15324A}.ds-card h3{margin:0 0 8px;font-size:22px;font-weight:700}" },
+    { "name": "TBC Marker", "kind": "custom", "refersTo": "tbc-marker", "description": "Unconfirmed value.",
+      "html": "<span class=\"ds-tbc\">[לאישור]</span>",
+      "css": ".ds-tbc{background:#FFF6E8;color:#8A5A12;font:700 17px Heebo,Arial,sans-serif;border:1px dashed #C98A2E;border-radius:6px;padding:0 6px}" },
+    { "name": "Status Badge", "kind": "chip", "refersTo": "badge-success", "description": "Icon + word status.",
+      "html": "<span class=\"ds-badge\">✓ אפשר להזמין</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;gap:6px;font:600 15px Heebo,Arial,sans-serif;padding:6px 12px;border-radius:999px;background:#F1FAF4;color:#1E7F52}" }
+  ],
+  "narrative": {
+    "northStar": "The Service Counter",
+    "overview": "A government-grade service counter rendered on a phone: one clerk, one form, one clear next step. Calm grey hall, white counter-window cards, navy institutional voice, one action blue. Unconfirmed facts are shown loudly as [לאישור], never guessed.",
+    "keyCharacteristics": ["Cool grey ground, white raised cards, navy text, one action blue.", "One Primary per screen/state.", "Large plain Heebo, balanced headings, tabular numerals.", "Icon + word for every status; dashed amber [לאישור] for every unconfirmed value.", "Functional motion only, 150–200ms, off under reduced motion."],
+    "rules": [
+      { "name": "The One Blue Rule", "body": "Counter Blue means you can act here; never decoration, never two Primary buttons in one state.", "section": "colors" },
+      { "name": "The Cyan Is Ink-Free Rule", "body": "Wordmark Cyan draws bars and illustration only, nothing to read or press.", "section": "colors" },
+      { "name": "The Honest Gap Rule", "body": "Any value not confirmed by the business rules is set in the [לאישור] marker.", "section": "colors" },
+      { "name": "The Balanced Line Rule", "body": "Headings balance, paragraphs pretty-wrap; breaks may change, wording may not.", "section": "typography" },
+      { "name": "The Isolated Number Rule", "body": "Every number in span.num dir=ltr with tabular figures.", "section": "typography" },
+      { "name": "The Quiet Card Rule", "body": "A card inside a card is never lifted; use Navy Haze or a 1px line.", "section": "elevation" }
+    ],
+    "dos": ["Do keep exactly one Counter Blue Primary per screen or state.", "Do take every colour, size and radius from css/tokens.css.", "Do pair every status with an icon and a word; keep the 3px #FFB020 focus ring.", "Do wrap every number in span.num dir=ltr.", "Do mark every unconfirmed fact with span.tbc [לאישור].", "Do keep hit targets ≥44px and motion 150–200ms on transform/opacity."],
+    "donts": ["Don't use Wordmark Cyan for text or button grounds.", "Don't show the Ministry of Transport logo; use only the dashed placeholder.", "Don't bring back the old site's palette, jeep illustration or long single scroll.", "Don't colour the three home-A gate buttons differently.", "Don't use a placeholder instead of a label, or long legal text in the page body.", "Don't add a second gradient."]
+  }
+}
