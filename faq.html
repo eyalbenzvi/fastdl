@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>שאלות ותשובות – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/info.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/faq.js"></script>
+</head>
+<body data-page="faq">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="info-page">
+      <div class="wrap wrap--faq info-stack info-stack--22">
+        <div class="faq-head">
+          <h1 class="h1 h1--page">שאלות ותשובות</h1>
+          <span class="faq-draft">תשובות בטיוטה – לאישור</span>
+        </div>
+
+        <div class="faq-search" role="search">
+          <label for="q" class="sr-only">חיפוש בשאלות</label>
+          <svg class="ico faq-search__ico" data-icon="search" aria-hidden="true"></svg>
+          <input id="q" class="input faq-search__input" type="search" placeholder="חפשו שאלה, למשל: צילום" aria-describedby="count" autocomplete="off">
+        </div>
+
+        <div class="faq-chips" role="group" aria-label="סינון לפי נושא" id="faq-chips"></div>
+
+        <p id="count" class="small muted" aria-live="polite">8 שאלות מוצגות</p>
+
+        <div class="card faq-list" id="faq-list"></div>
+
+        <div class="card info-bar">
+          <p class="info-bar__t">לא מצאתם תשובה?</p>
+          <a class="btn btn--secondary btn--sm" href="contact.html">לצור קשר</a>
+        </div>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

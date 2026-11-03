@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הזמנת משלוח או איסוף – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/order.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/validation.js"></script>
+  <script defer src="js/pages/order.js"></script>
+</head>
+<body data-page="order">
+  <div class="page">
+    <div data-slot="header"></div>
+    <div data-slot="demo-bar"></div>
+    <main id="main" tabindex="-1" class="order">
+      <div class="wrap wrap--form order__inner">
+
+        <nav class="order-steps" id="order-steps" aria-label="שלבי ההזמנה">
+          <ol class="stepper" id="stepper"></ol>
+          <div class="stepper-m">
+            <p class="stepper-m__text" id="stepper-m-text">שלב 1 מתוך 4 – משלוח</p>
+            <div class="stepper-m__bar" id="stepper-m-bar" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="4" aria-label="התקדמות בהזמנה"><span style="width:25%"></span></div>
+          </div>
+        </nav>
+
+        <!-- ===== שלב 1 – משלוח (P05) ===== -->
+        <section class="order__step" data-step="1" aria-labelledby="h-step1" hidden>
+          <div class="order__head">
+            <h1 class="h1 h1--flow" id="h-step1" tabindex="-1">איך תרצו לקבל את הרישיון?</h1>
+            <p class="muted">הבקשה התקבלה ב-<span class="num" dir="ltr">24.8</span> · אפשר להזמין עד <span class="num" dir="ltr">26.8</span> בשעה <span class="num" dir="ltr">05:12</span></p>
+          </div>
+          <div class="order-addr-note">
+            <svg class="ico ico--20" data-icon="home" aria-hidden="true"></svg>
+            <p>הכתובת הרשומה אצלכם במשרד הפנים: <strong id="moin-short">באר שבע, רחוב העצמאות 10</strong></p>
+          </div>
+          <div class="order-chips" role="group" aria-label="סינון לפי סוג מסירה">
+            <button type="button" class="chip" data-group="all" aria-pressed="true">הכל</button>
+            <button type="button" class="chip" data-group="pickup" aria-pressed="false">איסוף עצמי</button>
+            <button type="button" class="chip" data-group="home" aria-pressed="false">משלוח עד הבית</button>
+            <button type="button" class="chip" data-group="mail" aria-pressed="false">בדואר</button>
+          </div>
+          <div class="order-opts" id="method-list" role="radiogroup" aria-label="שיטת מסירה"></div>
+          <button type="button" class="link-btn order__compare" id="open-compare">השוואה מלאה בין השיטות</button>
+          <div class="sticky-actions order-actions">
+            <a class="back-link" href="status.html?s=S1"><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה למסך המצב</a>
+            <button type="button" class="btn btn--primary btn--m-block order-actions__next" id="next-1" disabled>המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
+          </div>
+        </section>
+
+        <!-- ===== שלב 2 – כתובת (P06) ===== -->
+        <section class="order__step" data-step="2" aria-labelledby="h-step2" hidden>
+          <!-- גרסה B – לא מורשה -->
+          <div class="order__head" data-auth="0">
+            <p class="muted order__kicker">כתובת למשלוח</p>
+            <h1 class="h1 h1--flow" id="h-step2" tabindex="-1">הרישיון יישלח לכתובת הרשומה במשרד הפנים</h1>
+          </div>
+          <div class="card order-locked" data-auth="0">
+            <span class="ibox ibox--navy order-locked__ibox"><svg class="ico" data-icon="lock" aria-hidden="true"></svg></span>
+            <p class="order-addr-big" data-moin-display>רחוב העצמאות 10, באר שבע</p>
+          </div>
+
+          <!-- גרסה A – מורשה -->
+          <h1 class="h1 h1--flow" id="h-step2a" tabindex="-1" data-auth="1">כתובת למשלוח</h1>
+          <div class="order-opts" role="radiogroup" aria-label="לאן לשלוח" data-auth="1">
+            <label class="opt-card"><input type="radio" name="addr" value="moin"><span class="stack order-opt__body order-opt__body--tight"><strong>שלחו לכתובת הרשומה במשרד הפנים</strong><span class="order-addr-big" data-moin-display>רחוב העצמאות 10, באר שבע</span></span></label>
+            <label class="opt-card"><input type="radio" name="addr" value="other"><strong>שלחו לכתובת אחרת</strong></label>
+          </div>
+          <div class="card order-form" id="other-form" data-auth="1">
+            <div class="g2 order-grid">
+              <div class="field"><label class="label" for="o-city">עיר</label><input id="o-city" class="input" autocomplete="address-level2" list="cities" data-other="city"><datalist id="cities"><option value="באר שבע"></option><option value="תל אביב-יפו"></option><option value="ירושלים"></option><option value="חיפה"></option></datalist></div>
+              <div class="field"><label class="label" for="o-st">רחוב</label><input id="o-st" class="input" autocomplete="address-line1" data-other="street"></div>
+            </div>
+            <div class="g3 order-grid">
+              <div class="field"><label class="label" for="o-h">מספר בית</label><input id="o-h" class="input input--num" inputmode="numeric" data-other="house"></div>
+              <div class="field"><label class="label" for="o-e">כניסה <span class="opt">(לא חובה)</span></label><input id="o-e" class="input" data-other="entrance"></div>
+              <div class="field"><label class="label" for="o-a">דירה <span class="opt">(לא חובה)</span></label><input id="o-a" class="input input--num" inputmode="numeric" data-other="apt"></div>
+            </div>
+            <div class="g3 order-grid">
+              <div class="field"><label class="label" for="o-z">מיקוד</label><input id="o-z" class="input input--num" inputmode="numeric" autocomplete="postal-code" data-other="zip"></div>
+              <div class="field"><label class="label" for="o-c">אצל <span class="opt">(לא חובה)</span></label><input id="o-c" class="input" data-other="care_of"></div>
+              <div class="field"><label class="label" for="o-p">נייד של המקבל</label><input id="o-p" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" maxlength="11" data-other="phone"></div>
+            </div>
+            <div class="field"><label class="label" for="o-mb">מה כתוב על תיבת הדואר? <span class="opt">(שם / מספר)</span></label><input id="o-mb" class="input" data-other="mailbox"></div>
+          </div>
+
+          <!-- משותף: פרטים לשליח -->
+          <div class="card order-form" id="extras-form">
+            <p class="order-form__t">פרטים שיעזרו לשליח <span class="opt">(לא חובה)</span></p>
+            <div class="g3 order-grid">
+              <div class="field"><label class="label" for="x-e">מספר כניסה</label><input id="x-e" class="input" data-extra="entrance"></div>
+              <div class="field"><label class="label" for="x-c">אצל</label><input id="x-c" class="input" data-extra="care_of"></div>
+              <div class="field"><label class="label" for="x-mb">מה כתוב על תיבת הדואר?</label><input id="x-mb" class="input" data-extra="mailbox"></div>
+            </div>
+          </div>
+
+          <div class="card order-why" data-auth="0">
+            <div class="acc">
+              <button type="button" class="acc__btn" id="why-btn" aria-expanded="false" aria-controls="why-panel"><span>למה אי אפשר לשנות כאן את הכתובת?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+              <div class="acc__panel" id="why-panel" role="region" aria-labelledby="why-btn" hidden>
+                <p>לפי הנחיות משרד התחבורה, רק מי שנדרש להצטלם מחדש רשאי לשלוח לכתובת אחרת. שינוי כתובת המגורים עצמה נעשה מול משרד הפנים.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="sticky-actions order-actions">
+            <button type="button" class="link-btn back-link" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
+            <button type="button" class="btn btn--primary btn--m-block order-actions__next" id="next-2">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
+          </div>
+        </section>
+
+        <!-- ===== שלב 3 – מועד ייצור (P07) ===== -->
+        <section class="order__step" data-step="3" aria-labelledby="h-step3" hidden>
+          <h1 class="h1 h1--flow" id="h-step3" tabindex="-1">כמעט סיימנו – מתי להעביר את הרישיון לייצור?</h1>
+          <div class="order-opts" role="radiogroup" aria-label="מועד ייצור">
+            <label class="opt-card"><input type="radio" name="prod" value="now"><span class="stack order-opt__body"><span class="row order-opt__title"><strong>ייצור מיידי</strong><span class="tag tag--rec">מומלץ</span></span><span>הרישיון ייכנס לקובץ הייצור הקרוב (כל בוקר ב-<span class="num" dir="ltr">07:00</span>). אחרי האישור לא ניתן יהיה לשנות כתובת או שיטת משלוח.</span><span class="order-mini-tl">היום ← ייצור <span class="num" dir="ltr">25.8</span> ב-<span class="num" dir="ltr">07:00</span> ← <span id="eta-short">מגיע עד 26.8</span></span></span></label>
+            <label class="opt-card"><input type="radio" name="prod" value="wait"><span class="stack order-opt__body"><span class="row order-opt__title"><strong>השאירו לי אפשרות לשנות</strong></span><span>אפשר לחזור ולשנות פרטים עד <span class="num" dir="ltr">26.8</span> בשעה <span class="num" dir="ltr">05:12</span>. הייצור יתחיל רק אחרי המועד הזה.</span><span class="order-mini-tl">עד <span class="num" dir="ltr">26.8, 05:12</span> אפשר לשנות ← ייצור <span class="num" dir="ltr">26.8</span> ב-<span class="num" dir="ltr">07:00</span> ← מאוחר ביום</span></span></label>
+          </div>
+          <div class="field order-terms">
+            <label class="check" for="terms"><input type="checkbox" id="terms" aria-invalid="false"><span>קראתי ואני מסכים/ה ל<button type="button" class="link-btn order-terms__link" id="open-terms">תנאי השימוש</button></span></label>
+          </div>
+          <div class="sticky-actions order-actions">
+            <button type="button" class="link-btn back-link" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
+            <button type="button" class="btn btn--primary btn--m-block order-actions__next order-actions__next--220" id="next-3">המשך לתשלום</button>
+          </div>
+        </section>
+
+        <!-- ===== שלב 4 – תשלום (P08) ===== -->
+        <section class="order__step" data-step="4" aria-labelledby="h-step4" hidden>
+          <h1 class="h1 h1--flow" id="h-step4" tabindex="-1">תשלום</h1>
+          <details class="card order-sum" id="order-sum" open>
+            <summary class="order-sum__s"><span>סיכום ההזמנה</span> <span>סה״כ לתשלום: <span class="num" dir="ltr" data-price-num>177</span> ₪</span></summary>
+            <dl class="order-sum__dl">
+              <div><dt>שיטה</dt><dd id="sum-method">משלוח מהיר עד הבית</dd></div>
+              <div><dt id="sum-addr-k">כתובת</dt><dd id="sum-addr">רחוב העצמאות 10, באר שבע</dd></div>
+              <div><dt>מועד ייצור</dt><dd id="sum-prod">ייצור מיידי – <span class="num" dir="ltr">25.8</span> ב-<span class="num" dir="ltr">07:00</span></dd></div>
+              <div><dt>סה״כ לתשלום</dt><dd class="order-sum__total"><span class="num" dir="ltr" data-price-num>177</span> ₪</dd></div>
+            </dl>
+          </details>
+          <div class="order-wallets">
+            <div class="g2 order-wallets__btns">
+              <button type="button" class="btn order-wallet order-wallet--apple" disabled>Apple Pay</button>
+              <button type="button" class="btn order-wallet order-wallet--google" disabled>Google Pay</button>
+            </div>
+            <p class="small muted">Apple Pay / Google Pay – <span class="tbc">בבדיקת היתכנות</span></p>
+          </div>
+          <div class="card order-form" id="cc-form">
+            <p class="order-form__t">או בכרטיס אשראי</p>
+            <div class="field"><label class="label" for="cc">מספר כרטיס</label><input id="cc" class="input input--num" inputmode="numeric" autocomplete="cc-number" maxlength="23"></div>
+            <div class="g3 order-grid">
+              <div class="field"><label class="label" for="exp">תוקף <span class="opt">(MM/YY)</span></label><input id="exp" class="input input--num" inputmode="numeric" autocomplete="cc-exp" maxlength="5"></div>
+              <div class="field"><label class="label" for="cvv">CVV</label><input id="cvv" class="input input--num" inputmode="numeric" autocomplete="cc-csc" maxlength="4"></div>
+              <div class="field"><label class="label" for="hid">ת״ז בעל הכרטיס</label><input id="hid" class="input input--num" inputmode="numeric" maxlength="9" autocomplete="off"></div>
+            </div>
+            <div class="g2 order-grid">
+              <div class="field"><label class="label" for="inv">שם לחשבונית</label><input id="inv" class="input" autocomplete="name"></div>
+              <div class="field"><label class="label" for="mail">מייל לחשבונית <span class="opt">(לא חובה)</span></label><input id="mail" class="input input--num" type="email" autocomplete="email"></div>
+            </div>
+            <p class="small order-secure"><svg class="ico ico--18" data-icon="lock" aria-hidden="true"></svg>התשלום מאובטח. פרטי הכרטיס לא נשמרים אצלנו.</p>
+          </div>
+          <div class="sticky-actions order-actions">
+            <button type="button" class="link-btn back-link" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
+            <button type="button" class="btn btn--primary btn--m-block order-actions__next order-actions__next--240" id="pay">תשלום ₪<span class="num" dir="ltr" data-price-num>177</span> וסיום</button>
+          </div>
+        </section>
+
+        <!-- ===== שלב 5 – אישור (P09) ===== -->
+        <section class="order__step" data-step="5" aria-labelledby="h-step5" hidden>
+          <div class="card order-done">
+            <span class="order-done__circle"><svg class="ico ico--48" data-icon="check" aria-hidden="true"></svg></span>
+            <h1 class="h1 h1--flow" id="h-step5" tabindex="-1">ההזמנה התקבלה!</h1>
+            <p class="order-done__num">מספר הזמנה: <strong class="num" dir="ltr" id="order-number">FD-2026-0841273</strong><button type="button" class="icon-btn icon-btn--ghost" id="copy-order" aria-label="העתקת מספר ההזמנה"><svg class="ico ico--20" data-icon="copy" aria-hidden="true"></svg></button></p>
+            <div class="order-done__next">
+              <p class="order-done__t">מה קורה עכשיו</p>
+              <ol class="order-done__tl">
+                <li>ייצור <span class="num" dir="ltr" id="done-prod">25.8, 07:00</span></li><li aria-hidden="true" class="order-done__arr">←</li><li id="done-mid">משלוח</li><li aria-hidden="true" class="order-done__arr">←</li><li id="done-eta">מגיע עד 26.8</li>
+              </ol>
+            </div>
+            <p class="order-done__sms"><svg class="ico ico--20" data-icon="message" aria-hidden="true"></svg>שלחנו לכם SMS עם הפרטים.</p>
+            <div class="order-done__btns">
+              <a class="btn btn--primary btn--m-block" id="done-status" href="status.html?s=S3">למסך המצב</a>
+              <button type="button" class="btn btn--secondary btn--m-block">הוסיפו ליומן</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+
+  <!-- ===== מגירות ===== -->
+  <aside class="drawer order-drawer" id="dr-method" role="dialog" aria-modal="true" aria-labelledby="dr-method-t" hidden>
+    <div class="dialog__head"><h2 id="dr-method-t" data-dialog-title tabindex="-1" class="drawer__title">פרטי השיטה</h2><button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button></div>
+    <dl class="kv-list" id="dr-method-dl"></dl>
+    <button type="button" class="btn btn--secondary" data-close-dialog>חזרה להזמנה</button>
+  </aside>
+
+  <aside class="drawer order-drawer" id="dr-compare" role="dialog" aria-modal="true" aria-labelledby="dr-compare-t" hidden>
+    <div class="dialog__head"><h2 id="dr-compare-t" data-dialog-title tabindex="-1" class="drawer__title">השוואה בין שיטות המסירה</h2><button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button></div>
+    <div class="order-tbl-wrap"><table class="order-tbl"><thead><tr><th scope="col">שיטה</th><th scope="col">זמן</th><th scope="col">מחיר</th><th scope="col">מעקב</th></tr></thead><tbody id="compare-body"></tbody></table></div>
+    <p class="small muted">לא בחרתם עד סוף 48 השעות? הרישיון יישלח בדואר רגיל, ללא מעקב.</p>
+    <button type="button" class="btn btn--secondary" data-close-dialog>חזרה להזמנה</button>
+  </aside>
+
+  <aside class="drawer order-drawer" id="dr-terms" role="dialog" aria-modal="true" aria-labelledby="dr-terms-t" hidden>
+    <div class="dialog__head"><h2 id="dr-terms-t" data-dialog-title tabindex="-1" class="drawer__title">תנאי השימוש</h2><button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button></div>
+    <p><span class="tbc">[נוסח תנאי השימוש – לבדיקה משפטית]</span></p>
+    <p class="muted">הבחירות שלכם נשמרו. אפשר לסגור את החלון ולהמשיך מאותה נקודה.</p>
+    <button type="button" class="btn btn--secondary" data-close-dialog>חזרה להזמנה</button>
+  </aside>
+</body>
+</html>

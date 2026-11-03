@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>בדיקת מצב והזמנת משלוח – הזדהות – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/auth.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/validation.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/auth.js"></script>
+</head>
+<body data-page="login">
+  <div class="page">
+    <div data-slot="header"></div>
+    <div data-slot="demo-bar"></div>
+    <main id="main" tabindex="-1" class="auth-page">
+      <div class="wrap auth-grid">
+        <form class="card auth-card" id="login-form" novalidate>
+          <div class="auth-card__head">
+            <h1 class="h1 auth-card__title">בדיקת מצב והזמנת משלוח</h1>
+            <p class="lead muted">הזינו שני פרטים ונציג לכם את המידע העדכני ביותר שיש אצלנו.</p>
+          </div>
+          <div class="field">
+            <label class="label" for="au-id">מספר תעודת זהות</label>
+            <input id="au-id" class="input input--num" inputmode="numeric" autocomplete="off" maxlength="9" aria-invalid="false" aria-describedby="au-id-help">
+            <p id="au-id-help" class="help">9 ספרות, כולל ספרת ביקורת</p>
+          </div>
+          <div class="field">
+            <label class="label" for="au-ph">מספר טלפון נייד</label>
+            <input id="au-ph" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" maxlength="11" aria-invalid="false">
+          </div>
+          <button type="submit" class="btn btn--primary btn--m-block auth-card__submit auth-card__submit--wide" id="login-submit" aria-busy="false">שלחו לי קוד אימות</button>
+          <p class="small muted">נשלח קוד ב-SMS לנייד שהזנתם. לא נשתמש במספר לשום מטרה אחרת.</p>
+        </form>
+        <aside class="card auth-side" aria-labelledby="why-a">
+          <h2 id="why-a" class="auth-side__title">למה אנחנו מבקשים גם טלפון?</h2>
+          <ul class="auth-side__list">
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="shield-check" aria-hidden="true"></svg></span><p>כדי לאמת שאתם בעלי הבקשה.</p></li>
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="message" aria-hidden="true"></svg></span><p>כדי לעדכן אתכם ב-SMS כשהבקשה מגיעה, כשהיא יורדת לייצור וכשהיא נשלחת.</p></li>
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="camera" aria-hidden="true"></svg></span><p>אם הצטלמתם – כדי להשוות למספר שמסרתם בתחנת הצילום.</p></li>
+          </ul>
+          <p class="small auth-side__help">צריכים עזרה? מוקד שירות <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a></p>
+        </aside>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

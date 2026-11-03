@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>רישיון עד הבית – בדיקת מצב והזמנת משלוח</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/home.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/validation.js"></script>
+  <script defer src="js/pages/home.js"></script>
+</head>
+<body data-page="home">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1">
+      <section class="home-hero">
+        <div class="wrap home-hero__grid g-hero">
+          <div class="home-hero__text">
+            <h1 class="h1 home-hero__title">סיימתם לשלם על הרישיון?<br><span class="accent">כאן בוחרים איך הוא יגיע אליכם</span></h1>
+            <p class="home-hero__lead">אחרי תשלום האגרה והצילום (אם נדרש), הבקשה מגיעה אלינו ממשרד התחבורה. מאותו רגע יש לכם 48 שעות (בימי עסקים) לבחור משלוח מהיר או איסוף עצמי.</p>
+            <form class="card card--raised id-card" id="id-form" novalidate aria-labelledby="id-form-t">
+              <h2 class="id-card__title" id="id-form-t">בדיקת מצב והזמנת משלוח</h2>
+              <div class="field">
+                <label class="label" for="hb-id">מספר תעודת זהות</label>
+                <input id="hb-id" name="id" class="input input--num" inputmode="numeric" autocomplete="off" aria-invalid="false">
+              </div>
+              <div class="field">
+                <label class="label" for="hb-ph">מספר טלפון נייד</label>
+                <input id="hb-ph" name="phone" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" aria-invalid="false">
+              </div>
+              <div id="id-form-action">
+                <button type="submit" class="btn btn--primary btn--block" id="id-submit">שלחו לי קוד אימות</button>
+              </div>
+              <p class="small muted">נשלח קוד ב-SMS לנייד שהזנתם. לא נשתמש במספר לשום מטרה אחרת. <button type="button" class="link-btn" id="why-btn" data-open-dialog="why-drawer">למה אנחנו מבקשים את זה?</button></p>
+            </form>
+          </div>
+          <div class="hero-art hide-m">
+            <div class="hero-art__circle" aria-hidden="true"></div>
+            <figure class="hero-art__card" role="img" aria-label="איור של כרטיס רישיון כללי – דוגמה">
+              <div class="hero-art__head"><span class="hero-art__name">רישיון נהיגה</span><span class="hero-art__bars" aria-hidden="true"><span></span><span></span><span></span></span></div>
+              <div class="hero-art__body">
+                <div class="hero-art__photo"><svg viewBox="0 0 92 116" aria-hidden="true" focusable="false"><circle cx="46" cy="44" r="20" fill="#9DB7C6"></circle><path d="M10 116c4-26 18-40 36-40s32 14 36 40z" fill="#9DB7C6"></path></svg></div>
+                <div class="hero-art__lines"><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+            </figure>
+            <span class="hero-art__tag" aria-hidden="true">דוגמה</span>
+            <div class="card hero-art__sms" aria-hidden="true"><span class="ibox ibox--40 ibox--success"><svg class="ico ico--20" data-icon="message" aria-hidden="true"></svg></span><span class="hero-art__sms-text"><span class="hero-art__sms-t">SMS: הבקשה התקבלה</span><span class="hero-art__sms-d">אפשר לבחור משלוח או איסוף</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-alt" aria-label="כניסה משנית">
+        <div class="wrap">
+          <div class="card home-alt__card">
+            <p class="home-alt__q">עדיין לא שילמתם או לא בטוחים מה לעשות?</p>
+            <div class="home-alt__actions">
+              <a class="btn btn--secondary" href="guide.html">מה עלי לעשות עכשיו?</a>
+              <a class="home-alt__link" href="fastest.html">צריכים את הרישיון בדחיפות? ←</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-how" aria-labelledby="how-b">
+        <div class="wrap">
+          <div class="card home-how__card">
+            <h2 id="how-b" class="h2 home-how__title">איך זה עובד?</h2>
+            <ol class="g4 home-how__list">
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary home-how__ico"><svg class="ico ico--28" data-icon="monitor" aria-hidden="true"></svg><span class="home-how__num">1</span></span><p>תשלום האגרה באתר משרד התחבורה</p></li>
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary home-how__ico"><svg class="ico ico--28" data-icon="camera" aria-hidden="true"></svg><span class="home-how__num">2</span></span><p>צילום בתחנה מורשית – אם נדרש</p></li>
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary home-how__ico"><svg class="ico ico--28" data-icon="building" aria-hidden="true"></svg><span class="home-how__num">3</span></span><p>הבקשה עוברת אלינו – בדרך כלל למחרת בבוקר</p></li>
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary home-how__ico"><svg class="ico ico--28" data-icon="clock" aria-hidden="true"></svg><span class="home-how__num">4</span></span><p>בוחרים משלוח או איסוף תוך 48 שעות</p></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-trust" aria-label="למה אפשר לסמוך עלינו">
+        <div class="wrap">
+          <ul class="g4 home-trust__list">
+            <li><svg class="ico ico--28" data-icon="lock" aria-hidden="true"></svg><p class="home-trust__t">האתר הרשמי לבחירת אופן קבלת הרישיון</p></li>
+            <li><svg class="ico ico--28" data-icon="shield-check" aria-hidden="true"></svg><p class="home-trust__t">שירות מאובטח</p></li>
+            <li><svg class="ico ico--28" data-icon="clock" aria-hidden="true"></svg><p class="home-trust__t">48 שעות לבחירה מרגע קבלת הבקשה</p></li>
+            <li><svg class="ico ico--28" data-icon="headset" aria-hidden="true"></svg><p><a class="home-trust__phone" href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a><br><span class="small muted">א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span> · שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></span></p></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="home-more" aria-labelledby="more-b">
+        <div class="wrap home-more__wrap">
+          <h2 id="more-b" class="h2 home-more__title">רוצים להבין עוד?</h2>
+          <div class="card home-more__card" id="home-acc">
+            <div class="acc">
+              <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b0"><span>איך מתנהל התהליך מרגע התשלום ועד קבלת התעודה?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+              <div class="acc__panel" id="acc-b0" hidden><p>משלמים את האגרה למשרד התחבורה ומצטלמים אם נדרש. ביום העסקים הבא, לפנות בוקר, הבקשה מגיעה אלינו ונשלח לכם SMS. מאותו רגע יש 48 שעות בימי עסקים לבחור משלוח או איסוף. אם לא בחרתם – הרישיון יישלח בדואר רגיל, ללא מעקב.</p></div>
+            </div>
+            <div class="acc">
+              <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b1"><span>מי מפעיל את האתר ולפי אילו הנחיות?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+              <div class="acc__panel" id="acc-b1" hidden><p>דפוס בארי מייצר רישיונות נהיגה, רישיונות משיט ותגי חניה לנכה עבור משרד התחבורה, לפי מכרז והנחיות המדינה. השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו. <a href="about.html">עוד על השירות</a></p></div>
+            </div>
+            <div class="acc">
+              <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b2"><span>כמה עולה כל שיטת מסירה?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+              <div class="acc__panel" id="acc-b2" hidden><p>איסוף מדפוס בארי ודואר רגיל – ללא עלות. דואר רשום <span class="num" dir="ltr">14.99</span> ₪, משלוח רגיל עד הבית <span class="num" dir="ltr">41</span> ₪, איסוף מנתב״ג <span class="num" dir="ltr">118</span> ₪, משלוח מהיר עד הבית <span class="num" dir="ltr">177</span> ₪. <a href="delivery.html">להשוואה המלאה</a></p></div>
+            </div>
+            <div class="acc">
+              <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b3"><span>איך תדעו שזה אנחנו?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+              <div class="acc__panel" id="acc-b3" hidden>
+                <ul class="check-list">
+                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>הודעות ה-SMS שלנו נשלחות מהשולח <span class="tbc">[שם שולח לאישור]</span>.</span></li>
+                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האתר שלנו נמצא רק בכתובת <strong class="num" dir="ltr">fastdl.co.il</strong>.</span></li>
+                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>לא נבקש מכם פרטי אשראי בהודעת SMS או בטלפון.</span></li>
+                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האגרה משולמת למשרד התחבורה. אצלנו משלמים רק על משלוח מהיר – אם בחרתם בו.</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+
+  <aside class="drawer" id="why-drawer" role="dialog" aria-modal="true" aria-labelledby="why-t" hidden>
+    <div class="dialog__head">
+      <h2 id="why-t" class="drawer__title" data-dialog-title tabindex="-1">למה אנחנו מבקשים גם טלפון?</h2>
+      <button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button>
+    </div>
+    <ul class="why-list">
+      <li><span class="ibox ibox--40 ibox--primary"><svg class="ico ico--20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><p>כדי לאמת שאתם בעלי הבקשה.</p></li>
+      <li><span class="ibox ibox--40 ibox--primary"><svg class="ico ico--20" data-icon="message" aria-hidden="true"></svg></span><p>כדי לעדכן אתכם ב-SMS כשהבקשה מגיעה, כשהיא יורדת לייצור וכשהיא נשלחת.</p></li>
+      <li><span class="ibox ibox--40 ibox--primary"><svg class="ico ico--20" data-icon="camera" aria-hidden="true"></svg></span><p>אם הצטלמתם – כדי להשוות למספר שמסרתם בתחנת הצילום.</p></li>
+    </ul>
+    <button type="button" class="btn btn--secondary" data-close-dialog>הבנתי, חזרה לטופס</button>
+  </aside>
+</body>
+</html>

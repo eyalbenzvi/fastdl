@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מערכת עיצוב – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/ds.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/design-system.js"></script>
+</head>
+<body data-page="design-system">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="ds">
+      <div class="wrap ds__inner">
+
+        <header class="ds-head">
+          <div class="ds-head__text">
+            <p class="ds-sec">אב-טיפוס · שלב 1</p>
+            <h1 class="h-hero ds-head__title">מערכת עיצוב – רישיון עד הבית</h1>
+            <p class="lead muted ds-head__lead">רכיבי הבסיס שעליהם נבנים כל המסכים. שירות רשמי, נקי ומרווח: כפתור Primary אחד לכל מסך, מספרים בכיוון LTR, ניגודיות AA ופוקוס גלוי.</p>
+          </div>
+          <span class="wordmark ds-wordmark--lg">
+            <span class="wordmark__text"><span class="wordmark__name">רישיון עד הבית</span><span class="wordmark__sub">מבית דפוס בארי</span></span>
+            <span class="wordmark__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          </span>
+        </header>
+
+        <!-- צבעים -->
+        <section class="ds-block" aria-labelledby="ds-colors">
+          <h2 class="h2" id="ds-colors">צבעים</h2>
+          <ul class="ds-swatches">
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--navy"></span><div class="ds-sw__body"><p class="ds-sw__name">Navy</p><p class="num small muted ds-sw__hex">#15324A</p><p class="small muted">כותרות, טקסט, Footer</p></div></li>
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--primary"></span><div class="ds-sw__body"><p class="ds-sw__name">Primary</p><p class="num small muted ds-sw__hex">#0351E0</p><p class="small muted">כל כפתורי ה-Primary</p></div></li>
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--cyan"></span><div class="ds-sw__body"><p class="ds-sw__name">Brand Cyan</p><p class="num small muted ds-sw__hex">#10A9E0</p><p class="small ds-sw__warn">דקורטיבי בלבד</p></div></li>
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--guide"></span><div class="ds-sw__body"><p class="ds-sw__name">Guide</p><p class="num small muted ds-sw__hex">#5B1FA7</p><p class="small muted">אקסנט למדריך</p></div></li>
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--navy50"></span><div class="ds-sw__body"><p class="ds-sw__name">Navy 50</p><p class="num small muted ds-sw__hex">#EDF3F6</p><p class="small muted">פס אמון</p></div></li>
+            <li class="card ds-sw"><span class="ds-sw__chip ds-sw__chip--focus"></span><div class="ds-sw__body"><p class="ds-sw__name">Focus</p><p class="num small muted ds-sw__hex">#FFB020</p><p class="small muted">טבעת פוקוס 3px</p></div></li>
+          </ul>
+          <ul class="ds-sem">
+            <li class="ds-sem__item ds-sem__item--success"><span class="ds-sem__dot"></span><div><p class="ds-sem__name">Success</p><p class="num small">#1E7F52 / #F1FAF4</p></div></li>
+            <li class="ds-sem__item ds-sem__item--warning"><span class="ds-sem__dot"></span><div><p class="ds-sem__name">Warning</p><p class="num small">#8A5A12 / #FFF6E8</p></div></li>
+            <li class="ds-sem__item ds-sem__item--danger"><span class="ds-sem__dot"></span><div><p class="ds-sem__name">Danger</p><p class="num small">#B53A3A / #FDF1F1</p></div></li>
+            <li class="ds-sem__item ds-sem__item--info"><span class="ds-sem__dot"></span><div><p class="ds-sem__name">Info</p><p class="num small">#0A6E92 / #EAF6FB</p></div></li>
+            <li class="ds-sem__item ds-sem__item--neutral"><span class="ds-sem__dot"></span><div><p class="ds-sem__name">Neutral</p><p class="num small">#5A6772 / #EEF2F4</p></div></li>
+          </ul>
+        </section>
+
+        <!-- טיפוגרפיה + עמודה צדדית -->
+        <section class="ds-grid ds-grid--type">
+          <div class="card ds-card ds-type" aria-labelledby="ds-typo">
+            <h2 class="h2" id="ds-typo">טיפוגרפיה · Heebo</h2>
+            <div class="ds-type__row"><span class="ds-type__k num">H1 40/28</span><span class="h1">סיימתם לשלם על הרישיון?</span></div>
+            <div class="ds-type__row"><span class="ds-type__k num">H2 28/22</span><span class="h2">איך זה עובד?</span></div>
+            <div class="ds-type__row"><span class="ds-type__k num">H3 20/18</span><span class="h3">בדיקת מצב התעודה שלי</span></div>
+            <div class="ds-type__row"><span class="ds-type__k num">גוף 18/17</span><span class="lead">בקשות מגיעות אלינו פעם ביום, לפנות בוקר. גובה שורה 1.6.</span></div>
+            <div class="ds-type__row"><span class="ds-type__k num">קטן 15</span><span class="small muted">טקסט עזר ותוויות משניות בלבד – לא לגוף.</span></div>
+            <div class="ds-type__row"><span class="ds-type__k">מספרים</span><span class="lead">מספר הזמנה: <strong><span class="num" dir="ltr">FD-2026-0841273</span></strong> · מוקד: <span class="num" dir="ltr">077-998-5095</span></span></div>
+          </div>
+          <div class="ds-side">
+            <div class="card ds-card ds-card--sm">
+              <h3 class="h3">חיצים ב-RTL</h3>
+              <div class="row ds-row-12">
+                <span class="btn btn--primary">המשך<svg class="ico" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></span>
+                <span class="btn btn--secondary"><svg class="ico" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</span>
+              </div>
+              <p class="small muted">קדימה = חץ שמאלה. חזרה = חץ ימינה.</p>
+            </div>
+            <div class="card ds-card ds-card--sm">
+              <h3 class="h3">סימון ערכים לאישור</h3>
+              <p>מה קורה אם לא אוספים בזמן? <span class="tbc">[נוסח לאישור]</span></p>
+              <p class="small muted">כל ערך שלא אושר נשאר מודגש וקל לאיתור.</p>
+            </div>
+            <div class="card ds-card ds-card--sm">
+              <h3 class="h3">לוגו משרד התחבורה</h3>
+              <span class="ds-mot">לוגו משרד התחבורה – בכפוף לאישור</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- כפתורים + שדות -->
+        <section class="ds-grid ds-grid--2">
+          <div class="card ds-card">
+            <h2 class="h2">כפתורים</h2>
+            <div class="ds-btns">
+              <div class="ds-btns__cell"><span class="ds-sec">PRIMARY · רגיל</span><button type="button" class="btn btn--primary">לבחירת משלוח או איסוף</button></div>
+              <div class="ds-btns__cell"><span class="ds-sec">HOVER</span><span class="btn btn--primary ds-is-hover">לבחירת משלוח או איסוף</span></div>
+              <div class="ds-btns__cell"><span class="ds-sec">FOCUS</span><span class="btn btn--primary ds-is-focus">לבחירת משלוח או איסוף</span></div>
+              <div class="ds-btns__cell"><span class="ds-sec">DISABLED</span><button type="button" class="btn btn--primary" disabled>המשך</button></div>
+              <div class="ds-btns__cell"><span class="ds-sec">LOADING</span><span class="btn btn--primary" aria-busy="true"><svg class="ico spin" data-icon="spinner" aria-hidden="true"></svg>שולחים קוד…</span></div>
+              <div class="ds-btns__cell"><span class="ds-sec">SECONDARY</span><button type="button" class="btn btn--secondary">מה עלי לעשות עכשיו?</button></div>
+            </div>
+            <p class="small muted">גובה <span class="num" dir="ltr">52px</span> · פינות <span class="num" dir="ltr">12px</span> · ברוחב מלא במובייל. קישור טקסט: <a href="#">תמיד עם קו תחתון</a>.</p>
+          </div>
+          <div class="card ds-card">
+            <h2 class="h2">שדות קלט</h2>
+            <div class="field">
+              <label class="label" for="ds-id">מספר תעודת זהות</label>
+              <input id="ds-id" class="input input--num" inputmode="numeric" value="000000018" aria-describedby="ds-id-h">
+              <p id="ds-id-h" class="help">9 ספרות, כולל ספרת ביקורת</p>
+            </div>
+            <div class="field">
+              <label class="label" for="ds-ph">מספר טלפון נייד</label>
+              <input id="ds-ph" class="input input--num" inputmode="tel" value="054-12345" aria-invalid="true" aria-describedby="ds-ph-err">
+              <p id="ds-ph-err" class="error" role="alert"><svg class="ico ico--18" data-icon="alert-circle" aria-hidden="true"></svg><span>מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.</span></p>
+            </div>
+            <div class="field">
+              <label class="label" for="ds-ent">מספר כניסה <span class="opt">(לא חובה)</span></label>
+              <input id="ds-ent" class="input">
+            </div>
+          </div>
+        </section>
+
+        <!-- תגים + ציר -->
+        <section class="ds-grid ds-grid--tags">
+          <div class="card ds-card ds-card--tags">
+            <h2 class="h2">תגי סטטוס</h2>
+            <p class="small muted">תמיד אייקון + מילה. הצבע לבד לא נושא משמעות.</p>
+            <div class="ds-badges">
+              <span class="badge badge--success"><svg class="ico ico--18" data-icon="check" aria-hidden="true"></svg>אפשר להזמין</span>
+              <span class="badge badge--info"><svg class="ico ico--18" data-icon="order-done" aria-hidden="true"></svg>הזמנה בוצעה</span>
+              <span class="badge badge--navy"><svg class="ico ico--18" data-icon="gear-production" aria-hidden="true"></svg>בייצור</span>
+              <span class="badge badge--ship"><svg class="ico ico--18" data-icon="truck" aria-hidden="true"></svg>בדרך אליכם</span>
+              <span class="badge badge--success"><svg class="ico ico--18" data-icon="home-check" aria-hidden="true"></svg>מחכה לכם</span>
+              <span class="badge badge--warning"><svg class="ico ico--18" data-icon="alert-triangle" aria-hidden="true"></svg>לא אושרה מסירה</span>
+              <span class="badge badge--danger"><svg class="ico ico--18" data-icon="x-circle" aria-hidden="true"></svg>המסירה נכשלה</span>
+              <span class="badge badge--neutral"><svg class="ico ico--18" data-icon="search" aria-hidden="true"></svg>לא נמצאה בקשה</span>
+            </div>
+          </div>
+          <div class="card ds-card ds-card--tl">
+            <h2 class="h2">ציר התקדמות</h2>
+            <p class="small muted">דוגמה: מצב S3 – בייצור. מתחיל מימין. הושלם = וי ממולא · נוכחי = טבעת עם פעימה · עתידי = אפור.</p>
+            <div class="timeline ds-tl">
+              <span class="timeline__track" aria-hidden="true"></span>
+              <span class="timeline__fill ds-tl__fill" aria-hidden="true"></span>
+              <ol class="ds-tl__list" aria-label="שלבי הטיפול בבקשה">
+                <li class="timeline__step timeline__step--done"><span class="timeline__dot"><svg class="ico ico--18 ds-ico-bold" data-icon="check" aria-hidden="true"></svg></span><span>הבקשה התקבלה</span></li>
+                <li class="timeline__step timeline__step--done"><span class="timeline__dot"><svg class="ico ico--18 ds-ico-bold" data-icon="check" aria-hidden="true"></svg></span><span>בחירת משלוח</span></li>
+                <li class="timeline__step timeline__step--current" aria-current="step"><span class="timeline__dot"></span><span>בייצור</span></li>
+                <li class="timeline__step timeline__step--future"><span class="timeline__dot"></span><span>נשלחה</span></li>
+                <li class="timeline__step timeline__step--future"><span class="timeline__dot"></span><span>נמסרה</span></li>
+              </ol>
+            </div>
+            <div class="ds-steppers">
+              <div class="ds-steppers__col">
+                <span class="ds-sec">STEPPER · דסקטופ</span>
+                <ol class="stepper ds-stepper" aria-label="שלבי ההזמנה">
+                  <li class="stepper__item stepper__item--done"><span class="stepper__num"><svg class="ico ico--16 ds-ico-bold" data-icon="check" aria-hidden="true"></svg></span><span class="stepper__label">משלוח</span></li>
+                  <li class="stepper__sep" aria-hidden="true"></li>
+                  <li class="stepper__item stepper__item--current" aria-current="step"><span class="stepper__num">2</span><span class="stepper__label">כתובת</span></li>
+                  <li class="stepper__sep" aria-hidden="true"></li>
+                  <li class="stepper__item"><span class="stepper__num">3</span><span class="stepper__label">מועד ייצור</span></li>
+                  <li class="stepper__sep" aria-hidden="true"></li>
+                  <li class="stepper__item"><span class="stepper__num">4</span><span class="stepper__label">תשלום</span></li>
+                </ol>
+              </div>
+              <div class="ds-steppers__col">
+                <span class="ds-sec">STEPPER · מובייל</span>
+                <div class="stepper-m ds-stepper-m">
+                  <p class="ds-stepper-m__t">שלב 2 מתוך 4 – כתובת</p>
+                  <div class="stepper-m__bar" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="4" aria-label="התקדמות בהזמנה"><span class="ds-w-50"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Callouts -->
+        <section class="g3 ds-callouts" aria-label="הודעות">
+          <div class="callout callout--info" role="note"><svg class="ico" data-icon="info" aria-hidden="true"></svg><div><p class="callout__title">לידיעתכם</p><p>בקשות מגיעות אלינו פעם ביום, לפנות בוקר.</p></div></div>
+          <div class="callout callout--warning" role="note"><svg class="ico" data-icon="alert-triangle" aria-hidden="true"></svg><div><p class="callout__title">שימו לב</p><p>אם לא תבחרו עד המועד הזה, הרישיון יישלח בדואר רגיל ללא מעקב, לכתובת הרשומה במשרד הפנים.</p></div></div>
+          <div class="callout callout--success" role="note"><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><div><p class="callout__title">אתם זכאים</p><p>אתם זכאים להנפקה חוזרת ללא עלות.</p></div></div>
+        </section>
+
+        <!-- כרטיס זמן + kv / radio cards -->
+        <section class="ds-grid ds-grid--2">
+          <div class="ds-col">
+            <h2 class="h2">כרטיס זמן וכרטיס פרטים</h2>
+            <div class="card ds-time">
+              <span class="ibox ibox--52 ibox--primary ds-time__ibox"><svg class="ico ico--28" data-icon="clock" aria-hidden="true"></svg></span>
+              <div><p class="lead">אפשר להזמין עד <strong>יום ד׳, <span class="num" dir="ltr">26.8.2026</span> בשעה <span class="num" dir="ltr">05:12</span></strong></p><p class="muted">נותרו כ-27 שעות</p></div>
+            </div>
+            <div class="card ds-kv-card">
+              <dl class="kv">
+                <div><dt>סוג תעודה</dt><dd>רישיון נהיגה</dd></div>
+                <div><dt>התקבלה אצלנו</dt><dd>יום ב׳, <span class="num" dir="ltr">24.8.2026, 05:12</span></dd></div>
+                <div><dt>כתובת במשרד הפנים</dt><dd>רחוב העצמאות 10, באר שבע</dd></div>
+                <div><dt>מספר הזמנה</dt><dd><span class="copy-row"><span class="num" dir="ltr">FD-2026-0841273</span><button type="button" class="icon-btn icon-btn--ghost" aria-label="העתקת מספר ההזמנה" data-copy="FD-2026-0841273"><svg class="ico ico--20" data-icon="copy" aria-hidden="true"></svg></button></span></dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="ds-col">
+            <h2 class="h2">כרטיס בחירה (Radio card)</h2>
+            <label class="opt-card ds-opt">
+              <input type="radio" name="ds-m" checked>
+              <span class="ibox ibox--44 ds-opt__ibox"><svg class="ico" data-icon="truck" aria-hidden="true"></svg></span>
+              <span class="ds-opt__body">
+                <span class="ds-opt__head"><span class="ds-opt__t">משלוח מהיר עד הבית</span><span class="tag tag--fast">הכי מהיר עד הבית</span></span>
+                <span class="ds-opt__eta">יגיע עד יום ד׳ <span class="num" dir="ltr">26.8</span></span>
+                <span class="small muted">למי שצריך/ה את הרישיון מחר, בלי לצאת מהבית</span>
+              </span>
+              <span class="ds-opt__price"><span class="num" dir="ltr">177</span> ₪</span>
+            </label>
+            <label class="opt-card ds-opt">
+              <input type="radio" name="ds-m">
+              <span class="ibox ibox--44 ds-opt__ibox"><svg class="ico" data-icon="mail" aria-hidden="true"></svg></span>
+              <span class="ds-opt__body">
+                <span class="ds-opt__head"><span class="ds-opt__t">דואר רגיל</span><span class="tag tag--free">ללא עלות</span><span class="tag tag--notrack">ללא מעקב</span></span>
+                <span class="ds-opt__eta">יגיע עד <span class="num" dir="ltr">14.9</span></span>
+                <span class="small muted">נמסר לתיבה רק אם יש עליה שם מזהה</span>
+              </span>
+              <span class="ds-opt__price ds-opt__price--free">ללא עלות</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- אקורדיון + Header מובייל -->
+        <section class="ds-grid ds-grid--2">
+          <div class="ds-col">
+            <h2 class="h2">אקורדיון</h2>
+            <div class="card ds-acc" id="ds-acc">
+              <div class="acc">
+                <button type="button" class="acc__btn" aria-expanded="true" aria-controls="ds-acc-1"><span>איך תדעו שזה אנחנו?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+                <div class="acc__panel" id="ds-acc-1">
+                  <ul class="check-list">
+                    <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>הודעות ה-SMS שלנו נשלחות מהשולח <span class="tbc">[שם שולח לאישור]</span>.</span></li>
+                    <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האתר שלנו נמצא רק בכתובת <strong class="num" dir="ltr">fastdl.co.il</strong>.</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="acc">
+                <button type="button" class="acc__btn" aria-expanded="false" aria-controls="ds-acc-2"><span>כמה עולה כל שיטת מסירה?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
+                <div class="acc__panel" id="ds-acc-2" hidden>איסוף מדפוס בארי ודואר רגיל – ללא עלות. דואר רשום <span class="num" dir="ltr">14.99</span> ₪, משלוח רגיל עד הבית <span class="num" dir="ltr">41</span> ₪, איסוף מנתב״ג <span class="num" dir="ltr">118</span> ₪, משלוח מהיר עד הבית <span class="num" dir="ltr">177</span> ₪. <a href="delivery.html">להשוואה המלאה</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="ds-col">
+            <h2 class="h2">Header · מובייל</h2>
+            <div class="card ds-mhead">
+              <div class="ds-mhead__bar">
+                <span class="wordmark ds-wordmark--sm">
+                  <span class="wordmark__text"><span class="wordmark__name">רישיון עד הבית</span><span class="wordmark__sub">מבית דפוס בארי</span></span>
+                  <span class="wordmark__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+                </span>
+                <div class="header-tools-m ds-mhead__tools">
+                  <a class="header-phone-m" href="tel:0779985095" aria-label="חיוג למוקד 077-998-5095"><svg class="ico" data-icon="phone" aria-hidden="true"></svg></a>
+                  <button type="button" class="menu-btn" aria-expanded="false" data-ds-menu><svg class="ico" data-icon="menu" aria-hidden="true"></svg>תפריט</button>
+                </div>
+              </div>
+              <div class="ds-mhead__trust"><svg class="ico ico--18" data-icon="shield-check" aria-hidden="true"></svg>בהרשאת משרד התחבורה</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מצב הבקשה – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/status.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/status.js"></script>
+</head>
+<body data-page="status">
+  <div class="page">
+    <div data-slot="header"></div>
+    <div data-slot="demo-bar"></div>
+    <main id="main" tabindex="-1" class="status-page">
+      <div class="wrap wrap--status stack-6" id="status-root">
+        <noscript><p>כדי לראות את מצב הבקשה יש להפעיל JavaScript בדפדפן.</p></noscript>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+
+  <div class="modal docs-modal" id="docs-modal" role="dialog" aria-modal="true" aria-labelledby="docs-h" hidden>
+    <div class="dialog__head">
+      <h2 id="docs-h" class="h2" data-dialog-title tabindex="-1">איך יודעים אם צריך להצטלם?</h2>
+      <button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button>
+    </div>
+    <p>בטופס האגרה וברישיון הזמני שנשלח במייל יש ריבוע אדום בצד שמאל. הוא אומר אם צריך להצטלם.</p>
+    <div class="g2 docs-modal__grid">
+      <figure class="docs-modal__fig">
+        <img src="img/docs/temp_license_photo_REQUIRED_example.jpg" alt="דוגמה מושחרת של רישיון זמני: בריבוע האדום כתוב שיש לשלם את האגרה ולהצטלם בתחנת הצילום">
+        <figcaption class="docs-modal__cap docs-modal__cap--req"><svg class="ico ico--20" data-icon="camera" aria-hidden="true"></svg>צריך להצטלם</figcaption>
+      </figure>
+      <figure class="docs-modal__fig">
+        <img src="img/docs/fee_letter_photo_ON_FILE_example.jpg" alt="דוגמה מושחרת של טופס אגרה: בריבוע האדום כתוב שתמונתכם נמצאת במחשב">
+        <figcaption class="docs-modal__cap docs-modal__cap--ok"><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg>לא צריך להצטלם</figcaption>
+      </figure>
+    </div>
+    <a href="#" target="_blank" rel="noopener" class="ext-link">לרשימת תחנות הצילום<svg class="ico ico--16" data-icon="external-link" aria-hidden="true"></svg><span class="sr-only">(נפתח בלשונית חדשה)</span></a>
+  </div>
+
+  <div class="modal confirm-modal" id="prod-modal" role="dialog" aria-modal="true" aria-labelledby="prod-h" hidden>
+    <div class="dialog__head">
+      <h2 id="prod-h" class="h2--card" data-dialog-title tabindex="-1">להעביר לייצור עכשיו?</h2>
+      <button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button>
+    </div>
+    <p>אחרי המעבר לייצור כבר לא תוכלו לשנות את ההזמנה. <span class="tbc">[נוסח לאישור]</span></p>
+    <div class="status-actions">
+      <button type="button" class="btn btn--secondary btn--m-block" id="prod-confirm">כן, להעביר לייצור</button>
+      <button type="button" class="link-btn" data-close-dialog>ביטול</button>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אימות קוד SMS – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/auth.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/validation.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/auth.js"></script>
+</head>
+<body data-page="otp">
+  <div class="page">
+    <div data-slot="header"></div>
+    <div data-slot="demo-bar"></div>
+    <main id="main" tabindex="-1" class="auth-page">
+      <div class="wrap auth-grid">
+        <form class="card auth-card" id="otp-form" novalidate>
+          <div class="auth-card__head">
+            <h1 class="h1 auth-card__title">הזינו את הקוד ששלחנו</h1>
+            <p class="lead muted">שלחנו קוד בן 6 ספרות לנייד <span class="num" dir="ltr" id="otp-phone">054-•••-4567</span>.</p>
+          </div>
+          <fieldset class="auth-otp" id="otp-fieldset">
+            <legend class="label">קוד אימות</legend>
+            <div class="otp" dir="ltr" id="otp-boxes">
+              <input id="otp-1" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="ספרה 1 מתוך 6" aria-invalid="false">
+              <input id="otp-2" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 2 מתוך 6" aria-invalid="false">
+              <input id="otp-3" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 3 מתוך 6" aria-invalid="false">
+              <input id="otp-4" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 4 מתוך 6" aria-invalid="false">
+              <input id="otp-5" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 5 מתוך 6" aria-invalid="false">
+              <input id="otp-6" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 6 מתוך 6" aria-invalid="false">
+            </div>
+            <p id="otp-err" class="error" role="alert" hidden></p>
+          </fieldset>
+          <div class="auth-otp__links">
+            <p id="otp-timer" class="muted">לא קיבלתם? שליחה חוזרת בעוד <span class="num" dir="ltr">0:45</span></p>
+            <p id="otp-resend" hidden>לא קיבלתם? <button type="button" class="link-btn" id="otp-resend-btn">שלחו שוב</button></p>
+            <p class="sr-only" id="otp-timer-live" aria-live="polite"></p>
+            <p><button type="button" class="link-btn" id="otp-edit">המספר שגוי? חזרה לעריכה</button></p>
+          </div>
+          <div class="callout callout--success" role="status" id="otp-ok" hidden><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p><strong class="callout__title">הקוד אומת.</strong> מעבירים אתכם למסך המצב.</p></div>
+          <button type="submit" class="btn btn--primary btn--m-block auth-card__submit" id="otp-submit">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
+          <a class="btn btn--primary btn--m-block auth-card__submit" href="status.html?s=S1" id="otp-continue" hidden>המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></a>
+        </form>
+        <aside class="card auth-side" aria-labelledby="why-a">
+          <h2 id="why-a" class="auth-side__title">למה אנחנו מבקשים גם טלפון?</h2>
+          <ul class="auth-side__list">
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="shield-check" aria-hidden="true"></svg></span><p>כדי לאמת שאתם בעלי הבקשה.</p></li>
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="message" aria-hidden="true"></svg></span><p>כדי לעדכן אתכם ב-SMS כשהבקשה מגיעה, כשהיא יורדת לייצור וכשהיא נשלחת.</p></li>
+            <li><span class="ibox ibox--40 ibox--white"><svg class="ico ico--20" data-icon="camera" aria-hidden="true"></svg></span><p>אם הצטלמתם – כדי להשוות למספר שמסרתם בתחנת הצילום.</p></li>
+          </ul>
+          <p class="small auth-side__help">צריכים עזרה? מוקד שירות <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a></p>
+        </aside>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

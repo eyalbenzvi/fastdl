@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>רישיון הכי מהיר – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/info.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/dates.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/fastest.js"></script>
+</head>
+<body data-page="fastest">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="info-page">
+      <div class="wrap wrap--info info-stack info-stack--28">
+        <h1 class="h1 h1--page">צריכים את הרישיון מהר? זה המסלול הקצר ביותר</h1>
+        <div class="fast-grid">
+          <section class="card fast-steps" aria-label="שלבי המסלול">
+            <ol class="fast-tl">
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">1</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">תשלום אגרת כפל רישיון</h2>
+                  <p class="muted">באתר משרד התחבורה</p>
+                  <div class="fast-tl__acts"><a class="btn btn--secondary btn--sm" href="#" target="_blank" rel="noopener">לתשלום באתר משרד התחבורה<svg class="ico ico--16" data-icon="external-link" aria-hidden="true"></svg><span class="sr-only">(נפתח בלשונית חדשה)</span></a></div>
+                </div>
+              </li>
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">2</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">בדיקה אם נדרש צילום</h2>
+                  <p class="muted">בטופס האגרה או ברישיון הזמני</p>
+                  <div class="fast-tl__acts"><a class="btn btn--secondary btn--sm" href="guide.html?open=2">איך יודעים?</a><a class="btn btn--secondary btn--sm" href="#" target="_blank" rel="noopener">לרשימת תחנות הצילום<svg class="ico ico--16" data-icon="external-link" aria-hidden="true"></svg><span class="sr-only">(נפתח בלשונית חדשה)</span></a></div>
+                </div>
+              </li>
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">3</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">מסירת נייד / הרשמה</h2>
+                  <p class="muted">בתחנת הצילום או כאן</p>
+                  <div class="fast-tl__acts"><a class="btn btn--secondary btn--sm" href="login.html">להרשמה</a></div>
+                </div>
+              </li>
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">4</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">הבקשה מגיעה אלינו</h2>
+                  <p class="muted">בבוקר יום העסקים הבא</p>
+                </div>
+              </li>
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">5</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">SMS שהבקשה התקבלה</h2>
+                  <p class="muted">נשלח לנייד שמסרתם</p>
+                </div>
+              </li>
+              <li class="fast-tl__step fast-tl__step--key">
+                <span class="fast-tl__num">6</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">הזמנה – בחרו איסוף עצמי</h2>
+                  <p class="muted">המהיר ביותר</p>
+                  <div class="fast-tl__acts"><a class="btn btn--secondary btn--sm" href="login.html">להזמנה</a></div>
+                </div>
+              </li>
+              <li class="fast-tl__step">
+                <span class="fast-tl__num">7</span>
+                <div class="fast-tl__body">
+                  <h2 class="fast-tl__t">ייצור ואיסוף</h2>
+                  <p class="muted">נעדכן ב-SMS כשאפשר לאסוף</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+
+          <div class="info-stack info-stack--20">
+            <section class="card fast-calc" aria-labelledby="calc-h">
+              <h2 id="calc-h" class="info-h2">מחשבון לו״ז</h2>
+              <div class="field">
+                <label class="label" for="paid">מתי שילמתם?</label>
+                <input id="paid" class="input fast-calc__input" type="date" value="2026-08-23" aria-describedby="calc-out">
+              </div>
+              <div id="calc-out" class="fast-calc__out" aria-live="polite">
+                <p>הרישיון יכול להיות בידיים שלכם כבר ב-</p>
+                <p class="fast-calc__date" id="calc-date">יום שלישי, <span class="num" dir="ltr">25.8.2026</span></p>
+                <p class="small muted">באיסוף עצמי מדפוס בארי, מ-<span class="num" dir="ltr">11:00</span>. חישוב משוער לפי ימי עסקים (א׳–ה׳), להדגמה.</p>
+              </div>
+            </section>
+
+            <section class="info-notes" role="note" aria-labelledby="notes-h">
+              <h2 id="notes-h" class="info-notes__t"><svg class="ico" data-icon="alert-triangle" aria-hidden="true"></svg>שלוש הערות חשובות</h2>
+              <ul class="info-notes__list">
+                <li>• בשלב 3 בהזמנה השאירו את האפשרות ״ייצור מיידי״.</li>
+                <li>• החמצתם את 48 השעות? <span class="tbc">[נוסח לאישור לגבי תשלום אגרה מחדש]</span></li>
+                <li>• אם הבקשה לא מגיעה – מוקד משרד התחבורה <a href="tel:*5678"><span class="num" dir="ltr">*5678</span></a></li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

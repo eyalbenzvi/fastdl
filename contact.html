@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>צור קשר – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/contact.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/contact.js"></script>
+</head>
+<body data-page="contact">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="contact-page">
+      <div class="wrap contact-page__inner">
+        <h1 class="h1 h1--page">צור קשר</h1>
+        <div class="contact-grid">
+          <div class="contact-main">
+            <section class="contact-faq" aria-labelledby="maybe-h">
+              <h2 id="maybe-h" class="contact-faq__title">אולי התשובה כבר כאן:</h2>
+              <ul class="contact-faq__list">
+                <li><a href="faq.html">שילמתי והרישיון לא הגיע – מה הסיבות האפשריות?</a></li>
+                <li><a href="faq.html">עברו 48 השעות – אפשר עוד לשנות כתובת או שיטת מסירה?</a></li>
+                <li><a href="faq.html">קיבלתי SMS מכם – איך אדע שזה לא הונאה?</a></li>
+              </ul>
+            </section>
+            <form class="card contact-form" id="contact-form" novalidate>
+              <h2 class="h2--card">טופס פנייה</h2>
+              <div class="field">
+                <label class="label" for="c-sub">נושא</label>
+                <select id="c-sub" class="input contact-form__select" aria-invalid="false">
+                  <option value="">בחרו נושא</option>
+                  <option value="lost">הרישיון לא הגיע</option>
+                  <option value="change">שינוי בהזמנה</option>
+                  <option value="pay">תשלום</option>
+                  <option value="other">אחר</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="c-ord">מספר הזמנה <span class="opt">(לא חובה)</span></label>
+                <input id="c-ord" class="input input--num" dir="ltr" autocomplete="off" placeholder="FD-2026-0000000">
+              </div>
+              <div class="g2 contact-form__row">
+                <div class="field">
+                  <label class="label" for="c-name">שם</label>
+                  <input id="c-name" class="input" autocomplete="name">
+                </div>
+                <div class="field">
+                  <label class="label" for="c-ph">נייד</label>
+                  <input id="c-ph" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" maxlength="11">
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="c-txt">פירוט</label>
+                <textarea id="c-txt" class="input" maxlength="1000" aria-describedby="c-cnt"></textarea>
+                <p id="c-cnt" class="help" aria-live="polite"><span class="num" dir="ltr" id="c-cnt-n">0</span> / <span class="num" dir="ltr">1000</span> תווים</p>
+              </div>
+              <button type="submit" class="btn btn--primary btn--m-block contact-form__submit">שליחת פנייה</button>
+            </form>
+            <div class="card contact-sent" id="contact-sent" role="status" tabindex="-1" hidden>
+              <span class="contact-sent__ico"><svg class="ico" data-icon="check" aria-hidden="true"></svg></span>
+              <div class="contact-sent__body">
+                <p class="contact-sent__title">הפנייה התקבלה.</p>
+                <p>מספר פנייה: <strong class="num" dir="ltr">58213</strong>. נחזור אליכם עד <span class="tbc">[מועד לאישור]</span>.</p>
+              </div>
+            </div>
+          </div>
+          <aside class="contact-aside">
+            <section class="card contact-call" aria-labelledby="cc-h">
+              <div class="contact-call__head"><span class="ibox ibox--primary contact-call__ico"><svg class="ico ico--28" data-icon="headset" aria-hidden="true"></svg></span><h2 id="cc-h" class="h2--card">מוקד שירות</h2></div>
+              <a class="contact-call__phone" href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a>
+              <p>א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span><br>שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></p>
+              <p class="small muted">זמן מענה לפניות בכתב: <span class="tbc">[לאישור, למשל עד 2 ימי עסקים]</span></p>
+            </section>
+            <div class="contact-soon"><svg class="ico" data-icon="message" aria-hidden="true"></svg>בקרוב – גם בוואטסאפ</div>
+            <p class="small">מוקד משרד התחבורה: <a href="tel:*5678"><span class="num" dir="ltr">&lrm;*5678</span></a></p>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

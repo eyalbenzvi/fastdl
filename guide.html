@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מה עלי לעשות עכשיו? – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/info.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/guide.js"></script>
+</head>
+<body data-page="guide">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="info-page">
+      <div class="wrap wrap--info info-stack info-stack--26">
+        <div class="info-head">
+          <span class="ibox info-head__ico"><svg class="ico ico--28" data-icon="compass" aria-hidden="true"></svg></span>
+          <div>
+            <h1 class="h1 h1--page">מה עלי לעשות עכשיו?</h1>
+            <p class="muted lead">בחרו את המצב שהכי מתאר אתכם.</p>
+          </div>
+        </div>
+
+        <ul class="guide-sits">
+          <li><button type="button" class="guide-sit" aria-expanded="false" aria-controls="ans" data-sit="0"><span class="ibox guide-sit__num">1</span><span class="guide-sit__t">פג תוקף הרישיון / קיבלתי דיוור לתשלום אגרה</span><svg class="ico ico--20 guide-sit__chev" data-icon="chevron-down" aria-hidden="true"></svg></button></li>
+          <li><button type="button" class="guide-sit" aria-expanded="false" aria-controls="ans" data-sit="1"><span class="ibox guide-sit__num">2</span><span class="guide-sit__t">שילמתי – האם אני צריך גם להצטלם?</span><svg class="ico ico--20 guide-sit__chev" data-icon="chevron-down" aria-hidden="true"></svg></button></li>
+          <li><button type="button" class="guide-sit" aria-expanded="false" aria-controls="ans" data-sit="2"><span class="ibox guide-sit__num">3</span><span class="guide-sit__t">השלמתי תשלום (וצילום, אם נדרש)</span><svg class="ico ico--20 guide-sit__chev" data-icon="chevron-down" aria-hidden="true"></svg></button></li>
+          <li><button type="button" class="guide-sit" aria-expanded="false" aria-controls="ans" data-sit="3"><span class="ibox guide-sit__num">4</span><span class="guide-sit__t">קיבלתי מכם SMS</span><svg class="ico ico--20 guide-sit__chev" data-icon="chevron-down" aria-hidden="true"></svg></button></li>
+        </ul>
+
+        <section id="ans" aria-live="polite" aria-label="מה לעשות">
+          <p class="muted guide-none" data-ans="-1" hidden>בחרו מצב כדי לראות מה לעשות.</p>
+
+          <div class="card card--pad guide-ans" data-ans="0" hidden>
+            <h2 class="info-h2">פג תוקף הרישיון / קיבלתי דיוור לתשלום אגרה</h2>
+            <p>התשלום מתבצע באתר התשלומים הממשלתי או במכונות ״רישיומט״.</p>
+            <a class="btn btn--primary btn--m-block" href="#" target="_blank" rel="noopener">לתשלום האגרה<svg class="ico ico--18" data-icon="external-link" aria-hidden="true"></svg><span class="sr-only">(נפתח בלשונית חדשה)</span></a>
+          </div>
+
+          <div class="card card--pad guide-ans" data-ans="1" hidden>
+            <h2 class="info-h2">שילמתי – האם אני צריך גם להצטלם?</h2>
+            <p>בטופס האגרה וברישיון הזמני שנשלח במייל יש ריבוע אדום בצד שמאל. אם כתוב שם שצריך להצטלם – גשו לתחנת צילום מורשית.</p>
+            <div class="info-docs">
+              <figure class="info-docs__fig">
+                <img src="img/docs/temp_license_photo_REQUIRED_example.jpg" alt="דוגמה מושחרת של רישיון זמני: בריבוע האדום כתוב שיש לשלם את האגרה ולהצטלם בתחנת הצילום">
+                <figcaption class="info-docs__cap info-docs__cap--need"><svg class="ico ico--20" data-icon="camera" aria-hidden="true"></svg>צריך להצטלם</figcaption>
+              </figure>
+              <figure class="info-docs__fig">
+                <img src="img/docs/fee_letter_photo_ON_FILE_example.jpg" alt="דוגמה מושחרת של טופס אגרה: בריבוע האדום כתוב שתמונתכם נמצאת במחשב">
+                <figcaption class="info-docs__cap info-docs__cap--ok"><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg>לא צריך להצטלם</figcaption>
+              </figure>
+            </div>
+            <a class="btn btn--secondary btn--m-block" href="#" target="_blank" rel="noopener">לרשימת תחנות הצילום<svg class="ico ico--18" data-icon="external-link" aria-hidden="true"></svg><span class="sr-only">(נפתח בלשונית חדשה)</span></a>
+          </div>
+
+          <div class="card card--pad guide-ans" data-ans="2" hidden>
+            <h2 class="info-h2">השלמתי תשלום (וצילום, אם נדרש)</h2>
+            <p>הבקשה תגיע אלינו ביום העסקים הבא בבוקר. מי שמסר נייד בתחנת הצילום יקבל מאיתנו SMS. מי שלא – כדאי להירשם כאן ונעדכן אתכם.</p>
+            <a class="btn btn--primary btn--m-block" href="login.html">להרשמה לעדכון ב-SMS</a>
+          </div>
+
+          <div class="card card--pad guide-ans" data-ans="3" hidden>
+            <h2 class="info-h2">קיבלתי מכם SMS</h2>
+            <p>הבקשה שלכם אצלנו. עכשיו אפשר לבחור משלוח או איסוף.</p>
+            <a class="btn btn--primary btn--m-block" href="login.html">לבדיקת מצב והזמנה<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></a>
+          </div>
+        </section>
+
+        <div class="card info-bar">
+          <p class="info-bar__t">צריכים את הרישיון בדחיפות?</p>
+          <a class="info-bar__link" href="fastest.html">למסלול הקצר ביותר ←</a>
+        </div>
+
+        <figure class="guide-video">
+          <div class="guide-video__frame" role="img" aria-label="מקום לסרטון הסבר">
+            <button type="button" class="guide-video__play" aria-label="הפעלת הסרטון (בקרוב)"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false"><path d="M7 4v16l13-8z"/></svg></button>
+            <span class="guide-video__tag">placeholder</span>
+          </div>
+          <figcaption class="muted">סרטון: איך מקבלים את הרישיון – 60 שניות</figcaption>
+        </figure>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

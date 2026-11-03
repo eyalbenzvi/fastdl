@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>העמוד לא נמצא – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/error.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/error.js"></script>
+</head>
+<body data-page="error" data-view="404">
+  <div class="page">
+    <div data-slot="header"></div>
+    <div data-slot="demo-bar"></div>
+    <main id="main" tabindex="-1" class="err-page">
+      <div class="wrap">
+        <div class="card err-card" data-err-view="temp" hidden>
+          <span class="err-card__ico"><svg class="ico" data-icon="refresh" aria-hidden="true"></svg></span>
+          <h1 class="h1 err-card__title">אנחנו לא מצליחים להציג את המידע כרגע</h1>
+          <p class="lead">זו תקלה זמנית אצלנו, לא אצלכם. נסו שוב בעוד כמה דקות.</p>
+          <button type="button" class="btn btn--primary btn--m-block" id="err-retry" aria-busy="false">נסו שוב</button>
+          <p class="muted">צריכים עזרה עכשיו? מוקד שירות <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></p>
+        </div>
+        <div class="card err-card" data-err-view="404">
+          <p class="num err-card__code" dir="ltr">404</p>
+          <h1 class="h1 err-card__title">העמוד לא נמצא</h1>
+          <p class="lead">ייתכן שהקישור שגוי או שהעמוד הועבר.</p>
+          <div class="err-card__actions"><a class="btn btn--primary btn--m-block" href="login.html">לבדיקת מצב והזמנה</a><a class="btn btn--secondary btn--m-block" href="index.html">לעמוד הבית</a></div>
+        </div>
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>

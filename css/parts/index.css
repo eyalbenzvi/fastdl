@@ -1,0 +1,18 @@
+/* ===== P00 prototype-index.html ===== */
+.pi{padding-block:48px 80px}
+.pi__inner{display:flex;flex-direction:column;gap:var(--sp-10)}
+.pi-head{display:flex;flex-direction:column;gap:10px}
+.pi-demo{display:inline-flex;align-self:flex-start;font-size:14px;font-weight:var(--fw-bold);background:var(--c-demo-bg);color:var(--c-demo-accent);padding:4px 12px;border-radius:var(--radius-pill)}
+.pi-head__title{font-size:var(--fs-h1);font-weight:var(--fw-black);line-height:var(--lh-heading)}
+.pi-head__persona{max-width:820px}
+.pi-group{display:flex;flex-direction:column;gap:14px}
+.pi-group__t{font-size:24px;font-weight:var(--fw-bold);line-height:1.3}
+.pi-grid{gap:var(--sp-4)}
+.pi-lnk{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;height:100%;text-decoration:none!important;color:var(--c-text)!important;border:1.5px solid transparent}
+.pi-lnk:hover{border-color:var(--c-primary)}
+.pi-lnk__text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.pi-lnk__t{font-weight:var(--fw-bold)}
+.pi-lnk__d{font-size:var(--fs-small);color:var(--c-text-muted);overflow-wrap:anywhere}
+.pi-lnk__d .num{display:inline-block;text-align:start}
+.pi-lnk__arr{color:var(--c-primary);margin-top:4px}
+.pi-code{font-variant-numeric:tabular-nums;unicode-bidi:isolate;font-size:var(--fs-tag);font-weight:var(--fw-bold);background:var(--c-navy-50);color:var(--c-navy);border-radius:var(--radius-xs);padding:2px 8px;flex:none;margin-top:2px;white-space:nowrap}
