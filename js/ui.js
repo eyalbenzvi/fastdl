@@ -285,6 +285,8 @@
         var open = b.getAttribute('aria-expanded') !== 'true';
         if (single && open) btns.forEach(function (o) { if (o !== b && o.getAttribute('aria-expanded') === 'true') set(o, false, true); });
         set(b, open, true);
+        // הפאנל נפתח מתחת לכפתור – אם הוא מחוץ למסך, גוללים כך שהכפתור והתחלת התשובה נראים (הפוקוס נשאר על הכפתור, לפי דפוס האקורדיון)
+        if (open) { var pp = document.getElementById(b.getAttribute('aria-controls')); setTimeout(function () { ensureVisible(pp, { anchor: b, minVisible: 80 }); }, reducedMotion() ? 0 : 230); }
         if (opt.onToggle) opt.onToggle(i, open);
       });
     });
@@ -509,6 +511,40 @@
     try { el.focus({ preventScroll: false }); } catch (e) { el.focus(); }
   }
 
+  /* ---------- Bring revealed content into view ----------
+     UI.ensureVisible(el, {block}) – גולל רק אם תחילת האלמנט לא נראית (מעל המסך, או מתחת לחלק התחתון
+       שמוסתר בסרגל דביק). חלק בלי reduced-motion, מיידי עם reduced-motion.
+     UI.focusInto(el) – תוכן שנחשף אחרי לחיצה: פוקוס (tabindex=-1, בלי קפיצת דפדפן) + ensureVisible.
+       el יכול להיות מכל שמכיל כותרת – הפוקוס עובר לכותרת הראשונה (h2/h3/[data-focus]) אם יש. */
+  function bottomInset() {
+    var pad = 0;
+    try { pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingBottom) || 0; } catch (e) { /* */ }
+    return pad;
+  }
+  function ensureVisible(el, opt) {
+    if (!el || !el.getBoundingClientRect) return;
+    opt = opt || {};
+    var r = el.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var bottom = vh - bottomInset();
+    var need = opt.minVisible || Math.min(r.height || 0, 120) || 60; // כמה מהאלמנט חייב להיראות
+    if (r.top >= 8 && r.top + need <= bottom) return;
+    var a = opt.anchor ? opt.anchor.getBoundingClientRect() : r; // גוללים לעוגן (למשל כפתור האקורדיון) כדי שההקשר יישאר
+    var top = window.pageYOffset + a.top - (opt.offset == null ? 16 : opt.offset);
+    try { window.scrollTo({ top: Math.max(0, top), behavior: reducedMotion() ? 'auto' : 'smooth' }); }
+    catch (e) { window.scrollTo(0, Math.max(0, top)); }
+  }
+  function focusInto(el, opt) {
+    if (!el) return;
+    var t = (opt && opt.target) || el.querySelector('[data-focus]') || el.querySelector('h2,h3,h4') || el;
+    if (!t.hasAttribute('tabindex') && !t.matches(FOCUSABLE)) t.setAttribute('tabindex', '-1');
+    try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); }
+    // תוכן שנחשף צריך להיראות ברובו, לא רק הכותרת בתחתית המסך
+    var o = {}; for (var k in (opt || {})) o[k] = opt[k];
+    if (o.minVisible == null) o.minVisible = Math.min(Math.max(el.getBoundingClientRect().height || 0, el.scrollHeight || 0), (window.innerHeight || 800) * 0.6) || 60;
+    ensureVisible(el, o);
+  }
+
   /* ---------- Auto-hydrate icons ---------- */
   function boot() {
     hydrateIcons(document);
@@ -530,6 +566,6 @@
     accordion: accordion, drawer: drawer, modal: modal, show: show, hide: hide, reveal: reveal, conceal: conceal,
     motion: { on: anim, compact: function () { return compact; }, expand: expand, collapse: collapse, swap: swap, enter: enter, success: success, refresh: refresh, flip: flip },
     toast: toast, copy: copy, param: param, params: params, setParams: setParams,
-    store: store, setBusy: setBusy, fieldError: fieldError, focus: focusEl
+    store: store, setBusy: setBusy, fieldError: fieldError, focus: focusEl, focusInto: focusInto, ensureVisible: ensureVisible
   };
 })();

@@ -23,6 +23,8 @@
     b.addEventListener('click', function () {
       cur = cur === i ? -1 : i;
       render(true);
+      // התשובה נפתחת מתחת לכל הכפתורים – לרוב מחוץ למסך בטלפון. מעבירים אליה את הפוקוס וגוללים אליה
+      if (cur >= 0) { var pnl = UI.qs('[data-ans="' + cur + '"]', box); if (pnl) UI.focusInto(pnl); }
     });
   });
   render();

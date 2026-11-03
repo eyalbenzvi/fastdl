@@ -85,6 +85,7 @@
       var p = document.getElementById(o.getAttribute('aria-controls'));
       if (p && on !== was) { if (on) UI.reveal(p); else UI.conceal(p); }
     });
+    if (state.open === i) { var pp = document.getElementById(b.getAttribute('aria-controls')); setTimeout(function () { UI.ensureVisible(pp, { anchor: b, minVisible: 80 }); }, 230); }
   });
   chips.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-cat]') : null;

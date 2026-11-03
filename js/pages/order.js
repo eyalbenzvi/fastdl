@@ -302,7 +302,11 @@
         (rh ? '<button type="button" class="btn btn--secondary btn--sm" data-pick="regular_home"><span>שליח עד הבית – ' + rich(rh.price_display) + '</span></button>' : '') +
         '</div><button type="button" class="link-btn" id="nudge-go">להמשיך עם דואר רגיל</button></div></div>';
     }
-    if (html) wrap.insertAdjacentHTML('afterend', html);
+    if (html) {
+      wrap.insertAdjacentHTML('afterend', html);
+      // ההערה נפתחת מתחת לכרטיס – לוודא שהיא לא מתחת לסרגל הדביק (בלי להזיז פוקוס מקבוצת הרדיו)
+      var exEl = wrap.nextElementSibling; if (exEl && renderExtras.user) UI.ensureVisible(exEl, { anchor: wrap, minVisible: exEl.offsetHeight });
+    }
     var live = qs('#method-live');
     if (live) live.textContent = m.id === 'regular_mail' && ui.nudge ? 'לפני שממשיכים: בדואר רגיל אין מעקב. אפשר לבחור דואר רשום או שליח, או להמשיך עם דואר רגיל.' : '';
   }
@@ -312,7 +316,7 @@
     ui.methodErr = false;
     save(); writeUrl(false);
     qsa('#method-list .opt-card').forEach(function (l) { var r = l.querySelector('input'); r.checked = r.value === id; l.classList.toggle('is-selected', r.checked); });
-    renderExtras(); renderChosen(); renderMethodErr(); renderStepper();
+    renderExtras.user = true; renderExtras(); renderExtras.user = false; renderChosen(); renderMethodErr(); renderStepper();
     if (focus) { var r = qs('#method-list input[value="' + id + '"]'); if (r) UI.focus(r); }
   }
   function next1() {
@@ -502,7 +506,7 @@
 
     // שלב 2
     qsa('input[name="addr"]').forEach(function (r) {
-      r.addEventListener('change', function () { order.addr = r.value; save(); renderStep2(); });
+      r.addEventListener('change', function () { order.addr = r.value; save(); renderStep2(); var f = qs(order.addr === 'other' ? '#other-form' : '#extras-form'); if (f && !f.hidden) UI.ensureVisible(f, { anchor: r.closest('.opt-card'), minVisible: 120 }); });
     });
     qsa('[data-other]').forEach(function (i) {
       i.addEventListener('input', function () {

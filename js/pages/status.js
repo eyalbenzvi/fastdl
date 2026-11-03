@@ -415,7 +415,7 @@
       '<fieldset class="s0-q"><legend class="s0-q__legend">מתי השלמתם את התשלום (והצילום, אם נדרש)?</legend><div class="g2 s0-q__grid">' +
       ANS.map(function (t, i) { return '<button type="button" class="ans-btn" aria-pressed="' + (st.ans === i) + '"' + act('ans', ' data-i="' + i + '"') + '>' + I('check', { size: 20, cls: 'ans-btn__ico' }) + '<span>' + t + '</span></button>'; }).join('') +
       '</div></fieldset>' +
-      '<div id="s0-ans" class="s0-ans" aria-live="polite"' + (st.ans < 0 ? ' hidden' : '') + '>' + s0Answer() + '</div>' +
+      '<div id="s0-ans" class="s0-ans" role="region" aria-label="מה לעשות"' + (st.ans < 0 ? ' hidden' : '') + '>' + s0Answer() + '</div>' +
       '<p class="small s0-foot">לא שילמתם עדיין את האגרה? ' + ext('לתשלום באתר משרד התחבורה') + '</p>';
   }
 
@@ -630,13 +630,14 @@
       UI.qsa('.ans-btn', root).forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
       var box = document.getElementById('s0-ans');
       UI.motion.swap(box, function () { box.innerHTML = s0Answer(); });
+      UI.focusInto(box, { target: box }); // התשובה מתחת לארבעת הכפתורים – פוקוס וגלילה אליה
     } else if (a === 'sms') {
       var c = document.getElementById('sms-consent');
       if (c && !c.checked) { UI.fieldError(c, 'כדי לקבל עדכון יש לסמן את תיבת ההסכמה.'); c.focus(); return; }
       st.smsDone = true;
       var bx = document.getElementById('s0-ans');
       bx.innerHTML = s0Answer();
-      var note = UI.qs('.status-done', bx); if (note) note.focus();
+      var note = UI.qs('.status-done', bx); if (note) UI.focusInto(note, { target: note });
     } else if (a === 'docs') {
       openDocs(b);
     } else if (a === 'cal') {
@@ -645,14 +646,14 @@
       UI.modal.open('prod-modal', { returnFocus: b });
     } else if (a === 'notify') {
       st.notifyDone = true; render();
-      var nn = UI.qs('.status-done', root); if (nn) nn.focus();
+      var nn = UI.qs('.status-done', root); if (nn) UI.focusInto(nn, { target: nn });
     } else if (a === 'reveal') {
       st.reveal = true; UI.setParams({ reveal: 1 }); render();
       UI.motion.expand(document.getElementById('s7-reveal'), { fromZero: true });
-      var t = UI.qs('.s7-reveal__t', root); if (t) t.focus();
+      var t = UI.qs('.s7-reveal__t', root); if (t) UI.focusInto(document.getElementById('s7-reveal') || t, { target: t });
     } else if (a === 'gotit') {
       st.gotIt = true; render();
-      var g = UI.qs('.status-done', root); if (g) g.focus();
+      var g = UI.qs('.status-done', root); if (g) UI.focusInto(g, { target: g });
     } else if (a === 'redeliver') {
       placeholderToast('בחירת מסירה חוזרת');
     } else if (a === 'copy') {
