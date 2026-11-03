@@ -62,7 +62,7 @@
       return '<div class="acc">' +
         '<button type="button" class="acc__btn" id="faq-b' + i + '" aria-expanded="' + open + '" aria-controls="faq-p' + i + '" data-i="' + i + '"><span>' + esc(f[1]) + '</span>' + UI.icon('chevron-down') + '</button>' +
         '<div class="acc__panel faq-panel" id="faq-p' + i + '" role="region" aria-labelledby="faq-b' + i + '"' + (open ? '' : ' hidden') + '>' +
-        '<p>' + fmt(f[2]) + '</p><a class="btn btn--secondary btn--sm" href="' + f[4] + '">' + esc(f[3]) + '</a></div></div>';
+        '<p>' + fmt(f[2]) + '</p><a class="btn btn--secondary info-btn" href="' + f[4] + '">' + esc(f[3]) + '</a></div></div>';
     }).join('');
   }
 

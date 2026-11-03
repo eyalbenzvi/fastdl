@@ -28,7 +28,7 @@
     return '<button type="button" class="dl-q" data-info="' + esc(m.id) + '" aria-label="' + esc('פרטים נוספים על ' + m.name) + '">' + UI.icon('help-circle', { size: 20 }) + '</button>';
   }
   function priceCls(m) { return m.price === 0 ? ' price-free' : ''; }
-  var ORDER = '<a class="btn btn--secondary btn--sm" href="login.html">להזמנה</a>';
+  var ORDER = '<a class="btn btn--secondary info-btn" href="login.html">להזמנה</a>';
 
   var rows = document.getElementById('dl-rows');
   var cards = document.getElementById('dl-cards');

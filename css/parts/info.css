@@ -16,6 +16,7 @@
 .info-stack--32{gap:var(--sp-8)}
 .info-h2{font-size:24px;font-weight:var(--fw-bold);line-height:1.35}
 .info-intro{max-width:760px}
+.info-btn{padding:0 18px;font-size:16px} /* כפתור משני בעמודי המידע: גובה 52 כמו בהדמיות */
 .info-bar{padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .info-bar__t{font-weight:var(--fw-bold);font-size:18px}
 .info-bar__link{font-weight:var(--fw-semibold)}
@@ -52,7 +53,6 @@
 .info-docs__cap--ok{color:var(--c-success)}
 @media (max-width:640px){
   .guide-sits,.info-docs{grid-template-columns:minmax(0,1fr)}
-  .info-docs__fig img{height:300px}
 }
 
 /* ---------- P12 fastest ---------- */
@@ -105,7 +105,7 @@
 .pk-pin{position:absolute;display:flex;flex-direction:column;align-items:center}
 .pk-pin--tlv{inset-block-start:34%;inset-inline-start:46%;color:var(--c-primary)}
 .pk-pin--bari{inset-block-start:62%;inset-inline-start:58%;color:var(--c-navy)}
-.pk-pin__label{background:currentColor;font-weight:var(--fw-bold);font-size:14px;padding:4px 10px;border-radius:var(--radius-sm)}
+.pk-pin__label{font-weight:var(--fw-bold);font-size:14px;padding:4px 10px;border-radius:var(--radius-sm)}
 .pk-pin--tlv .pk-pin__label{background:var(--c-primary);color:#fff}
 .pk-pin--bari .pk-pin__label{background:var(--c-navy);color:#fff}
 .pk-pin__stem{width:3px;height:18px;background:currentColor}

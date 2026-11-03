@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>בדיקות יחידה – רישיון עד הבית</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .u{padding-block:48px 80px}
+    .u__inner{display:flex;flex-direction:column;gap:var(--sp-6)}
+    .u-list{display:flex;flex-direction:column}
+    .u-list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--c-border)}
+    .u-list li:last-child{border-bottom:0}
+    .u-list code{direction:ltr;unicode-bidi:isolate;font-size:15px}
+    .u-pass{color:var(--c-success);font-weight:var(--fw-bold);flex:none;width:56px}
+    .u-fail{color:var(--c-danger);font-weight:var(--fw-bold);flex:none;width:56px}
+    .u-group{font-weight:var(--fw-bold);margin-top:var(--sp-4)}
+  </style>
+  <script defer src="../js/mock-data.js"></script>
+  <script defer src="../js/validation.js"></script>
+  <script defer src="../js/dates.js"></script>
+</head>
+<body>
+  <main class="u">
+    <div class="wrap wrap--form u__inner">
+      <h1 class="h1 h1--flow">בדיקות יחידה (09 §9.6)</h1>
+      <p id="summary" class="badge badge--neutral" role="status" aria-live="polite" data-fails="" data-passes="">מריצים…</p>
+      <div class="card card--pad"><ul class="u-list" id="results"></ul></div>
+    </div>
+  </main>
+  <script>
+  /* DOMContentLoaded רץ אחרי כל סקריפטי ה-defer שבראש העמוד */
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+    var list = document.getElementById('results');
+    var pass = 0, fail = 0;
+
+    function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+    function group(title) {
+      var li = document.createElement('li'); li.className = 'u-group'; li.textContent = title; list.appendChild(li);
+    }
+    function eq(label, fn, expected) {
+      var got, ok;
+      try { got = fn(); ok = got === expected; } catch (e) { got = 'throws: ' + e.message; ok = false; }
+      if (ok) pass++; else fail++;
+      var li = document.createElement('li');
+      li.setAttribute('data-result', ok ? 'pass' : 'fail');
+      li.innerHTML = '<span class="' + (ok ? 'u-pass">PASS' : 'u-fail">FAIL') + '</span><span><code>' + esc(label) + ' === ' + esc(JSON.stringify(expected)) + '</code>' +
+        (ok ? '' : '<br><span class="small">התקבל: <code>' + esc(JSON.stringify(got)) + '</code></span>') + '</span>';
+      list.appendChild(li);
+    }
+
+    /* ---------- Validate ---------- */
+    group('Validate');
+    eq("Validate.israeliId('000000018')", function () { return Validate.israeliId('000000018'); }, true);
+    eq("Validate.israeliId('18')", function () { return Validate.israeliId('18'); }, true);
+    eq("Validate.israeliId('123456789')", function () { return Validate.israeliId('123456789'); }, false);
+    eq("Validate.israeliId('')", function () { return Validate.israeliId(''); }, false);
+    eq("Validate.mobile('054-1234567')", function () { return Validate.mobile('054-1234567'); }, true);
+    eq("Validate.mobile('0541234')", function () { return Validate.mobile('0541234'); }, false);
+    eq("Validate.mobile('0641234567')", function () { return Validate.mobile('0641234567'); }, false);
+    eq("Validate.maskMobile('0541234567')", function () { return Validate.maskMobile('0541234567'); }, '054-•••-4567');
+
+    /* ---------- Dates (מחשבון P12) ---------- */
+    group('Dates');
+    eq("Dates.formatHe('2026-08-23')", function () { return Dates.formatHe('2026-08-23'); }, 'יום ראשון, 23.8.2026');
+    eq("Dates.fastestPickup('2026-08-23') → 25.8.2026 (ג׳)", function () { var d = Dates.fastestPickup('2026-08-23'); return Dates.formatShort(d) + '|' + d.getDay(); }, '25.8.2026|2');
+    eq("Dates.formatHe('2026-08-27')", function () { return Dates.formatHe('2026-08-27'); }, 'יום חמישי, 27.8.2026');
+    eq("Dates.fastestPickup('2026-08-27') → 31.8.2026 (ב׳)", function () { var d = Dates.fastestPickup('2026-08-27'); return Dates.formatShort(d) + '|' + d.getDay(); }, '31.8.2026|1');
+
+    /* ---------- כללי דילוג בהזמנה (07 §7.1) – פונקציות טהורות מוגדרות כאן מהמפרט ---------- */
+    // קדימה מ-1: needs_address ? 2 : 3 · קדימה מ-3: price > 0 ? 4 : 5 · קדימה מ-2 → 3, מ-4 → 5
+    function nextStep(method, step) {
+      if (step === 1) return method.needs_address ? 2 : 3;
+      if (step === 2) return 3;
+      if (step === 3) return method.price > 0 ? 4 : 5;
+      if (step === 4) return 5;
+      return step;
+    }
+    // אחורה מ-3: needs_address ? 2 : 1 · אחורה מ-4 → 3 · מ-2 → 1
+    function prevStep(method, step) {
+      if (step === 3) return method.needs_address ? 2 : 1;
+      if (step === 4) return 3;
+      if (step === 2) return 1;
+      return step;
+    }
+    var methods = {};
+    ((window.FD_DATA && FD_DATA.delivery_methods) || []).forEach(function (m) { methods[m.id] = m; });
+    var bari = methods.pickup_bari, express = methods.express_home;
+
+    group('Order – כללי דילוג (נתוני השיטות מ-FD_DATA)');
+    eq("FD_DATA: pickup_bari = {needs_address:false, price:0}", function () { return !!bari && bari.needs_address === false && bari.price === 0; }, true);
+    eq("FD_DATA: express_home = {needs_address:true, price>0}", function () { return !!express && express.needs_address === true && express.price > 0; }, true);
+    eq("nextStep(pickup_bari, 1)", function () { return nextStep(bari, 1); }, 3);
+    eq("nextStep(pickup_bari, 3)", function () { return nextStep(bari, 3); }, 5);
+    eq("nextStep(express_home, 3)", function () { return nextStep(express, 3); }, 4);
+    eq("nextStep(express_home, 1)", function () { return nextStep(express, 1); }, 2);
+    eq("prevStep(pickup_bari, 3)", function () { return prevStep(bari, 3); }, 1);
+    eq("prevStep(express_home, 3)", function () { return prevStep(express, 3); }, 2);
+
+    var s = document.getElementById('summary');
+    s.setAttribute('data-fails', String(fail));
+    s.setAttribute('data-passes', String(pass));
+    s.className = 'badge ' + (fail ? 'badge--danger' : 'badge--success');
+    s.textContent = (fail ? 'נכשלו ' + fail + ' מתוך ' + (pass + fail) : 'כל ' + pass + ' הבדיקות עברו');
+    document.title = (fail ? 'FAIL ' : 'PASS ') + document.title;
+  });
+  </script>
+</body>
+</html>
