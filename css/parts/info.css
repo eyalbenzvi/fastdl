@@ -119,7 +119,7 @@
 .pk-hours th,.pk-hours td{text-align:start;padding:6px 0;border-bottom:1px solid var(--c-neutral-bg)}
 .pk-hours th{font-weight:var(--fw-medium);color:var(--c-text-muted)}
 .pk-card__acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
-.pk-btn{min-height:48px;padding:0 20px;font-size:16px}
+.pk-btn{padding:0 20px;font-size:16px}
 @media (max-width:860px){.pk-grid{grid-template-columns:minmax(0,1fr)}}
 
 /* ---------- P15 faq ---------- */
