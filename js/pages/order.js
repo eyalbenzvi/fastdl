@@ -149,7 +149,6 @@
 
   function go(n, opt) {
     opt = opt || {};
-    if (locked() && !opt.force) return; // P1-3: הקשה נוספת בזמן מעבר שלב – לא מדלגים על שלב
     n = clamp(n);
     var prev = order.step;
     order.step = n;
@@ -178,7 +177,8 @@
     lockT = setTimeout(unlock, LOCK_MS);
   }
   function unlock() { clearTimeout(lockT); lockT = null; qsa('.fd-lock').forEach(function (el) { el.classList.remove('fd-lock'); }); }
-  function locked() { return !!lockT; }
+  // רק הקשה/קליק (detail>0) נחסמים; Enter/רווח במקלדת אחרי מעבר פוקוס מכוון הם פעולה מכוונת
+  function locked(e) { return !!lockT && !(e && e.detail === 0); }
 
   // מעבר שלב (רק בפעולת משתמש): השלב החדש נכנס בכיוון ההתקדמות (RTL: קדימה משמאל). השלב הישן מוסתר מיד, הפוקוס כבר ב-H1.
   // שלב 5: רצף ההצלחה (עיגול + ✓). בלי GSAP / ב-reduced-motion – אין תנועה
@@ -325,13 +325,13 @@
   }
   // עריכה עם שיטה אחרת: "כבר שילמתם X · לתשלום עכשיו Y" (P2-5; הכלל עצמו [לאישור], כמו ב-S2)
   function creditHTML() {
-    var paid = '<span class="num" dir="ltr">' + fmtPrice(paidAmount()) + '</span> ₪';
-    return 'כבר שילמתם ' + paid + ' · ' + (due() > 0 ? 'לתשלום עכשיו <span class="num" dir="ltr">' + fmtPrice(due()) + '</span> ₪' : 'אין תשלום נוסף') + ' <span class="tbc">[לאישור]</span>';
+    function amt(x) { return '<span class="nowrap"><span class="num" dir="ltr">' + fmtPrice(x) + '</span> ₪</span>'; }
+    return 'כבר שילמתם ' + amt(paidAmount()) + ' · ' + (due() > 0 ? 'לתשלום עכשיו ' + amt(due()) : 'אין תשלום נוסף') + ' <span class="tbc">[לאישור]</span>';
   }
   function renderChosen() {
     var m = cur(), el = qs('#chosen-line');
     if (!el) return;
-    var html = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) + (credited() ? '<span class="order-actions__credit"> · ' + creditHTML() + '</span>' : '') : 'עוד לא בחרתם';
+    var html = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) + (credited() ? '<span class="order-actions__credit">' + creditHTML() + '</span>' : '') : 'עוד לא בחרתם';
     el.classList.toggle('order-actions__chosen--credit', !!(m && credited()));
     if (el.innerHTML === html) return;
     el.innerHTML = html;
@@ -385,8 +385,8 @@
     renderExtras.user = !nav; renderExtras(); renderExtras.user = false; renderChosen(); renderMethodErr(); renderStepper();
     if (focus) { var r = qs('#method-list input[value="' + id + '"]'); if (r) UI.focus(r); }
   }
-  function next1() {
-    if (locked()) return;
+  function next1(e) {
+    if (locked(e)) return;
     // דואר רגיל שנבחר בחיצים: "לפני שממשיכים" מוצגת עכשיו (פעם אחת), לפני המעבר לשלב הבא
     if (cur() && cur().id === 'regular_mail' && !order.nudged) {
       ui.nudge = true; order.nudged = true; save();
@@ -515,7 +515,7 @@
     return !first;
   }
   function pay() {
-    if (ui.paying || locked()) return;
+    if (ui.paying) return;
     if (!ui.skipcc && !validateCC()) return;
     ui.paying = true;
     var btn = qs('#pay');
@@ -528,7 +528,7 @@
       ui.paying = false;
       UI.setBusy(btn, false);
       btn.removeAttribute('aria-disabled');
-      if (order.step === 4) go(5, { replace: true, force: true });
+      if (order.step === 4) go(5, { replace: true });
     }, 1400);
   }
 
@@ -592,7 +592,7 @@
       if (q) { openMethodDrawer(q.getAttribute('data-info'), q); return; }
       var pk = e.target.closest('[data-pick]');
       if (pk) { ui.nudge = false; selectMethod(pk.getAttribute('data-pick'), true); return; }
-      if (e.target.closest('#nudge-go')) { if (locked()) return; ui.nudge = false; go(nextFrom(1)); }
+      if (e.target.closest('#nudge-go')) { if (locked(e)) return; ui.nudge = false; go(nextFrom(1)); }
     });
     qs('#open-compare').addEventListener('click', function (e) { UI.drawer.open('dr-compare', { returnFocus: e.currentTarget }); });
     qs('#compare-body').addEventListener('click', function (e) {
@@ -609,10 +609,10 @@
     });
     qs('#next-1').addEventListener('click', next1);
     document.addEventListener('click', function (e) {
-      if (e.target.closest('[data-back-top]')) { go(prevFrom(order.step)); return; }
+      if (e.target.closest('[data-back-top]')) { if (!locked(e)) go(prevFrom(order.step)); return; }
       // "חזרה לפרטי הבקשה" בעריכה: הטיוטה נמחקת, ההזמנה ששולמה לא משתנה (P1-4)
       if (e.target.closest('[data-back-status], #order-top a.back-link')) {
-        if (locked()) { e.preventDefault(); return; }
+        if (locked(e)) { e.preventDefault(); return; }
         discardDraft();
       }
     });
@@ -632,8 +632,8 @@
     qsa('[data-extra]').forEach(function (i) {
       i.addEventListener('input', function () { order.extras[i.getAttribute('data-extra')] = i.value; save(); });
     });
-    qs('#to-pickup').addEventListener('click', function () {
-      if (locked()) return;
+    qs('#to-pickup').addEventListener('click', function (e) {
+      if (locked(e)) return;
       go(1);
       var g = qs('#grp-box-pickup');
       if (g) { try { g.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } var gh = qs('#grp-pickup'); if (gh) { gh.setAttribute('tabindex', '-1'); try { gh.focus({ preventScroll: true }); } catch (e) { /* */ } } }
@@ -642,7 +642,6 @@
     // שלב 2 בתוך <form> (P3-3): Enter בשדה הכתובת = "המשך"
     qs('#addr-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      if (locked()) return;
       if (order.auth && order.addr === 'other' && !validateOther()) return;
       go(3);
     });
@@ -654,8 +653,8 @@
     var terms = qs('#terms');
     terms.addEventListener('change', function () { order.terms = terms.checked; ui.termsErr = false; save(); UI.fieldError(terms, null); });
     qs('#open-terms').addEventListener('click', function (e) { e.preventDefault(); UI.drawer.open('dr-terms', { returnFocus: e.currentTarget }); });
-    qs('#next-3').addEventListener('click', function () {
-      if (locked()) return;
+    qs('#next-3').addEventListener('click', function (e) {
+      if (locked(e)) return;
       if (!order.terms) { ui.termsErr = true; UI.fieldError(terms, 'כדי להמשיך יש לאשר את תנאי השימוש.'); terms.focus(); updateTitle(); return; }
       go(nextFrom(3));
     });
@@ -694,11 +693,11 @@
     // שלב 5
     qs('#copy-order').addEventListener('click', function () { UI.copy(qs('#order-number').textContent); });
     var cal = qs('.order__step[data-step="5"] .order-done__btns .btn--secondary');
-    if (cal) cal.addEventListener('click', function () { if (locked()) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
-    qs('#done-status').addEventListener('click', function (e) { if (locked()) e.preventDefault(); });
+    if (cal) cal.addEventListener('click', function (e) { if (locked(e)) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    qs('#done-status').addEventListener('click', function (e) { if (locked(e)) e.preventDefault(); });
 
     // חזרה (כל השלבים)
-    qsa('[data-back]').forEach(function (b) { b.addEventListener('click', function () { go(prevFrom(order.step)); }); });
+    qsa('[data-back]').forEach(function (b) { b.addEventListener('click', function (e) { if (!locked(e)) go(prevFrom(order.step)); }); });
 
     // P3-7: מקלדת מסך פתוחה (≤640, גובה נראה קטן) ושדה טקסט בפוקוס – הסרגל הדביק לא צף (html.kb-open, pages.css)
     function kbCheck() {

@@ -73,8 +73,8 @@
       showDone(true);
     });
     var cal = qs('#reissue-done .order-done__btns .btn--secondary');
-    if (cal) cal.addEventListener('click', function () { if (lockT) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
-    qs('#reissue-done a.btn--primary').addEventListener('click', function (e) { if (lockT) e.preventDefault(); });
+    if (cal) cal.addEventListener('click', function (e) { if (lockT && e.detail !== 0) return; UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
+    qs('#reissue-done a.btn--primary').addEventListener('click', function (e) { if (lockT && e.detail !== 0) e.preventDefault(); });
     if (demo === 'error') { UI.fieldError(decl, MSG); formTitle(); }
     if (demo === 'done') showDone(false);
     // P2-4: ההזמנה החוזרת כבר נשלחה (רענון / Back / Forward) – מציגים את מסך הסיום ולא טופס ריק שאפשר לשלוח שוב

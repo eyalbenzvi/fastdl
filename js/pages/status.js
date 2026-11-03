@@ -597,7 +597,7 @@
     root.classList.add('fd-lock');
     lockT = setTimeout(function () { lockT = null; root.classList.remove('fd-lock'); }, 450);
   }
-  function locked() { return !!lockT; }
+  function locked(e) { return !!lockT && !(e && e.detail === 0); } // מקלדת (detail=0) לא נחסמת
 
   function go(k, opt) {
     opt = opt || {};
@@ -655,7 +655,7 @@
   root.addEventListener('click', function (e) {
     var b = e.target.closest('[data-action]');
     if (!b || !root.contains(b)) return;
-    if (locked()) { e.preventDefault(); return; }
+    if (locked(e)) { e.preventDefault(); return; }
     var a = b.getAttribute('data-action');
     if (a === 'logout') { // ממשיכים ל-index.html; מנקים את מסע הבדיקה
       ['fd.session', 'fd.order', 'fd.reissue', 'fd.scenario', 'fd.login', 'fd.phone'].forEach(function (k) { UI.store.remove(k); });

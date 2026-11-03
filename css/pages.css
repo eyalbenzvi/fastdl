@@ -1256,6 +1256,13 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
 .ar-he{font-weight:var(--fw-regular);color:var(--c-text-muted);white-space:nowrap}
 .nav__link .ar-he{font-size:var(--fs-xs)}
 .btn .ar-he{color:inherit}
+@media (max-width:640px){
+  .site-header__bar:has(.ar-tools){gap:8px}
+  .ar-tools{gap:4px}
+  .ar-tools .lang-btn .ico{display:none} /* מקום לאייקון החיוג; המילה "עברית" נשארת */
+}
+@media (max-width:374px){.site-header__bar:has(.ar-tools) .wordmark__bars{display:none}.ar-tools .lang-btn{padding:0 10px}}
+@media (max-width:340px){.site-header__bar:has(.ar-tools){gap:4px}.ar-tools{gap:0}.ar-tools .lang-btn{padding:0 6px}}
 
 /* P2-10 · OTP: כשהניסיונות חסומים – קישור חיוג למוקד במקום "שלחו שוב" */
 .otp-blocked-call{display:flex;align-items:center;gap:8px;font-weight:var(--fw-semibold)}
@@ -1278,7 +1285,7 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
   /* P2-5: בעריכה שורת "בחרתם" כוללת גם "כבר שילמתם · לתשלום עכשיו" – נשברת במקום להיחתך */
   .order-actions--choice .order-actions__chosen--credit{white-space:normal}
 }
-.order-actions__credit{color:var(--c-text)}
+.order-actions__credit{display:block;color:var(--c-text)}
 /* P3-2: שדה עם שגיאה שמקבל פוקוס – התווית מעליו לא נחתכת בראש המסך */
 .order .field .input{scroll-margin-top:48px}
 /* ===== /UX behavior: order/status ===== */

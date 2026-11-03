@@ -48,6 +48,8 @@
     if (!_params) { try { _params = new URLSearchParams(window.location.search); } catch (e) { _params = new URLSearchParams(''); } }
     return _params;
   }
+  // Back/Forward משנה את ה-URL בלי טעינה – הקאש מתאפס
+  window.addEventListener('popstate', function () { _params = null; });
   function param(name) { return params().get(name); }
   function setParams(obj, push) {
     try {
