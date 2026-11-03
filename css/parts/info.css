@@ -21,7 +21,6 @@
 .info-bar__t{font-weight:var(--fw-bold);font-size:18px}
 .info-bar__link{font-weight:var(--fw-semibold)}
 @media (max-width:640px){
-  .info-bar{padding:20px}
   .info-h2{font-size:var(--fs-h2-m)}
 }
 
@@ -135,7 +134,6 @@
 .faq-empty{padding:24px}
 @media (max-width:640px){
   .faq-list .acc__btn{padding:14px 16px}
-  .faq-panel{padding-inline:16px}
 }
 
 /* ---------- P16 about ---------- */
