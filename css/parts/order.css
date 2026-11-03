@@ -126,3 +126,4 @@
 }
 @media (max-width:640px){.order h1.h1--flow,.reissue h1.h1--flow{font-size:26px}}
 @media (max-width:640px){.order-wallets__btns{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.reissue__back{font-weight:400}
