@@ -89,7 +89,7 @@
     return '<a class="skip-link" href="#main">דלג לתוכן הראשי</a>' +
       '<header class="site-header site-header--flow"><div class="wrap site-header__bar">' +
       '<a class="wordmark" href="index.html" aria-label="רישיון עד הבית – מבית דפוס בארי, לעמוד הבית">' + wordmark() + '</a>' +
-      '<a class="header-phone header-phone--flow" href="' + TEL + '">' + I('phone', { size: 20 }) +
+      '<a class="header-phone header-phone--flow" href="' + TEL + '" aria-label="חיוג למוקד שירות ' + PHONE + '">' + I('phone', { size: 20 }) +
       '<span class="header-phone__lbl hide-m">מוקד שירות</span><span class="num" dir="ltr">' + PHONE + '</span></a>' +
       '</div></header>' +
       '<div class="trust"><div class="wrap trust__bar">' +
@@ -235,7 +235,7 @@
       if (!FLOW) document.body.insertAdjacentHTML('beforeend', menuHTML());
       // רכיב הנגישות עצמו טרם נבחר – באב-הטיפוס הכפתור מודיע על כך (לא מבוי סתום)
       var ab = UI.qs('.a11y-btn', h);
-      if (ab) ab.addEventListener('click', function () { UI.toast('תפריט הנגישות [לאישור]'); });
+      if (ab) ab.addEventListener('click', function () { UI.toast('תפריט הנגישות [לאישור]', { icon: 'info' }); });
     }
     var f = UI.qs('[data-slot="footer"]');
     if (f) {

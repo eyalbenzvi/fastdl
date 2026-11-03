@@ -23,6 +23,7 @@
 
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
+:root{color-scheme:light} /* האתר בהיר בלבד: דפדפן עם "מצב כהה אוטומטי" לא ממיר את הצבעים שנבדקו ל-AA (L-01) */
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent} /* במקום ההבהוב האפור של הדפדפן: מצב :active לכל רכיב לחיץ */
 a,button,label,input,select,textarea,summary,[role="button"]{touch-action:manipulation} /* בלי השהיית double-tap בהקשה */
 button,.btn,.chip,.demo-chip{-webkit-user-select:none;user-select:none} /* לחיצה ארוכה לא מסמנת את תווית הכפתור; טקסט תוכן נשאר בר-סימון */
@@ -36,6 +37,12 @@ img{max-width:100%;display:block}
 a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
 @media (hover:hover) and (pointer:fine){a:hover{color:var(--c-primary-hover)}}
 :focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
+/* הילה נייבית מחוץ לטבעת הצהובה (H-03): לבן 2px · צהוב 3px · נייבי 2px. הצהוב לבדו על לבן = 1.8:1; הנייבי מול לבן 12.6:1.
+   לא על יעדי פוקוס תכנותיים (tabindex=-1: main, H1, כותרת דיאלוג) – שם אין טבעת בכלל */
+:focus-visible:not([tabindex="-1"]){box-shadow:var(--focus-halo)}
+.site-footer :focus-visible,.demo-bar :focus-visible,.demo-pill :focus-visible{box-shadow:none} /* על רקע כהה הצהוב לבדו 7.2:1 */
+/* משטחי דפדפן (F12) */
+::selection{background:var(--c-primary-100);color:var(--c-navy)}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .page{min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
 .page>main{flex:1}
@@ -63,7 +70,7 @@ a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
 .lead{font-size:var(--fs-lead)}
 .muted{color:var(--c-text-muted)}
 .small{font-size:var(--fs-small)}
-.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
+.num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr;white-space:nowrap} /* טלפון/מספר הזמנה לא נשבר באמצע (F02) */
 .tbc{background:var(--c-tbc-bg);color:var(--c-tbc-text);font-weight:var(--fw-bold);border:1px dashed var(--c-tbc-border);border-radius:var(--radius-xs);padding:0 6px}
 
 /* ---------- Icons ---------- */
@@ -74,20 +81,20 @@ a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
 /* ---------- Wordmark ---------- */
 .wordmark{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--c-navy);flex:none}
 .wordmark__text{display:flex;flex-direction:column;line-height:1.1}
-.wordmark__name{font-size:22px;font-weight:var(--fw-black)}
-.wordmark__sub{font-size:14px;font-weight:var(--fw-medium);color:var(--c-text-muted)}
+.wordmark__name{font-size:var(--fs-h2-m);font-weight:var(--fw-black)}
+.wordmark__sub{font-size:var(--fs-xs);font-weight:var(--fw-medium);color:var(--c-text-muted)}
 .wordmark__bars{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
 .wordmark__bars span{display:block;height:5px;border-radius:3px;background:var(--c-brand-cyan)}
 .wordmark__bars span:nth-child(1){width:28px}.wordmark__bars span:nth-child(2){width:21px}.wordmark__bars span:nth-child(3){width:14px}
-.wordmark--dark{color:#fff}.wordmark--dark .wordmark__sub{color:#CFE0EA}
+.wordmark--dark{color:#fff}.wordmark--dark .wordmark__sub{color:var(--c-wordmark-sub-dark)}
 
 /* ---------- Buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);padding:0 24px;border-radius:var(--radius-md);font:inherit;font-weight:var(--fw-semibold);font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center;transition:background-color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);padding:0 24px;border-radius:var(--radius-md);font:inherit;font-weight:var(--fw-semibold);font-size:var(--fs-body);line-height:1.2;text-decoration:none;cursor:pointer;text-align:center;transition:background-color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
 .btn--primary{background:var(--c-primary);color:#fff;border:2px solid var(--c-primary)}
 .btn--primary:active{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}@media (hover:hover) and (pointer:fine){.btn--primary:hover{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}}
 .btn--secondary{background:#fff;color:var(--c-primary);border:2px solid var(--c-primary)}
 .btn--secondary:active{background:var(--c-primary-50);color:var(--c-primary-hover)}@media (hover:hover) and (pointer:fine){.btn--secondary:hover{background:var(--c-primary-50);color:var(--c-primary-hover)}}
-.btn--sm{min-height:var(--control-h-sm);font-size:16px;padding:0 16px}
+.btn--sm{min-height:var(--control-h-sm);font-size:var(--fs-ui);padding:0 16px}
 .btn--block{width:100%}
 .btn[disabled],.btn[aria-disabled="true"]{background:var(--c-disabled-bg);border-color:var(--c-disabled-bg);color:var(--c-disabled-text);cursor:not-allowed}
 .btn[aria-busy="true"]{cursor:progress}
@@ -111,23 +118,24 @@ a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
 .field{display:flex;flex-direction:column}
 .label{display:block;font-weight:var(--fw-semibold);margin-bottom:6px}
 .label .opt{font-weight:400;color:var(--c-text-muted)}
-.input{display:block;width:100%;height:var(--control-h);border:1.5px solid var(--c-input-border);border-radius:var(--radius-md);padding:0 16px;font:inherit;font-size:18px;color:var(--c-text);background:#fff}
-.input--num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.input{display:block;width:100%;height:var(--control-h);border:1.5px solid var(--c-input-border);border-radius:var(--radius-md);padding:0 16px;font:inherit;font-size:var(--fs-lead);color:var(--c-text);background:#fff;caret-color:var(--c-primary)}
+.input::placeholder{color:var(--c-text-muted);opacity:1}
+.input--num{direction:ltr;text-align:end;font-variant-numeric:tabular-nums}
 textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
-.input:focus{outline:3px solid var(--c-focus);outline-offset:2px;border-color:var(--c-primary)}
+.input:focus{outline:3px solid var(--c-focus);outline-offset:2px;box-shadow:var(--focus-halo);border-color:var(--c-primary)}
 .input[aria-invalid="true"]{border-color:var(--c-danger);border-width:2px}
 .help{font-size:var(--fs-small);color:var(--c-text-muted);margin-top:6px}
 .error{display:flex;align-items:center;gap:6px;font-size:var(--fs-small);font-weight:var(--fw-semibold);color:var(--c-danger);margin-top:6px}
 .check{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
 .check input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--c-primary);flex:none}
 .otp{display:flex;gap:8px;justify-content:flex-end;direction:ltr}
-.otp input{width:52px;height:60px;border:1.5px solid var(--c-input-border);border-radius:var(--radius-md);text-align:center;font:inherit;font-size:26px;font-weight:var(--fw-bold);font-variant-numeric:tabular-nums}
+.otp input{width:52px;height:60px;border:1.5px solid var(--c-input-border);border-radius:var(--radius-md);text-align:center;font:inherit;font-size:var(--fs-h1-flow-m);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums}
 
 /* ---------- Radio card (כרטיס בחירה) ---------- */
 .opt-card{position:relative;display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid var(--c-border-strong);border-radius:var(--radius-lg);padding:20px 22px;cursor:pointer;width:100%}
 .opt-card:active{border-color:var(--c-primary)}@media (hover:hover) and (pointer:fine){.opt-card:hover{border-color:var(--c-primary)}}
-.opt-card:has(:focus-visible){outline:3px solid var(--c-focus);outline-offset:2px} /* טבעת פוקוס רק במקלדת, לא אחרי הקשה */
-@supports not selector(:has(*)){.opt-card:focus-within{outline:3px solid var(--c-focus);outline-offset:2px}}
+.opt-card:has(:focus-visible){outline:3px solid var(--c-focus);outline-offset:2px;box-shadow:var(--focus-halo)} /* טבעת פוקוס רק במקלדת, לא אחרי הקשה */
+@supports not selector(:has(*)){.opt-card:focus-within{outline:3px solid var(--c-focus);outline-offset:2px;box-shadow:var(--focus-halo)}}
 .opt-card.is-selected,.opt-card:has(input:checked){background:var(--c-primary-50);border:2px solid var(--c-primary)}
 .opt-card input[type=radio]{width:22px;height:22px;margin:3px 0 0;accent-color:var(--c-primary);flex:none}
 .opt-card__q{position:absolute;inset-block-start:12px;inset-inline-end:12px} /* כפתור "?" בפינה השמאלית-עליונה ב-RTL */
@@ -163,7 +171,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 /* ---------- Accordion ---------- */
 .acc{border-bottom:1px solid var(--c-border)}
 .acc:last-child{border-bottom:0}
-.acc__btn{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 24px;background:none;border:0;font:inherit;font-size:18px;font-weight:var(--fw-semibold);color:var(--c-text);text-align:start;cursor:pointer}
+.acc__btn{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 24px;background:none;border:0;font:inherit;font-size:var(--fs-lead);font-weight:var(--fw-semibold);color:var(--c-text);text-align:start;cursor:pointer}
 .acc__btn:active{background:var(--c-row-hover)}@media (hover:hover) and (pointer:fine){.acc__btn:hover{background:var(--c-row-hover)}}
 .acc__btn .ico{color:var(--c-primary);transition:transform var(--dur-base) var(--ease)}
 .acc__btn[aria-expanded="true"] .ico{transform:rotate(180deg)}
@@ -171,7 +179,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .acc__panel[hidden]{display:none}
 
 /* ---------- Chips ---------- */
-.chip{min-height:var(--control-h-sm);padding:0 18px;border-radius:var(--radius-pill);border:1.5px solid var(--c-input-border);background:#fff;font:inherit;font-size:16px;font-weight:var(--fw-semibold);color:var(--c-text);cursor:pointer}
+.chip{min-height:var(--control-h-sm);padding:0 18px;border-radius:var(--radius-pill);border:1.5px solid var(--c-input-border);background:#fff;font:inherit;font-size:var(--fs-ui);font-weight:var(--fw-semibold);color:var(--c-text);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--c-navy);border-color:var(--c-navy);color:#fff}
 
 /* ---------- Status timeline ---------- */
@@ -194,13 +202,13 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
    isolation על השלב: הטבעת (z-index:-1) נשארת מאחורי העיגול הלבן אבל מעל הכרטיס. 1.625 = (16px רדיוס + 10px) / 16px */
 .timeline__step--current{isolation:isolate}
 .timeline__step--current .timeline__dot{position:relative}
-.timeline__step--current .timeline__dot::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:rgba(3,81,224,.35);z-index:-1;opacity:0;animation:pulse 2s ease-out infinite}
+.timeline__step--current .timeline__dot::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:rgba(3,81,224,.35);z-index:-1;opacity:0;animation:pulse 2s ease-out 3} /* 3 פעימות בכניסה ואז נעצר – בלי תנועה חוזרת אינסופית (L-06) */
 @keyframes pulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.625);opacity:0}100%{transform:scale(1.625);opacity:0}}
 
 /* ---------- Stepper (order) ---------- */
 .stepper{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .stepper__item{display:flex;align-items:center;gap:8px}
-.stepper__num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:var(--fw-bold);border:2px solid var(--c-step-future);color:var(--c-text-muted)}
+.stepper__num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--fs-xs);font-weight:var(--fw-bold);border:2px solid var(--c-step-future);color:var(--c-text-muted)}
 .stepper__item--done .stepper__num{background:var(--c-success);border-color:var(--c-success);color:#fff}
 .stepper__item--current .stepper__num{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
 .stepper__item--current .stepper__label{font-weight:var(--fw-bold)}
@@ -226,12 +234,13 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 
 /* ---------- Toast ---------- */
 .toast{position:fixed;bottom:80px;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--c-navy);color:#fff;padding:10px 20px;border-radius:10px;z-index:95;font-weight:var(--fw-semibold);transition:transform var(--dur-base) var(--ease),opacity var(--dur-base) var(--ease)}
+.toast{width:max-content;max-width:calc(100vw - 32px)} /* רוחב לפי התוכן: left:50% לבדו מגביל לחצי מסך ושובר הודעה קצרה לשתי שורות */
 .toast.is-off{opacity:0;transform:translate(-50%,100%)} /* נכנס מלמטה ויוצא לאותו כיוון */
 
 /* ---------- Skeleton ---------- */
 /* הברק נע כ-transform על ::after (קומפוזיציה בלבד) במקום background-position שמצייר מחדש כל פריים */
-.skel{position:relative;overflow:hidden;background:#E6ECF0;border-radius:var(--radius-sm)}
-.skel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(242,245,247,0) 0%,#F2F5F7 50%,rgba(242,245,247,0) 100%);transform:translateX(-100%);animation:sk 1.4s linear infinite}
+.skel{position:relative;overflow:hidden;background:var(--c-skel);border-radius:var(--radius-sm)}
+.skel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(242,245,247,0) 0%,var(--c-skel-shine) 50%,rgba(242,245,247,0) 100%);transform:translateX(-100%);animation:sk 1.4s linear infinite}
 @keyframes sk{to{transform:translateX(100%)}}
 
 /* ---------- Header / trust bar / footer ---------- */
@@ -245,18 +254,18 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .trust{background:var(--c-navy-50);border-bottom:1px solid var(--c-border);font-size:var(--fs-small);font-weight:var(--fw-medium)}
 .trust__bar{min-height:var(--trust-h);display:flex;align-items:center;justify-content:space-between;gap:16px}
 .trust .ico{color:var(--c-brand-cyan-dark)}
-.mot-placeholder{display:flex;align-items:center;justify-content:center;height:34px;padding:0 12px;border:1.5px dashed var(--c-input-border);border-radius:var(--radius-sm);color:var(--c-text-muted);font-size:13px;font-weight:var(--fw-semibold);white-space:nowrap}
+.mot-placeholder{display:flex;align-items:center;justify-content:center;height:34px;padding:0 12px;border:1.5px dashed var(--c-input-border);border-radius:var(--radius-sm);color:var(--c-text-muted);font-size:var(--fs-tag);font-weight:var(--fw-semibold);white-space:nowrap}
 .site-footer{background:var(--c-navy);color:#fff;padding:56px 0 24px}
-.site-footer a{color:#fff}@media (hover:hover) and (pointer:fine){.site-footer a:hover{color:#CFE6F2}}
+.site-footer a{color:#fff}@media (hover:hover) and (pointer:fine){.site-footer a:hover{color:var(--c-footer-hover)}}
 .site-footer__bottom{border-top:1px solid var(--c-footer-line);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:var(--fs-small);color:var(--c-footer-muted)}
 
 /* ---------- Demo bar (אב-טיפוס בלבד) ---------- */
-.demo-bar{background:var(--c-demo-bg);color:#fff;font-size:14px}
+.demo-bar{background:var(--c-demo-bg);color:#fff;font-size:var(--fs-xs)}
 .demo-bar__inner{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-block:8px}
 .demo-bar__label{font-weight:var(--fw-bold);color:var(--c-demo-accent)}
 .demo-chip{min-height:36px;padding:0 12px;border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:transparent;font:inherit;font-weight:var(--fw-semibold);color:#fff;cursor:pointer}
 .demo-chip[aria-pressed="true"]{background:var(--c-demo-accent);border-color:var(--c-demo-accent);color:var(--c-demo-bg)}
-.demo-pill{position:fixed;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:16px;left:calc(16px + env(safe-area-inset-left,0px));z-index:70;display:flex;align-items:center;gap:10px;background:var(--c-demo-bg);color:#fff;border-radius:var(--radius-pill);padding:6px 8px 6px 16px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.demo-pill{position:fixed;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:16px;left:calc(16px + env(safe-area-inset-left,0px));z-index:70;display:flex;align-items:center;gap:10px;background:var(--c-demo-bg);color:#fff;border-radius:var(--radius-pill);padding:6px 8px 6px 16px;font-size:var(--fs-xs);box-shadow:0 8px 24px rgba(0,0,0,.25)}
 @media (max-width:380px){.demo-pill{max-width:calc(100% - 32px)}} /* ב-320 לא נצמד לקצה הימני */
 
 /* ---------- Responsive helpers ---------- */
@@ -281,5 +290,18 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
   .drawer.is-off,.drawer--menu.is-off,.modal.is-off{opacity:1;transform:translateY(100%)} /* bottom sheet */
   .sticky-actions{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:var(--shadow-sticky);padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));margin-inline:-16px;flex-direction:column-reverse;align-items:stretch}
   .otp input{width:44px;flex:0 1 44px;min-width:0;height:54px} /* מתכווץ רק כשאין מקום (מתחת ל-390) */
+  /* פוקוס מקלדת לא נבלע מתחת לסרגל הדביק (H-01): הדפדפן גולל את הרכיב המפוקס עד מעל הסרגל (88px + 16 מרווח) */
+  html:has(.sticky-actions){scroll-padding-block-end:calc(104px + env(safe-area-inset-bottom,0px))}
+  /* bottom sheet: פס אחיזה דקורטיבי; ui.js מאפשר גרירה של ראש ה-sheet כלפי מטה לסגירה (L-07). כפתור הסגירה נשאר */
+  .drawer::before,.modal::before{content:"";position:absolute;inset-block-start:8px;inset-inline-start:50%;translate:50% 0;width:36px;height:5px;border-radius:var(--radius-pill);background:var(--c-border-strong);pointer-events:none}
+  .drawer>.dialog__head,.modal>.dialog__head{touch-action:none}
+  .drawer.is-dragging,.modal.is-dragging{transition:none}
+}
+/* זום עמוד 200% / "גודל טקסט" גדול ב-iOS (רוחב 195–300): הכותרת נשברת לשתי שורות במקום גלישה אופקית (M-02). ב-≥320 אין שינוי */
+@media (max-width:300px){
+  .site-header__bar{height:auto;min-height:var(--header-h-m);flex-wrap:wrap;row-gap:8px;padding-block:8px}
+  .wordmark{flex:1 1 auto;min-width:0}
+  .wordmark__bars{display:none}
+  .header-phone--flow .num{display:none}
 }
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

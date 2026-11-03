@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
   <title>הזמנת משלוח או איסוף – רישיון עד הבית</title>
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/tokens.css">
@@ -56,7 +57,6 @@
         <section class="order__step" data-step="2" aria-labelledby="h-step2" hidden>
           <!-- גרסה B – לא מורשה -->
           <div class="order__head" data-auth="0">
-            <p class="muted order__kicker">כתובת למשלוח</p>
             <h1 class="h1 h1--flow" id="h-step2" tabindex="-1">הרישיון יישלח לכתובת הרשומה במשרד הפנים</h1>
           </div>
           <div class="card order-locked" data-auth="0">
@@ -77,9 +77,9 @@
               <div class="field"><label class="label" for="o-st">רחוב</label><input id="o-st" class="input" autocomplete="address-line1" data-other="street"></div>
             </div>
             <div class="g3 order-grid">
-              <div class="field"><label class="label" for="o-h">מספר בית</label><input id="o-h" class="input input--num" inputmode="numeric" data-other="house"></div>
+              <div class="field"><label class="label" for="o-h">מספר בית</label><input id="o-h" class="input" autocomplete="off" data-other="house"></div>
               <div class="field"><label class="label" for="o-e">כניסה <span class="opt">(לא חובה)</span></label><input id="o-e" class="input" data-other="entrance"></div>
-              <div class="field"><label class="label" for="o-a">דירה <span class="opt">(לא חובה)</span></label><input id="o-a" class="input input--num" inputmode="numeric" data-other="apt"></div>
+              <div class="field"><label class="label" for="o-a">דירה <span class="opt">(לא חובה)</span></label><input id="o-a" class="input" autocomplete="off" data-other="apt"></div>
             </div>
             <div class="g3 order-grid">
               <div class="field"><label class="label" for="o-z">מיקוד</label><input id="o-z" class="input input--num" inputmode="numeric" autocomplete="postal-code" data-other="zip"></div>
@@ -123,11 +123,11 @@
           </div>
           <div class="callout callout--info order-late" id="late-note" hidden><svg class="ico" data-icon="info" aria-hidden="true"></svg><p>שימו לב: הרישיון יגיע יום עסקים אחד מאוחר יותר.</p></div>
           <div class="field order-terms">
-            <label class="check" for="terms"><input type="checkbox" id="terms" aria-invalid="false"><span>אישור: קראתי את <button type="button" class="link-btn order-terms__link" id="open-terms">תנאי השימוש</button></span></label>
+            <div class="check order-terms__row"><input type="checkbox" id="terms" aria-labelledby="terms-l open-terms" aria-invalid="false"><span class="order-terms__txt"><label id="terms-l" for="terms">אישור: קראתי את</label> <button type="button" class="link-btn order-terms__link" id="open-terms">תנאי השימוש</button></span></div>
           </div>
           <div class="sticky-actions order-actions">
             <button type="button" class="link-btn back-link hide-m" data-back><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה</button>
-            <button type="button" class="btn btn--primary btn--m-block order-actions__next order-actions__next--220" id="next-3">המשך לתשלום</button>
+            <button type="button" class="btn btn--primary btn--m-block order-actions__next order-actions__next--220" id="next-3"><span id="next-3-t">המשך לתשלום</span><svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true" id="next-3-ico"></svg></button>
           </div>
         </section>
 
@@ -147,7 +147,7 @@
           <div class="card order-form" id="cc-form">
             <p class="order-form__t">תשלום בכרטיס אשראי</p>
             <div class="field"><label class="label" for="cc">מספר כרטיס</label><input id="cc" class="input input--num" inputmode="numeric" autocomplete="cc-number" maxlength="23"></div>
-            <div class="g3 order-grid">
+            <div class="g3 order-grid order-pay-grid">
               <div class="field"><label class="label" for="exp">תוקף <span class="opt">(MM/YY)</span></label><input id="exp" class="input input--num" inputmode="numeric" autocomplete="cc-exp" maxlength="5"></div>
               <div class="field"><label class="label" for="cvv">CVV</label><input id="cvv" class="input input--num" inputmode="numeric" autocomplete="cc-csc" maxlength="4"></div>
               <div class="field"><label class="label" for="hid">ת״ז בעל הכרטיס</label><input id="hid" class="input input--num" inputmode="numeric" maxlength="9" autocomplete="off"></div>
@@ -192,7 +192,10 @@
   <aside class="drawer order-drawer" id="dr-method" role="dialog" aria-modal="true" aria-labelledby="dr-method-t" hidden>
     <div class="dialog__head"><h2 id="dr-method-t" data-dialog-title tabindex="-1" class="drawer__title">פרטי השיטה</h2><button type="button" class="icon-btn" aria-label="סגירה" data-close-dialog><svg class="ico" data-icon="x" aria-hidden="true"></svg></button></div>
     <dl class="kv-list" id="dr-method-dl"></dl>
-    <button type="button" class="btn btn--secondary" data-close-dialog>חזרה להזמנה</button>
+    <div class="order-drawer__btns">
+      <button type="button" class="btn btn--secondary" id="dr-method-pick">לבחור</button>
+      <button type="button" class="btn btn--secondary" data-close-dialog>חזרה להזמנה</button>
+    </div>
   </aside>
 
   <aside class="drawer order-drawer" id="dr-compare" role="dialog" aria-modal="true" aria-labelledby="dr-compare-t" hidden>

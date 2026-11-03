@@ -21,18 +21,18 @@ main:focus{outline:none}
 .stack-4{display:flex;flex-direction:column;gap:var(--sp-4)}
 .stack-5{display:flex;flex-direction:column;gap:var(--sp-5)}
 .stack-6{display:flex;flex-direction:column;gap:var(--sp-6)}
-.h2--card{font-size:22px;font-weight:var(--fw-bold);line-height:1.35}
-.h1--status{font-size:34px;font-weight:var(--fw-bold);line-height:1.25}
+.h2--card{font-size:var(--fs-h2-m);font-weight:var(--fw-bold);line-height:1.35}
+.h1--status{font-size:var(--fs-h1-status);font-weight:var(--fw-bold);line-height:1.25}
 .chip--static{display:inline-flex;align-items:center;text-decoration:none!important}
 .chip--static[aria-current="true"]{background:var(--c-navy);border-color:var(--c-navy);color:#fff}
 .ext-link{display:inline-flex;align-items:center;gap:6px}
 .toast{display:flex;align-items:center;gap:8px}
-.drawer__title{font-size:22px;font-weight:var(--fw-bold)}
+.drawer__title{font-size:var(--fs-h2-m);font-weight:var(--fw-bold)}
 .drawer__title:focus,.modal [data-dialog-title]:focus,[data-dialog-title]:focus{outline:none}
 .drawer>.dialog__head .icon-btn{flex:none}
 .drawer__foot{margin-top:auto;padding-top:8px}
 @media (max-width:640px){
-  .h1--status{font-size:26px}
+  .h1--status{font-size:var(--fs-h1-flow-m)}
 }
 
 /* ---------- Polish (taste-skill pass): hit areas, figures, measure ---------- */
@@ -48,6 +48,8 @@ main:focus{outline:none}
 .dl-price,.dl-card__price,.order-opt__price,.order-tbl__price,.ds-opt__price,.fast-calc__date{font-variant-numeric:tabular-nums}
 /* כותרת ה-Hero בשתי שורות מאולצות (<br>): החלק השני מאוזן בפני עצמו, בלי מילה יתומה ב-390/320 */
 .home-hero__title .accent,html[lang="ar"] .h1 .accent{display:inline-block}
+/* .num לא נשבר (F02). חריג: כתובות URL ארוכות באינדקס המסכים – נשברות במקום גלילה אופקית ב-320 (להעביר לסקשן P00) */
+.num--wrap,.pi-lnk__d .num{white-space:normal;overflow-wrap:anywhere}
 /* תשובות באקורדיון: אורך שורה קריא (~70 תווים) גם בכרטיס רחב */
 .acc__panel p{max-width:68ch}
 
@@ -60,7 +62,7 @@ main:focus{outline:none}
 
 /* ---------- Header ---------- */
 .site-header{position:relative}
-.nav__more{display:flex;align-items:center;gap:4px;min-height:44px;background:none;border:0;font:inherit;font-size:17px;font-weight:var(--fw-medium);color:var(--c-navy);cursor:pointer;border-bottom:2px solid transparent}
+.nav__more{display:flex;align-items:center;gap:4px;min-height:44px;background:none;border:0;font:inherit;font-size:var(--fs-body);font-weight:var(--fw-medium);color:var(--c-navy);cursor:pointer;border-bottom:2px solid transparent}
 .nav__more.is-current{border-bottom-color:var(--c-primary)}
 .nav__more .ico{transition:transform var(--dur-base) var(--ease)}
 .nav__more[aria-expanded="true"] .ico{transform:rotate(180deg)}
@@ -76,7 +78,7 @@ main:focus{outline:none}
 .a11y-btn{width:44px;height:44px;border-radius:50%;border:0;background:var(--c-primary);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .header-tools-m{align-items:center;gap:4px}
 .header-phone-m{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--c-primary);border-radius:10px}
-.menu-btn{height:44px;display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--c-navy-50);border:0;border-radius:10px;font:inherit;font-size:16px;font-weight:var(--fw-semibold);color:var(--c-navy);cursor:pointer}
+.menu-btn{height:44px;display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--c-navy-50);border:0;border-radius:10px;font:inherit;font-size:var(--fs-ui);font-weight:var(--fw-semibold);color:var(--c-navy);cursor:pointer}
 .trust__items{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:8px 0}
 .trust__item{display:flex;align-items:center;gap:8px}
 @media (max-width:640px){
@@ -98,35 +100,42 @@ main:focus{outline:none}
 .menu-list a:active{background:var(--c-row-hover)}@media (hover:hover) and (pointer:fine){.menu-list a:hover{background:var(--c-row-hover)}}
 .menu-list a[aria-current="page"] .menu-list__t{color:var(--c-primary)}
 .menu-list__text{display:flex;flex-direction:column}
-.menu-list__t{font-weight:var(--fw-bold);font-size:17px}
-.menu-list__d{font-size:15px;color:var(--c-text-muted)}
+.menu-list__t{font-weight:var(--fw-bold);font-size:var(--fs-body)}
+.menu-list__d{font-size:var(--fs-small);color:var(--c-text-muted)}
 .menu-list .ico{color:var(--c-primary)}
 .menu-call{background:var(--c-navy-50);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
 .menu-call__t{display:flex;align-items:center;gap:8px;font-weight:var(--fw-bold)}
 .menu-call__t .ico{color:var(--c-primary)}
-.menu-call__phone{font-size:22px;font-weight:var(--fw-black)}
+.menu-call__phone{font-size:var(--fs-h2-m);font-weight:var(--fw-black)}
 .menu-lang{display:flex;gap:8px}
 
 /* ---------- Footer ---------- */
 .site-footer__inner{display:flex;flex-direction:column;gap:36px}
 .site-footer__cols{gap:40px}
 .site-footer__brand{display:flex;flex-direction:column;gap:12px}
-.site-footer__auth{display:flex;gap:8px;color:var(--c-footer-muted);font-size:15px}
+.site-footer__auth{display:flex;gap:8px;color:var(--c-footer-muted);font-size:var(--fs-small)}
 .site-footer__auth .ico{margin-top:3px}
 .site-footer__h{font-weight:var(--fw-bold);margin-bottom:10px}
 .site-footer__list{display:flex;flex-direction:column;gap:8px}
 @media (max-width:860px){.site-footer__cols{grid-template-columns:minmax(0,1fr)}}
+/* מובייל: כל קישור בפוטר בשורה של 44px (L-04) – הרשימה בעמודה אחת, ולכן במקום 25px + רווח 8 */
+@media (max-width:640px){
+  .site-footer__list{gap:0}
+  .site-footer__list a{display:flex;align-items:center;min-height:var(--tap-min)}
+  .site-footer__list a::after{content:none}
+  .site-footer__h{margin-bottom:0}
+}
 
 /* ---------- Demo bar / pill ---------- */
 .demo-bar__inner{min-height:52px}
-.demo-bar__muted{color:#D1D5DB}
+.demo-bar__muted{color:var(--c-demo-muted)}
 .demo-bar a{color:#fff}
 .demo-bar__index{margin-inline-start:auto}
 a.demo-chip{display:inline-flex;align-items:center;text-decoration:none}
 a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:var(--c-demo-accent);color:var(--c-demo-bg)}
 .demo-pill a{color:#fff;font-weight:var(--fw-semibold)}
 .demo-pill__body{display:flex;align-items:center;gap:10px}
-.demo-pill__toggle{width:32px;height:32px;border-radius:50%;border:0;background:#444A53;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.demo-pill__toggle{width:32px;height:32px;border-radius:50%;border:0;background:var(--c-demo-toggle);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .demo-pill .demo-bar__label{font-weight:var(--fw-bold)}
 
 /* ---------- Shared bits ---------- */
@@ -144,7 +153,7 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .back-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:var(--fw-semibold)}
 .sticky-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .drawer dl.kv-list{display:flex;flex-direction:column;gap:14px}
-.drawer dl.kv-list dt{font-size:15px;color:var(--c-text-muted)}
+.drawer dl.kv-list dt{font-size:var(--fs-small);color:var(--c-text-muted)}
 .drawer dl.kv-list dd{font-weight:var(--fw-semibold)}
 .modal .dialog__head .icon-btn,.drawer .dialog__head .icon-btn{background:var(--c-navy-50)}
 
@@ -721,13 +730,12 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order__step{display:flex;flex-direction:column;gap:22px}
 .order__head{display:flex;flex-direction:column;gap:6px}
 .order__step .order__head + .order-locked{margin-top:0}
-.order__kicker{font-weight:var(--fw-semibold)}
 .order h1:focus{outline:none}
 .order h1.h1--flow{font-size:var(--fs-h1-flow);line-height:1.25}
 
 /* Stepper */
 .order-steps .stepper{gap:10px}
-.stepper__note{font-size:13px}
+.stepper__note{font-size:var(--fs-tag)}
 .stepper__num .ico{width:16px;height:16px;stroke-width:3}
 .stepper-m__text{font-weight:var(--fw-bold)}
 
@@ -743,10 +751,10 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-opt__body{flex:1;min-width:0;gap:8px}
 .order-opt__body--tight{gap:2px}
 .order-opt__title{gap:8px}
-.order-opt__title strong,.order-opt__name{font-size:18px;font-weight:var(--fw-bold)}
+.order-opt__title strong,.order-opt__name{font-size:var(--fs-lead);font-weight:var(--fw-bold)}
 .order-opts .opt-card > strong{font-weight:var(--fw-bold)}
-.order-opt__eta{font-size:20px;font-weight:var(--fw-bold)}
-.order-opt__price{font-size:19px;font-weight:var(--fw-bold);white-space:nowrap}
+.order-opt__eta{font-size:var(--fs-h3);font-weight:var(--fw-bold)}
+.order-opt__price{font-size:var(--fs-title);font-weight:var(--fw-bold);white-space:nowrap}
 .order__compare{align-self:flex-start}
 
 /* action bar */
@@ -762,32 +770,28 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* step 2 */
 .order-locked{padding:22px 24px;display:flex;gap:16px;align-items:center}
 .order-locked__ibox{width:48px;height:48px}
-.order-addr-big{font-size:22px;font-weight:var(--fw-bold)}
+.order-addr-big{font-size:var(--fs-h2-m);font-weight:var(--fw-bold)}
 .order-form{padding:24px;display:flex;flex-direction:column;gap:16px}
 .order-form__t{font-weight:var(--fw-bold)}
 .order-form__t .opt{font-weight:400;color:var(--c-text-muted)}
 .order-grid{gap:16px}
 .order-why{overflow:hidden}
-.order-why .acc__btn{min-height:60px;padding:14px 22px;font-size:17px}
+.order-why .acc__btn{min-height:60px;padding:14px 22px;font-size:var(--fs-body)}
 .order-why .acc__panel{padding:0 22px 20px}
 
 /* step 3 */
-.order-opt__title strong{font-size:19px}
-.order-mini-tl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px;font-weight:var(--fw-semibold);color:var(--c-info)}
+.order-opt__title strong{font-size:var(--fs-title)}
+.order-mini-tl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:var(--fs-small);font-weight:var(--fw-semibold);color:var(--c-info)}
 .order-terms__link{min-height:0;font-weight:var(--fw-bold)}
 
 /* step 4 */
 .order-sum{padding:20px 24px}
-.order-sum__s{cursor:pointer;font-weight:var(--fw-bold);font-size:18px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;list-style:none}
+.order-sum__s{cursor:pointer;font-weight:var(--fw-bold);font-size:var(--fs-lead);min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;list-style:none}
 .order-sum__s::-webkit-details-marker{display:none}
 .order-sum__dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;margin-top:12px}
 .order-sum__dl dt{font-size:var(--fs-small);color:var(--c-text-muted)}
 .order-sum__dl dd{font-weight:var(--fw-semibold)}
-.order-sum__dl dd.order-sum__total{font-weight:var(--fw-black);font-size:20px}
-.order-wallets{display:flex;flex-direction:column;gap:8px}
-.order-wallets__btns{gap:16px}
-.btn.order-wallet[disabled]{opacity:.55;cursor:not-allowed;color:var(--c-navy);border:2px solid var(--c-navy);background:#fff}
-.btn.order-wallet--apple[disabled]{background:var(--c-navy);color:#fff}
+.order-sum__dl dd.order-sum__total{font-weight:var(--fw-black);font-size:var(--fs-h3)}
 .order-secure{display:flex;align-items:center;gap:8px}
 .order-secure .ico{color:var(--c-success)}
 
@@ -795,7 +799,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-done{padding:40px;display:flex;flex-direction:column;gap:20px;align-items:flex-start}
 .order-done__circle{width:76px;height:76px;border-radius:50%;background:var(--c-success-bg);color:var(--c-success);display:flex;align-items:center;justify-content:center}
 .order-done__circle .ico{stroke-width:2.5}
-.order-done__num{display:flex;align-items:center;gap:6px;font-size:18px;flex-wrap:wrap}
+.order-done__num{display:flex;align-items:center;gap:6px;font-size:var(--fs-lead);flex-wrap:wrap}
 .order-done__num .icon-btn{border-radius:8px}
 .order-done__next{width:100%;background:var(--c-bg);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .order-done__t{font-weight:var(--fw-bold)}
@@ -815,10 +819,10 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-drawer .kv-list dt{font-size:var(--fs-small);color:var(--c-text-muted)}
 .order-drawer .kv-list dd{font-weight:var(--fw-semibold)}
 .order-tbl-wrap{overflow-x:auto}
-.order-tbl{width:100%;border-collapse:collapse;font-size:15px}
+.order-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
 .order-tbl th,.order-tbl td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--c-border);vertical-align:top}
-.order-tbl thead th{font-weight:var(--fw-bold);color:var(--c-text-muted);font-size:14px}
-.order-tbl tbody th{color:var(--c-text);font-size:15px;font-weight:var(--fw-bold)}
+.order-tbl thead th{font-weight:var(--fw-bold);color:var(--c-text-muted);font-size:var(--fs-xs)}
+.order-tbl tbody th{color:var(--c-text);font-size:var(--fs-small);font-weight:var(--fw-bold)}
 .order-tbl__price{white-space:nowrap}
 
 /* ===== P10 reissue ===== */
@@ -830,7 +834,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .reissue-opt__body{flex:1;display:flex;flex-direction:column}
 .reissue-addr{display:flex;gap:14px;align-items:center}
 .reissue-addr .ibox{width:44px;height:44px}
-.reissue-addr p{font-size:20px;font-weight:var(--fw-bold)}
+.reissue-addr p{font-size:var(--fs-h3);font-weight:var(--fw-bold)}
 .reissue-ok{align-items:center}
 .reissue-ok p{font-weight:var(--fw-bold);color:var(--c-success)}
 .reissue-decl{font-weight:var(--fw-semibold)}
@@ -841,8 +845,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
   .reissue-card{padding:20px}
   .reissue__submit{min-width:0;align-self:stretch}
 }
-@media (max-width:640px){.order h1.h1--flow,.reissue h1.h1--flow{font-size:26px}}
-@media (max-width:640px){.order-wallets__btns{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.order h1.h1--flow,.reissue h1.h1--flow{font-size:var(--fs-h1-flow-m)}}
 .reissue__back{font-weight:400}
 
 
@@ -984,17 +987,21 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* מצב תהליך (data-flow="order"): כותרת ופוטר מינימליים – החלטה 12 */
 .header-phone--flow{min-height:44px;gap:8px}
 .header-phone__lbl{font-weight:var(--fw-semibold);color:var(--c-text-muted)}
+/* הטלפון בכותרת התהליך לא נשבר (.num nowrap), ולכן בטלפונים צרים הוא קטן מעט, וב-≤359 פסי הוורדמרק (דקורטיביים) מוסתרים */
+@media (max-width:389px){.header-phone--flow{gap:6px;font-size:var(--fs-small)}}
+@media (max-width:359px){.site-header--flow .wordmark__bars{display:none}}
 .site-footer--flow{padding:18px 0}
 .site-footer__line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 12px;font-size:var(--fs-small);color:var(--c-footer-muted)}
 .site-footer__line a{display:inline-flex;align-items:center;gap:4px;min-height:44px}
 .site-footer__line .ico{flex:none}
 .order .nowrap,.reissue .nowrap{white-space:nowrap}
+@media (max-width:300px){.order .nowrap,.reissue .nowrap{white-space:normal}} /* זום 200%: עדיף שבירה מגלילה אופקית */
 
 /* שלב 1: קבוצות עם כותרות (החלטה 2), במקום צ'יפים (החלטה 3) */
 .order-addr-line{margin-top:2px}
 .order-groups{display:flex;flex-direction:column;gap:22px}
 .order-grp{display:flex;flex-direction:column;gap:10px}
-.order-grp__t{font-size:18px;font-weight:var(--fw-bold);color:var(--c-navy);line-height:1.3}
+.order-grp__t{font-size:var(--fs-lead);font-weight:var(--fw-bold);color:var(--c-navy);line-height:1.3}
 .order-m-err{margin-top:0}
 /* כרטיס שיטה: radio · שם · מחיר / "יגיע עד…" / שורת תועלת / "מתאים ל…" */
 .opt-card.order-m{display:grid;grid-template-columns:22px 44px minmax(0,1fr) auto;grid-template-areas:"r i n p" "r i e e" ". . b b" ". . f f";column-gap:14px;row-gap:4px;align-items:start;padding-inline-end:64px}
@@ -1024,7 +1031,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* שלב 2 / 3 */
 .order-to-pickup{margin-top:-8px}
 .order-to-pickup .link-btn{font-weight:var(--fw-semibold)}
-.order-prod__eta{color:var(--c-info);font-size:17px}
+.order-prod__eta{color:var(--c-info);font-size:var(--fs-body)}
 .order-late{align-items:center}
 /* שלב 4: הכפתור לא דביק (החלטה 7), שורת הרגעה מעליו */
 .order-actions--static{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -1037,30 +1044,42 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-done__dl{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
 .order-done__dl dt{font-size:var(--fs-small);color:var(--c-text-muted)}
 .order-done__dl dd{font-weight:var(--fw-semibold)}
-.order-done h2.order-done__t{font-size:18px}
+.order-done h2.order-done__t{font-size:var(--fs-lead)}
 /* מגירת ההשוואה */
 .order-tbl__pick{white-space:nowrap}
+/* מגירת פרטי השיטה: "לבחור ב…" מעל "חזרה להזמנה" (L-08) */
+.order-drawer__btns{display:flex;flex-direction:column;gap:10px}
+/* שלב 3: תיבת תנאי השימוש – הכפתור מחוץ ל-label, שורה בגובה 44 (M-01) */
+.order-terms__row{min-height:44px;align-items:center;column-gap:10px;cursor:default}
+.order-terms__row input{margin:0;cursor:pointer}
+.order-terms__txt{display:inline}
+.order-terms__row label{cursor:pointer;display:inline-block;padding-block:10px}
+/* "להחליף" בשורת בארי: אזור לחיצה 44px בלי לשנות את הפריסה (L-03) */
+.order-m-extra--note .link-btn,.order-terms__link{position:relative}
+.order-m-extra--note .link-btn::after,.order-terms__link::after{content:"";position:absolute;inset-inline:-4px;top:50%;height:var(--tap-min);transform:translateY(-50%)}
+/* הנפקה חוזרת: שם הכרטיס במשקל של שלב 1 */
+.reissue-opt__name{font-weight:var(--fw-bold)}
 @media (min-width:641px){.order-drawer#dr-compare{width:min(760px,100%)}}
 
 @media (max-width:640px){
   .order{padding-top:12px}
   .order-top{margin-block-end:-16px}
-  .order-addr-line{font-size:14px}
+  .order-addr-line{font-size:var(--fs-xs)}
   .order-top .back-link{font-weight:400}
   .opt-card.order-m{grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"r n p" ". e e" ". b b" ". f f";column-gap:10px;row-gap:3px;padding:14px;padding-inline-end:14px}
   .order-m__ibox{display:none}
   .order-m>input{margin-top:3px}
-  .order-m__name{font-size:17px;line-height:1.3}
-  .order-m__price{font-size:17px;margin-inline-end:40px}
-  .order-m__eta .order-opt__eta{font-size:18px;line-height:1.35}
-  .order-m__ben{font-size:14px;line-height:1.45;gap:0 10px}
-  .order-m__fit{font-size:14px;line-height:1.4}
+  .order-m__name{font-size:var(--fs-body);line-height:1.3}
+  .order-m__price{font-size:var(--fs-body);margin-inline-end:40px}
+  .order-m__eta .order-opt__eta{font-size:var(--fs-lead);line-height:1.35}
+  .order-m__ben{font-size:var(--fs-xs);line-height:1.45;gap:0 10px}
+  .order-m__fit{font-size:var(--fs-xs);line-height:1.4}
   .order-m-wrap .order-opt__q{inset-block-start:5px;inset-inline-end:4px;width:44px;height:44px}
   .order-groups{gap:18px}
   .order-grp{gap:8px}
   .order-nudge__btns{flex-direction:column;align-self:stretch}
   .order-nudge__btns .btn{width:100%}
-  .order-actions--choice{gap:4px;padding-block:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .order-actions--choice{flex-wrap:nowrap;gap:4px;padding-block:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
   .order-actions--choice .order-actions__chosen{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
   .order-actions--choice .order-actions__row{flex-direction:column;align-items:stretch}
   .order-actions--choice .btn{min-height:48px}
@@ -1076,6 +1095,14 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
   .order-tbl th,.order-tbl td{border:0;padding:2px 0}
   .order-tbl td[data-th]::before{content:attr(data-th) ": ";color:var(--c-text-muted);font-weight:var(--fw-semibold)}
   .order-tbl__pick{padding-top:8px!important}
+  /* שלב 4: תוקף ו-CVV בשורה אחת, ת״ז בעל הכרטיס מתחתיהם (M-04) */
+  .order-pay-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .order-pay-grid>.field:last-child{grid-column:1/-1}
+  /* הנפקה חוזרת: "ללא עלות" בשורה מתחת לשם ולמועד, כדי שהשם והמועד לא יישברו (F07) */
+  .opt-card.reissue-opt{display:grid;grid-template-columns:22px minmax(0,1fr);grid-template-areas:"r b" ". p";column-gap:12px;row-gap:2px;padding:16px}
+  .reissue-opt>input{grid-area:r}
+  .reissue-opt__body{grid-area:b}
+  .reissue-opt__price{grid-area:p}
 }
 
 /* ===== UX recs: status ===== */

@@ -18,6 +18,7 @@
   --c-primary-50:      #F1F5FE;  /* רקע כרטיס נבחר, אייקון-בוקס */
   --c-primary-100:     #E6EEFC;  /* hover של כפתור אייקון */
   --c-focus:           #FFB020;  /* טבעת פוקוס 3px, offset 2px */
+  --focus-halo: 0 0 0 2px #fff, 0 0 0 7px var(--c-navy); /* מתחת לטבעת: רווח לבן + הילה נייבית (H-03) */
 
   /* ---------- Gate accents (אייקונים/כותרות בלבד) ---------- */
   --c-gate-status:     #0B6E61;  --c-gate-status-50: #E6F3F1;
@@ -48,21 +49,38 @@
   --c-row-hover:     #F7F9FB;
   --c-scrim:         rgba(21, 50, 74, .5);
   --c-footer-line:   #2E4C64;  --c-footer-muted: #E3EDF3;
+  --c-footer-hover:  #CFE6F2;  --c-wordmark-sub-dark: #CFE0EA; /* קישור ב-hover ושורת המשנה של הוורדמרק על נייבי */
+  --c-skel:          #E6ECF0;  --c-skel-shine: #F2F5F7;  /* שלד טעינה */
+
+  /* ---------- Illustration (דקורטיבי בלבד – איור ה-Hero, מפת האיסוף) ---------- */
+  --c-illus-1: #C5DAE5; --c-illus-2: #B6CCD8; --c-illus-3: #9DB7C6;
+  --c-illus-card-from: #F7FBFD; --c-illus-card-to: #D6EBF4; /* גרדיאנט כרטיס האיור */
+  --c-illus-line: #DCE4EA;  /* קווי המפה בעמוד האיסוף */
 
   /* ---------- Demo bar (אב-טיפוס בלבד) ---------- */
   --c-demo-bg: #2B2F36; --c-demo-accent: #FFD27A; --c-demo-chip-border: #6B7280;
+  --c-demo-muted: #D1D5DB; --c-demo-toggle: #444A53;
 
-  /* ---------- Type ---------- */
+  /* ---------- Type ----------
+     גדלים ב-rem לפי בסיס 16px: בברירת המחדל של הדפדפן הרינדור זהה פיקסל לפיקסל, ומי שהגדיל את גודל הגופן
+     בהגדרות הדפדפן מקבל טקסט גדול יותר (F10). ריווח, רדיוסים וגבהי רכיבים נשארים ב-px. ההערה = הערך בפיקסלים */
   --font-sans: "Heebo", "Assistant", "Arial Hebrew", Arial, sans-serif;
   --font-ar:   "Noto Sans Arabic", "Heebo", Arial, sans-serif;
-  --fs-hero:  44px;  /* H1 בעמוד הבית בדסקטופ בלבד (משקל 800) */
-  --fs-h1:    40px;  --fs-h1-m: 28px;
-  --fs-h1-page: 38px; /* H1 בעמודי מידע */
-  --fs-h1-flow: 32px; /* H1 בתהליך ההזמנה / מסך מצב (34) */
-  --fs-h2:    28px;  --fs-h2-m: 22px;
-  --fs-h3:    20px;  --fs-h3-m: 18px;
-  --fs-body:  17px;  --fs-lead: 18px;
-  --fs-small: 15px;  --fs-tag: 13px;
+  --fs-hero:  2.75rem;   /* 44 · H1 בעמוד הבית בדסקטופ בלבד (משקל 800) */
+  --fs-h1:    2.5rem;    /* 40 */  --fs-h1-m: 1.75rem; /* 28 */
+  --fs-h1-page: 2.375rem;/* 38 · H1 בעמודי מידע */
+  --fs-h1-auth: 2.25rem; /* 36 · H1 בכניסה/OTP ובמסך התקלה */
+  --fs-h1-status: 2.125rem; /* 34 · H1 במסך המצב */
+  --fs-h1-flow: 2rem;    /* 32 · H1 בתהליך ההזמנה */
+  --fs-h1-flow-m: 1.625rem; /* 26 · H1 בתהליך ובמסך המצב במובייל */
+  --fs-h2:    1.75rem;   /* 28 */  --fs-h2-m: 1.375rem; /* 22 · גם כותרת כרטיס/מגירה */
+  --fs-h3:    1.25rem;   /* 20 */  --fs-h3-m: 1.125rem; /* 18 */
+  --fs-title: 1.1875rem; /* 19 · כותרת כרטיס בעמודי מידע/תהליך, מחיר בכרטיס שיטה */
+  --fs-body:  1.0625rem; /* 17 */  --fs-lead: 1.125rem; /* 18 · גם טקסט בשדה קלט */
+  --fs-ui:    1rem;      /* 16 · כפתור קטן, צ'יפ, כפתור תפריט */
+  --fs-small: 0.9375rem; /* 15 */
+  --fs-xs:    0.875rem;  /* 14 · שורות משנה צפופות, סרגל ההדגמה */
+  --fs-tag:   0.8125rem; /* 13 */
   --lh-body: 1.6;  --lh-heading: 1.2;
   --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700; --fw-black: 800;
 
@@ -72,6 +90,7 @@
 
   /* ---------- Shape & elevation ---------- */
   --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px; --radius-pill: 999px;
+  --radius-art: 18px; /* כרטיס האיור ב-Hero */
   --shadow-card:   0 1px 2px rgba(21,50,74,.06), 0 4px 16px rgba(21,50,74,.06);
   --shadow-raised: 0 8px 32px rgba(21,50,74,.12);
   --shadow-drawer: 0 8px 32px rgba(21,50,74,.20);
@@ -99,4 +118,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   :root { --dur-fast: 0ms; --dur-base: 0ms; }
+}
+
+/* הגברת ניגודיות במערכת (Increase Contrast / prefers-contrast): טקסט משני וקווים כהים יותר – רק טוקנים קיימים (L-13) */
+@media (prefers-contrast: more) {
+  :root { --c-text-muted: #3E4B55; --c-border-strong: var(--c-input-border); --c-border: #8796A2; }
 }

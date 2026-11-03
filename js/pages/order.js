@@ -42,8 +42,9 @@
   var moin = (D.citizen && D.citizen.moin_address) || { street: 'העצמאות', house: '10', city: 'באר שבע', display: 'רחוב העצמאות 10, באר שבע' };
   function eta(m, prod) { return m ? ETA[prod === 'wait' ? 'wait' : 'now'][m.id] || m.eta_display : ''; }
 
+  // באיסוף עצמי אין מעקב – השורה לא מוצגת בכלל (CLAUDE.md §3.4: שדה בלי ערך לא מוצג)
   function trk(m) {
-    if (m.g === 'pickup') return '—';
+    if (m.g === 'pickup') return null;
     if (m.id === 'registered_mail') return 'מעקב דואר';
     return m.tracking ? 'כן' : 'ללא מעקב';
   }
@@ -150,6 +151,22 @@
     if (s === 3) renderStep3();
     if (s === 4) renderStep4();
     if (s === 5) renderStep5();
+    updateTitle();
+  }
+
+  /* כותרת הלשונית לפי השלב (F05, תבנית GOV.UK): "שלב N מתוך 4: <תווית> – …", "שגיאה: " כשמוצגת שגיאה */
+  var BASE_TITLE = 'הזמנת משלוח או איסוף – רישיון עד הבית';
+  function updateTitle() {
+    if (!order) return;
+    var t;
+    if (order.step === 5) t = 'ההזמנה התקבלה – רישיון עד הבית';
+    else {
+      var n = Math.min(order.step, 4);
+      var sec = qs('.order__step[data-step="' + order.step + '"]');
+      var err = sec && qsa('.error', sec).some(function (e) { return !e.hidden && e.textContent.trim(); });
+      t = (err ? 'שגיאה: ' : '') + 'שלב ' + n + ' מתוך 4: ' + STEP_NAMES[n - 1] + ' – ' + BASE_TITLE;
+    }
+    if (document.title !== t) document.title = t;
   }
 
   function renderDemo() {
@@ -246,6 +263,7 @@
     e.hidden = !ui.methodErr;
     e.innerHTML = ui.methodErr ? UI.icon('alert-circle', { size: 18 }) + 'בחרו איך תרצו לקבל את הרישיון' : '';
     qs('#method-list').setAttribute('aria-invalid', ui.methodErr ? 'true' : 'false');
+    updateTitle();
   }
   // תוספות מתחת לכרטיס הנבחר: שורת בארי, וקופסת "לפני שממשיכים" לדואר רגיל (פעם אחת, לא חוסמת)
   function renderExtras() {
@@ -309,11 +327,14 @@
     var first = null;
     OTHER_REQ.forEach(function (r) {
       var el = document.getElementById(r[0]);
-      if (!el.value.trim()) { UI.fieldError(el, 'יש למלא ' + r[1] + '.'); first = first || el; } else UI.fieldError(el, null);
+      // מספר בית יכול לכלול אות ("12א") – חייב רק להכיל ספרה (M-05)
+      var bad = !el.value.trim() || (r[0] === 'o-h' && !/\d/.test(el.value));
+      if (bad) { UI.fieldError(el, 'יש למלא ' + r[1] + '.'); first = first || el; } else UI.fieldError(el, null);
     });
     var ph = document.getElementById('o-p');
     if (!Validate.mobile(ph.value)) { UI.fieldError(ph, 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.'); first = first || ph; } else UI.fieldError(ph, null);
     if (first) UI.focus(first);
+    updateTitle();
     return !first;
   }
 
@@ -327,7 +348,9 @@
     var t = qs('#terms');
     t.checked = !!order.terms;
     UI.fieldError(t, ui.termsErr ? 'כדי להמשיך יש לאשר את תנאי השימוש.' : null);
-    qs('#next-3').textContent = noPay() ? 'אישור ההזמנה' : 'המשך לתשלום';
+    // "המשך לתשלום" עם חץ קדימה כמו בשלבים 1–2; "אישור ההזמנה" (פעולה מחייבת) – בלי חץ (L-09)
+    qs('#next-3-t').textContent = noPay() ? 'אישור ההזמנה' : 'המשך לתשלום';
+    qs('#next-3-ico').style.display = noPay() ? 'none' : '';
   }
 
   /* --- שלב 4 --- */
@@ -372,6 +395,7 @@
       if (!c[1](el.value)) { UI.fieldError(el, c[2]); first = first || el; } else UI.fieldError(el, null);
     });
     if (first) UI.focus(first);
+    updateTitle();
     return !first;
   }
   function pay() {
@@ -414,6 +438,11 @@
     qs('#dr-method-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
       return '<div><dt>' + esc(r[0]) + '</dt><dd>' + rich(r[1]) + '</dd></div>';
     }).join('');
+    // "לבחור ב…" – כמו "לבחור" במגירת ההשוואה: סוגר, בוחר ומעביר פוקוס לרדיו (L-08). המגירה נפתחת רק בשלב 1
+    var pick = qs('#dr-method-pick');
+    pick.textContent = 'לבחור ב' + m.name;
+    pick.setAttribute('data-pick-id', m.id);
+    pick.hidden = order.step !== 1;
     UI.drawer.open('dr-method', { returnFocus: btn || document.activeElement });
   }
   function fillCompare() {
@@ -447,6 +476,11 @@
       if (order.step !== 1) return;
       selectMethod(b.getAttribute('data-pick-cmp'), true);
     });
+    qs('#dr-method-pick').addEventListener('click', function (e) {
+      var id = e.currentTarget.getAttribute('data-pick-id');
+      UI.drawer.close();
+      if (order.step === 1 && method(id)) selectMethod(id, true);
+    });
     qs('#next-1').addEventListener('click', next1);
     document.addEventListener('click', function (e) { if (e.target.closest('[data-back-top]')) go(prevFrom(order.step)); });
 
@@ -457,7 +491,7 @@
     qsa('[data-other]').forEach(function (i) {
       i.addEventListener('input', function () {
         if (i.id === 'o-p') { var v = i.value.replace(/[^\d-]/g, '').slice(0, 11); if (v !== i.value) i.value = v; }
-        if (i.id === 'o-h' || i.id === 'o-z' || i.id === 'o-a') { var d = i.value.replace(/\D/g, ''); if (d !== i.value) i.value = d; }
+        if (i.id === 'o-z') { var d = i.value.replace(/\D/g, ''); if (d !== i.value) i.value = d; } // מספר בית/דירה: גם "12א" (M-05)
         order.other[i.getAttribute('data-other')] = i.value; save();
         if (i.getAttribute('aria-invalid') === 'true') UI.fieldError(i, null);
       });
@@ -484,7 +518,7 @@
     terms.addEventListener('change', function () { order.terms = terms.checked; ui.termsErr = false; save(); UI.fieldError(terms, null); });
     qs('#open-terms').addEventListener('click', function (e) { e.preventDefault(); UI.drawer.open('dr-terms', { returnFocus: e.currentTarget }); });
     qs('#next-3').addEventListener('click', function () {
-      if (!order.terms) { ui.termsErr = true; UI.fieldError(terms, 'כדי להמשיך יש לאשר את תנאי השימוש.'); terms.focus(); return; }
+      if (!order.terms) { ui.termsErr = true; UI.fieldError(terms, 'כדי להמשיך יש לאשר את תנאי השימוש.'); terms.focus(); updateTitle(); return; }
       go(nextFrom(3));
     });
 
@@ -505,11 +539,14 @@
       el.addEventListener('input', function () { if (el.getAttribute('aria-invalid') === 'true') UI.fieldError(el, null); });
     });
     qs('#pay').addEventListener('click', pay);
+    // שגיאה שנוקתה בהקלדה/סימון – הכותרת מתעדכנת
+    qs('#main').addEventListener('input', updateTitle);
+    qs('#main').addEventListener('change', updateTitle);
 
     // שלב 5
     qs('#copy-order').addEventListener('click', function () { UI.copy(qs('#order-number').textContent); });
     var cal = qs('.order__step[data-step="5"] .order-done__btns .btn--secondary');
-    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]'); });
+    if (cal) cal.addEventListener('click', function () { UI.toast('ההוספה ליומן [לאישור]', { icon: 'info' }); });
 
     // חזרה (כל השלבים)
     qsa('[data-back]').forEach(function (b) { b.addEventListener('click', function () { go(prevFrom(order.step)); }); });
@@ -566,7 +603,7 @@
     bind();
     var termsErr = ui.termsErr;
     render();
-    if (termsErr && order.step === 3) { ui.termsErr = true; UI.fieldError(qs('#terms'), 'כדי להמשיך יש לאשר את תנאי השימוש.'); }
+    if (termsErr && order.step === 3) { ui.termsErr = true; UI.fieldError(qs('#terms'), 'כדי להמשיך יש לאשר את תנאי השימוש.'); updateTitle(); }
 
     if (grp && order.step === 1 && grp !== 'home') { var gb = qs('#grp-box-' + grp); if (gb) { try { gb.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } } }
     var info = p.get('info'), dr = p.get('drawer');

@@ -214,6 +214,7 @@
     if (el.parentNode !== document.body) document.body.appendChild(el);
     show(scrim);
     show(el);
+    bindSwipe(el);
     current = { el: el, returnFocus: opt.returnFocus || document.activeElement, onClose: opt.onClose };
     backgroundEls().forEach(function (b) { b.setAttribute('inert', ''); b.setAttribute('data-inerted', ''); });
     document.body.style.overflow = 'hidden';
@@ -251,12 +252,62 @@
     if (o) { e.preventDefault(); openDialog(o.getAttribute('data-open-dialog'), { returnFocus: o }); }
   });
 
+  /* ---------- Bottom sheet: גרירה כלפי מטה לסגירה (≤640, L-07) ----------
+     רק מראש ה-sheet (.dialog__head), לא מכפתורים. סוגר אם עבר 25% מהגובה או מהירות >0.5px/ms; אחרת חוזר.
+     המעבר ב-CSS ממשיך מהמיקום הנוכחי. כפתור ✕, Esc וה-scrim נשארים (חלופה למחווה) */
+  var sheetMQ = null;
+  try { sheetMQ = window.matchMedia('(max-width:640px)'); } catch (e) { /* */ }
+  function bindSwipe(el) {
+    var head = qs('.dialog__head', el);
+    if (!head || head._fdSwipe || !window.PointerEvent) return;
+    head._fdSwipe = true;
+    var pid = null, y0 = 0, dy = 0, lastY = 0, lastT = 0, v = 0;
+    head.addEventListener('pointerdown', function (e) {
+      if (!sheetMQ || !sheetMQ.matches || !current || current.el !== el || e.button > 0) return;
+      if (e.target.closest && e.target.closest('button,a,input,select,textarea')) return;
+      pid = e.pointerId; y0 = lastY = e.clientY; lastT = e.timeStamp; dy = 0; v = 0;
+      try { head.setPointerCapture(pid); } catch (err) { /* */ }
+      el.classList.add('is-dragging');
+    });
+    head.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== pid) return;
+      dy = Math.max(0, e.clientY - y0);
+      var dt = e.timeStamp - lastT;
+      if (dt > 0) v = (e.clientY - lastY) / dt;
+      lastY = e.clientY; lastT = e.timeStamp;
+      el.style.transform = 'translateY(' + dy + 'px)';
+    });
+    function end(e) {
+      if (e.pointerId !== pid) return;
+      pid = null;
+      el.classList.remove('is-dragging');
+      el.style.transform = '';
+      if (dy > 8 && (dy > (el.offsetHeight || 1) * 0.25 || v > 0.5)) closeDialog();
+    }
+    head.addEventListener('pointerup', end);
+    head.addEventListener('pointercancel', end);
+  }
+
   var drawer = { open: openDialog, close: function () { closeDialog(); }, isOpen: function () { return !!current; } };
   var modal = drawer;
 
-  /* ---------- Toast ---------- */
-  var toastEl = null, toastT = null;
-  function toast(text, ms) {
+  /* ---------- Toast ----------
+     UI.toast(text)                    – משך לפי האורך, אייקון ✓ (או ℹ כשבטקסט יש "[לאישור]")
+     UI.toast(text, ms)                – משך מפורש; 0 = נשאר עד הטוסט הבא (תאימות לאחור)
+     UI.toast(text, {ms, icon})        – icon: 'check' | 'info' | כל שם אייקון | false (בלי אייקון)
+     UI.toast(text, ms, {icon})
+     ברירת המחדל למשך (M-03): "הועתק" 1.6 שניות (08 §8.4); כל הודעה אחרת max(4 שניות, 70ms לתו).
+     הטוסט לא נעלם בזמן שהעכבר מעליו. */
+  var toastEl = null, toastT = null, toastMs = 0;
+  function toastDuration(text) { return text === 'הועתק' ? 1600 : Math.max(4000, String(text).length * 70); }
+  function armToast() {
+    clearTimeout(toastT); toastT = null;
+    if (toastMs) toastT = setTimeout(function () { hide(toastEl); }, toastMs);
+  }
+  function toast(text, ms, opt) {
+    if (ms && typeof ms === 'object') { opt = ms; ms = opt.ms; }
+    opt = opt || {};
+    text = String(text == null ? '' : text);
     if (!toastEl) {
       toastEl = document.createElement('div');
       toastEl.className = 'toast';
@@ -264,13 +315,16 @@
       toastEl.setAttribute('aria-live', 'polite');
       toastEl.hidden = true;
       document.body.appendChild(toastEl);
+      toastEl.addEventListener('mouseenter', function () { clearTimeout(toastT); toastT = null; });
+      toastEl.addEventListener('mouseleave', function () { if (!toastEl.hidden) armToast(); });
     }
+    var ic = opt.icon === undefined ? (/\[לאישור/.test(text) ? 'info' : 'check') : opt.icon;
     show(toastEl);
     toastEl.textContent = '';
     // תזמון קצר כדי שקוראי מסך יכריזו גם על אותו טקסט פעמיים
-    setTimeout(function () { toastEl.innerHTML = icon('check', { size: 18 }) + '<span>' + esc(text) + '</span>'; }, 30);
-    clearTimeout(toastT);
-    if (ms !== 0) toastT = setTimeout(function () { hide(toastEl); }, ms || 1600);
+    setTimeout(function () { toastEl.innerHTML = (ic ? icon(ic, { size: 18 }) : '') + '<span>' + esc(text) + '</span>'; }, 30);
+    toastMs = ms === 0 ? 0 : (ms || toastDuration(text));
+    armToast();
   }
 
   function copy(text) {
