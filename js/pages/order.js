@@ -235,10 +235,7 @@
     qs('#sum-addr-k').textContent = a.k;
     qs('#sum-addr').innerHTML = a.v;
     qs('#sum-prod').innerHTML = order.prod === 'now' ? 'ייצור מיידי – <span class="num" dir="ltr">25.8</span> ב-<span class="num" dir="ltr">07:00</span>' : 'אחרי סגירת החלון – <span class="num" dir="ltr">26.8</span>';
-    var det = qs('#order-sum');
-    var mobile = false;
-    try { mobile = window.matchMedia('(max-width: 640px)').matches; } catch (e) { /* */ }
-    det.open = !mobile; // פתוח בדסקטופ, מקופל במובייל
+    qs('#order-sum').open = true; // פתוח כברירת מחדל (כמו בהדמיות 33 בשני הרוחבים); אפשר לקפל
     var pay = qs('#pay');
     if (!ui.paying) { pay.disabled = false; pay.setAttribute('aria-busy', 'false'); }
   }
