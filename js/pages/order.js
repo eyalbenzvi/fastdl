@@ -5,21 +5,42 @@
   var qs = UI.qs, qsa = UI.qsa;
   var D = window.FD_DATA || {};
   var KEY = 'fd.order';
-  var STEP_NAMES = ['משלוח', 'כתובת', 'מועד ייצור', 'תשלום'];
+  var STEP_NAMES = ['משלוח', 'כתובת', 'מתי להתחיל', 'תשלום'];
 
   /* ---------- נתונים ---------- */
-  var SPEED = ['pickup_bari', 'express_home', 'pickup_tlv_airport', 'regular_home', 'registered_mail', 'regular_mail']; // 07 §7.3
-  var GROUP_KEY = { 'איסוף עצמי': 'pickup', 'משלוח עד הבית': 'home', 'בדואר': 'mail' };
+  // קבוצות עם כותרות (החלטה 2 במסמך ההמלצות): עד הבית ← איסוף עצמי ← בדואר
+  var GROUPS = [
+    { key: 'home', t: 'עד הבית', ids: ['express_home', 'regular_home'] },
+    { key: 'pickup', t: 'איסוף עצמי', ids: ['pickup_bari', 'pickup_tlv_airport'] },
+    { key: 'mail', t: 'בדואר', ids: ['registered_mail', 'regular_mail'] }
+  ];
+  var ORDER_IDS = GROUPS.reduce(function (a, g) { return a.concat(g.ids); }, []);
   var ICON = { pickup_bari: 'store', pickup_tlv_airport: 'plane', express_home: 'truck', regular_home: 'truck', registered_mail: 'mail', regular_mail: 'mail' };
-  var ETA_SHORT = { // 07 §7.5
-    pickup_bari: 'איסוף 26.8 מ-11:00', express_home: 'מגיע עד 26.8', pickup_tlv_airport: 'איסוף מ-26.8',
-    regular_home: 'מגיע בין 27.8 ל-1.9', registered_mail: 'מגיע עד 14.9', regular_mail: 'מגיע עד 14.9'
+  // מועד הגעה מוחלט לפי "מתי להתחיל" (ייצור 25.8 או 26.8 ב-07:00; ימי עסקים א׳–ה׳). 07 §7.5 + כללי 01
+  var ETA = {
+    now: {
+      pickup_bari: 'אפשר לאסוף מיום ד׳ 26.8, מ-11:00', express_home: 'יגיע עד יום ד׳ 26.8', pickup_tlv_airport: 'אפשר לאסוף מיום ד׳ 26.8',
+      regular_home: 'יגיע בין יום ה׳ 27.8 ליום ג׳ 1.9', registered_mail: 'יגיע עד יום ב׳ 14.9', regular_mail: 'יגיע עד יום ב׳ 14.9'
+    },
+    wait: {
+      pickup_bari: 'אפשר לאסוף מיום ה׳ 27.8, מ-11:00 (יום אחד מאוחר יותר)', express_home: 'יגיע עד יום ה׳ 27.8 (יום אחד מאוחר יותר)', pickup_tlv_airport: 'אפשר לאסוף מיום ה׳ 27.8 (יום אחד מאוחר יותר)',
+      regular_home: 'יגיע בין יום א׳ 30.8 ליום ד׳ 2.9', registered_mail: 'יגיע עד יום ג׳ 15.9', regular_mail: 'יגיע עד יום ג׳ 15.9'
+    }
   };
-  var TAG_CLS = { 'ללא עלות': 'tag--free', 'הכי מהיר': 'tag--fast', 'הכי מהיר עד הבית': 'tag--fast', 'ללא מעקב': 'tag--notrack' };
-  var METHODS = (D.delivery_methods || []).slice().sort(function (a, b) { return SPEED.indexOf(a.id) - SPEED.indexOf(b.id); });
-  METHODS.forEach(function (m) { m.g = GROUP_KEY[m.group] || 'home'; });
+  var HOW = { express_home: 'ביד, מהשליח', regular_home: 'ביד, מהשליח', pickup_bari: 'באיסוף, עם תעודה מזהה', pickup_tlv_airport: 'באיסוף, עם תעודה מזהה', registered_mail: 'בתיבה, עם מעקב', regular_mail: 'בתיבה, ללא מעקב' };
+  var IF_NOT = {
+    express_home: 'רואים במעקב איפה הוא', regular_home: 'רואים במעקב איפה הוא', registered_mail: 'רואים במעקב של דואר ישראל איפה הוא',
+    regular_mail: 'אפשר לבקש הנפקה חוזרת רק אחרי 19 ימי עסקים',
+    pickup_bari: 'שמור לאיסוף עד [לאישור]', pickup_tlv_airport: 'שמור לאיסוף עד [לאישור]'
+  };
+  var INCL = { express_home: 'מסירה ביד · מעקב משלוח ב-SMS', regular_home: 'מסירה ביד · מעקב משלוח ב-SMS', pickup_tlv_airport: 'איסוף עם תעודה מזהה', registered_mail: 'מעקב של דואר ישראל', pickup_bari: 'איסוף עם תעודה מזהה', regular_mail: 'ללא מעקב' };
+  var CAVEAT = { regular_mail: 'נמסר רק לתיבה שיש עליה שם' }; // "ללא מעקב" כבר בתג של הכרטיס
+  var TAG_CLS = { 'ללא עלות': 'tag--free', 'הכי מהיר': 'tag--fast', 'הכי מהיר לאיסוף': 'tag--fast', 'הכי מהיר עד הבית': 'tag--fast', 'ללא מעקב': 'tag--notrack', 'מסירה ביד': 'tag--hand' };
+  var METHODS = (D.delivery_methods || []).slice().sort(function (a, b) { return ORDER_IDS.indexOf(a.id) - ORDER_IDS.indexOf(b.id); });
+  METHODS.forEach(function (m) { GROUPS.forEach(function (g) { if (g.ids.indexOf(m.id) >= 0) m.g = g.key; }); m.g = m.g || 'home'; });
   function method(id) { for (var i = 0; i < METHODS.length; i++) if (METHODS[i].id === id) return METHODS[i]; return null; }
   var moin = (D.citizen && D.citizen.moin_address) || { street: 'העצמאות', house: '10', city: 'באר שבע', display: 'רחוב העצמאות 10, באר שבע' };
+  function eta(m, prod) { return m ? ETA[prod === 'wait' ? 'wait' : 'now'][m.id] || m.eta_display : ''; }
 
   function trk(m) {
     if (m.g === 'pickup') return '—';
@@ -43,7 +64,7 @@
      הבחירות נשמרות, ואם השיטה לא השתנתה לא משלמים שוב (paidMethod). */
   function fresh() {
     return {
-      step: 1, method: null, group: 'all', auth: false, addr: 'moin',
+      step: 1, method: null, auth: false, addr: 'moin', nudged: false,
       extras: { entrance: '', care_of: '', mailbox: '' },
       other: { city: '', street: '', house: '', entrance: '', apt: '', zip: '', care_of: '', phone: '', mailbox: '' },
       prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null
@@ -58,7 +79,7 @@
     });
     return base;
   }
-  var order, ui = { termsErr: false, why: false, info: null, drawer: null, paying: false, skipcc: false };
+  var order, ui = { termsErr: false, why: false, info: null, drawer: null, paying: false, skipcc: false, methodErr: false, nudge: false };
   function save() { UI.store.set(KEY, order); }
 
   function cur() { return method(order.method); }
@@ -93,6 +114,8 @@
     order.step = n;
     if (n === 5) complete();
     ui.termsErr = false;
+    ui.methodErr = false;
+    ui.nudge = false;
     save();
     writeUrl(!opt.replace);
     render();
@@ -120,6 +143,7 @@
     qsa('.order__step').forEach(function (sec) { sec.hidden = Number(sec.getAttribute('data-step')) !== s; });
     qs('#order-steps').hidden = s === 5;
     renderDemo();
+    renderTop();
     if (s < 5) renderStepper();
     if (s === 1) renderStep1();
     if (s === 2) renderStep2();
@@ -167,29 +191,105 @@
     bar.firstElementChild.style.width = (num * 25) + '%';
   }
 
+  /* --- "› חזרה" בראש העמוד (מובייל; בדסקטופ בסרגל הפעולות) --- */
+  function backStatusUrl() { return order.edit || order.ordered ? 'status.html?s=S2' : 'status.html?s=S1'; }
+  function renderTop() {
+    var el = qs('#order-top');
+    if (!el) return;
+    var chev = UI.icon('chevron-back-rtl', { size: 18 });
+    if (order.step === 5) { el.innerHTML = ''; el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = order.step === 1
+      ? '<a class="back-link" href="' + backStatusUrl() + '">' + chev + 'חזרה לפרטי הבקשה</a>'
+      : '<button type="button" class="link-btn back-link" data-back-top>' + chev + 'חזרה</button>';
+  }
+
   /* --- שלב 1 --- */
+  function check(t) { return '<span class="order-m__b">' + UI.icon('check', { size: 16 }) + esc(t) + '</span>'; }
   function methodCard(m) {
     var on = order.method === m.id;
-    var tags = (m.tags || []).map(function (t) { return '<span class="tag ' + (TAG_CLS[t] || 'tag--notrack') + '">' + esc(t) + '</span>'; }).join('');
-    return '<div class="opt-card-wrap">' +
-      '<label class="opt-card opt-card--with-q' + (on ? ' is-selected' : '') + '">' +
+    var tags = (m.tags || []).filter(function (t) { return !(t === 'ללא עלות' && m.price === 0); })
+      .map(function (t) { return '<span class="tag ' + (TAG_CLS[t] || 'tag--notrack') + '">' + esc(t) + '</span>'; }).join('');
+    var ben = (m.benefits || []).length ? m.benefits.map(check).join('') : (CAVEAT[m.id] ? '<span class="order-m__plain">' + esc(CAVEAT[m.id]) + '</span>' : '');
+    return '<div class="opt-card-wrap order-m-wrap" data-m="' + m.id + '">' +
+      '<label class="opt-card order-m' + (on ? ' is-selected' : '') + '">' +
       '<input type="radio" name="method" value="' + m.id + '"' + (on ? ' checked' : '') + '>' +
-      '<span class="ibox ibox--44 order-opt__ibox">' + UI.icon(ICON[m.id] || 'truck') + '</span>' +
-      '<span class="stack order-opt__body order-opt__body--tight"><span class="row order-opt__title"><strong class="order-opt__name">' + esc(m.name) + '</strong>' + tags + '</span>' +
-      '<span class="order-opt__eta">' + rich(m.eta_display) + '</span>' +
-      '<span class="small muted">' + esc(m.fit) + '</span></span>' +
-      '<span class="order-opt__price' + (m.price === 0 ? ' price-free' : '') + '">' + rich(m.price_display) + '</span>' +
+      '<span class="ibox ibox--44 order-opt__ibox order-m__ibox">' + UI.icon(ICON[m.id] || 'truck') + '</span>' +
+      '<strong class="order-opt__name order-m__name">' + esc(m.name) + '</strong>' +
+      '<span class="order-opt__price order-m__price' + (m.price === 0 ? ' price-free' : '') + '">' + rich(m.price_display) + '</span>' +
+      '<span class="order-m__eta"><span class="order-opt__eta">' + rich(eta(m, 'now')) + '</span>' + tags + '</span>' +
+      (ben ? '<span class="order-m__ben">' + ben + '</span>' : '') +
+      '<span class="small muted order-m__fit">' + esc(m.fit) + '</span>' +
       '</label>' +
       '<button type="button" class="icon-btn icon-btn--ghost opt-card__q order-opt__q" data-info="' + m.id + '" aria-label="פרטים נוספים על ' + esc(m.name) + '">' + UI.icon('help-circle') + '</button>' +
       '</div>';
   }
   function renderStep1() {
-    var back = qs('.order__step[data-step="1"] .back-link');
-    if (back) back.setAttribute('href', order.edit || order.ordered ? 'status.html?s=S2' : 'status.html?s=S1');
-    qsa('.order-chips .chip').forEach(function (c) { c.setAttribute('aria-pressed', c.getAttribute('data-group') === order.group ? 'true' : 'false'); });
-    var list = METHODS.filter(function (m) { return order.group === 'all' || m.g === order.group; });
-    qs('#method-list').innerHTML = list.map(methodCard).join('');
-    qs('#next-1').disabled = !cur();
+    qsa('[data-back-status]').forEach(function (a) { a.setAttribute('href', backStatusUrl()); });
+    qs('#moin-short').textContent = moin.display;
+    qs('#method-list').innerHTML = GROUPS.map(function (g) {
+      return '<div class="order-grp" role="group" aria-labelledby="grp-' + g.key + '" id="grp-box-' + g.key + '">' +
+        '<h2 class="order-grp__t" id="grp-' + g.key + '">' + g.t + '</h2>' +
+        '<div class="order-opts">' + g.ids.map(method).filter(Boolean).map(methodCard).join('') + '</div></div>';
+    }).join('');
+    renderExtras();
+    renderChosen();
+    renderMethodErr();
+  }
+  function renderChosen() {
+    var m = cur(), el = qs('#chosen-line');
+    if (!el) return;
+    el.innerHTML = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) : 'עוד לא בחרתם';
+  }
+  function renderMethodErr() {
+    var e = qs('#method-err');
+    e.hidden = !ui.methodErr;
+    e.innerHTML = ui.methodErr ? UI.icon('alert-circle', { size: 18 }) + 'בחרו איך תרצו לקבל את הרישיון' : '';
+    qs('#method-list').setAttribute('aria-invalid', ui.methodErr ? 'true' : 'false');
+  }
+  // תוספות מתחת לכרטיס הנבחר: שורת בארי, וקופסת "לפני שממשיכים" לדואר רגיל (פעם אחת, לא חוסמת)
+  function renderExtras() {
+    qsa('.order-m-extra').forEach(function (x) { x.remove(); });
+    var m = cur();
+    if (!m) return;
+    var wrap = qs('.order-m-wrap[data-m="' + m.id + '"]');
+    if (!wrap) return;
+    var ex = method('express_home'), reg = method('registered_mail'), rh = method('regular_home');
+    var html = '';
+    if (m.id === 'pickup_bari' && ex) {
+      html = '<div class="order-m-extra order-m-extra--note"><p>האיסוף בדפוס בארי, <span class="tbc">[כתובת ושעות לאישור]</span>. ' +
+        'לא בטוחים שתגיעו? משלוח מהיר עד הבית יגיע באותו יום – ' + rich(ex.price_display) + '. ' +
+        '<button type="button" class="link-btn" data-pick="express_home" aria-label="להחליף למשלוח מהיר עד הבית">להחליף</button></p></div>';
+    } else if (m.id === 'regular_mail' && ui.nudge) {
+      html = '<div class="order-m-extra callout callout--warning order-nudge" id="mail-nudge">' + UI.icon('info') +
+        '<div class="order-nudge__body"><p><strong>לפני שממשיכים:</strong> בדואר רגיל אין מעקב, והרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה. אם הוא לא מגיע, אפשר לבקש הנפקה חוזרת רק אחרי <span class="num" dir="ltr">19</span> ימי עסקים.</p>' +
+        '<div class="order-nudge__btns">' +
+        (reg ? '<button type="button" class="btn btn--secondary btn--sm" data-pick="registered_mail"><span>דואר רשום עם מעקב – ' + rich(reg.price_display) + '</span></button>' : '') +
+        (rh ? '<button type="button" class="btn btn--secondary btn--sm" data-pick="regular_home"><span>שליח עד הבית – ' + rich(rh.price_display) + '</span></button>' : '') +
+        '</div><button type="button" class="link-btn" id="nudge-go">להמשיך עם דואר רגיל</button></div></div>';
+    }
+    if (html) wrap.insertAdjacentHTML('afterend', html);
+    var live = qs('#method-live');
+    if (live) live.textContent = m.id === 'regular_mail' && ui.nudge ? 'לפני שממשיכים: בדואר רגיל אין מעקב. אפשר לבחור דואר רשום או שליח, או להמשיך עם דואר רגיל.' : '';
+  }
+  function selectMethod(id, focus) {
+    order.method = id;
+    if (id === 'regular_mail' && !order.nudged) { ui.nudge = true; order.nudged = true; } else if (id !== 'regular_mail') ui.nudge = false;
+    ui.methodErr = false;
+    save(); writeUrl(false);
+    qsa('#method-list .opt-card').forEach(function (l) { var r = l.querySelector('input'); r.checked = r.value === id; l.classList.toggle('is-selected', r.checked); });
+    renderExtras(); renderChosen(); renderMethodErr(); renderStepper();
+    if (focus) { var r = qs('#method-list input[value="' + id + '"]'); if (r) UI.focus(r); }
+  }
+  function next1() {
+    if (!cur()) {
+      ui.methodErr = true; renderMethodErr();
+      var first = qs('#method-list input[name="method"]');
+      try { qs('#method-err').scrollIntoView({ block: 'center', behavior: 'auto' }); } catch (e) { /* */ }
+      if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
+      return;
+    }
+    go(nextFrom(1));
   }
 
   /* --- שלב 2 --- */
@@ -221,7 +321,9 @@
   function renderStep3() {
     var m = cur();
     qsa('input[name="prod"]').forEach(function (r) { r.checked = r.value === order.prod; r.closest('.opt-card').classList.toggle('is-selected', r.checked); });
-    qs('#eta-short').innerHTML = numify(esc(m ? ETA_SHORT[m.id] : 'מועד הגעה'));
+    qs('#eta-now').innerHTML = rich(eta(m, 'now'));
+    qs('#eta-wait').innerHTML = rich(eta(m, 'wait'));
+    qs('#late-note').hidden = !(order.prod === 'wait' && m && (m.id === 'express_home' || m.id === 'pickup_tlv_airport'));
     var t = qs('#terms');
     t.checked = !!order.terms;
     UI.fieldError(t, ui.termsErr ? 'כדי להמשיך יש לאשר את תנאי השימוש.' : null);
@@ -247,7 +349,11 @@
     var a = addrSummary();
     qs('#sum-addr-k').textContent = a.k;
     qs('#sum-addr').innerHTML = a.v;
-    qs('#sum-prod').innerHTML = order.prod === 'now' ? 'ייצור מיידי – <span class="num" dir="ltr">25.8</span> ב-<span class="num" dir="ltr">07:00</span>' : 'אחרי סגירת החלון – <span class="num" dir="ltr">26.8</span>';
+    qs('#sum-addr-chg').hidden = !(m && m.needs_address);
+    qs('#sum-prod').innerHTML = order.prod === 'now' ? 'עכשיו – ייצור <span class="nowrap">יום ג׳ <span class="num" dir="ltr">25.8</span></span>' : 'אחרי המועד – ייצור <span class="nowrap">יום ד׳ <span class="num" dir="ltr">26.8</span></span>';
+    qs('#sum-incl').innerHTML = m ? rich((INCL[m.id] ? INCL[m.id] + ' · ' : '') + eta(m, order.prod)) : '';
+    var inv = qs('#inv');
+    if (inv && !inv.value && D.citizen) inv.value = ((D.citizen.first_name || '') + ' ' + (D.citizen.last_name || '')).trim(); // ממולא מראש, אפשר לשנות
     qs('#order-sum').open = true; // פתוח כברירת מחדל (כמו בהדמיות 33 בשני הרוחבים); אפשר לקפל
     var pay = qs('#pay');
     if (!ui.paying) { pay.disabled = false; pay.setAttribute('aria-busy', 'false'); }
@@ -256,7 +362,7 @@
     ['cc', function (v) { return Validate.cardNumber(v); }, 'מספר הכרטיס לא תקין. בדקו שהזנתם 12–19 ספרות.'],
     ['exp', function (v) { return Validate.cardExpiry(v); }, 'תוקף לא תקין. הזינו חודש ושנה בפורמט MM/YY.'],
     ['cvv', function (v) { return Validate.cvv(v); }, 'קוד CVV לא תקין. הזינו 3 או 4 ספרות.'],
-    ['hid', function (v) { return Validate.israeliId(v); }, 'מספר תעודת הזהות לא תקין. בדקו שהזנתם 9 ספרות.'],
+    ['hid', function (v) { return Validate.israeliId(v); }, 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).'],
     ['inv', function (v) { return !!v.trim(); }, 'יש למלא שם לחשבונית.']
   ];
   function validateCC() {
@@ -284,9 +390,16 @@
   /* --- שלב 5 --- */
   function renderStep5() {
     var m = cur();
-    qs('#done-prod').textContent = order.prod === 'now' ? '25.8, 07:00' : '26.8, 07:00';
-    qs('#done-mid').textContent = needsAddr() ? 'משלוח' : 'הכנה לאיסוף';
-    qs('#done-eta').innerHTML = numify(esc(m ? ETA_SHORT[m.id] : 'צפוי להגיע עד 26.8'));
+    var a = addrSummary();
+    var paid = isFree() ? 'ללא עלות' : (order.paidMethod && method(order.paidMethod) ? rich(method(order.paidMethod).price_display) : (m ? rich(m.price_display) : ''));
+    var rows = [['שיטה', m ? esc(m.name) : ''], [a.k === 'עמדה' ? 'עמדת איסוף' : 'כתובת', a.v], ['שולם', paid],
+      [m && !m.needs_address ? 'אפשר לאסוף' : 'יגיע', rich(eta(m, order.prod).replace(/^(יגיע |אפשר לאסוף )/, ''))]];
+    qs('#done-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
+    var next;
+    if (m && m.id === 'regular_mail') next = 'ודאו שעל תיבת הדואר מופיע שם משפחה. הרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה.';
+    else if (m && m.tracking) next = 'נשלח לכם SMS עם קישור למעקב ברגע שהרישיון יוצא לדרך.';
+    else next = 'באיסוף צריך להציג תעודה מזהה ואת מספר ההזמנה.';
+    qs('#done-next').textContent = next;
     qs('#done-status').setAttribute('href', statusUrl());
     if (D.order_example) qs('#order-number').textContent = D.order_example.order_number;
   }
@@ -296,7 +409,7 @@
     var m = method(id);
     if (!m) return;
     qs('#dr-method-t').textContent = m.name;
-    var rows = [['זמן אספקה', m.eta_rule], ['מחיר', m.price_display], ['מעקב', trk(m)], ['מתאים ל…', m.fit]];
+    var rows = [['זמן אספקה', m.eta_rule], ['מחיר', m.price_display], ['מעקב', trk(m)], ['איך מקבלים', HOW[m.id]], ['אם לא הגיע', IF_NOT[m.id]], ['מתאים ל…', m.fit]];
     if (m.g === 'pickup') rows.push(['כתובת', m.address], ['שעות', m.hours]);
     qs('#dr-method-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
       return '<div><dt>' + esc(r[0]) + '</dt><dd>' + rich(r[1]) + '</dd></div>';
@@ -305,30 +418,37 @@
   }
   function fillCompare() {
     qs('#compare-body').innerHTML = METHODS.map(function (m) {
-      return '<tr><th scope="row">' + esc(m.name) + '</th><td>' + rich(m.eta_rule) + '</td><td class="order-tbl__price">' + rich(m.price_display) + '</td><td>' + esc(trk(m)) + '</td></tr>';
+      return '<tr><th scope="row">' + esc(m.name) + '</th><td data-th="מתי אצלכם">' + rich(eta(m, 'now')) + '</td><td data-th="איך מקבלים">' + esc(HOW[m.id] || '') + '</td>' +
+        '<td data-th="אם לא הגיע">' + rich(IF_NOT[m.id] || '') + '</td><td data-th="מחיר" class="order-tbl__price">' + rich(m.price_display) + '</td>' +
+        '<td class="order-tbl__pick"><button type="button" class="btn btn--secondary btn--sm" data-pick-cmp="' + m.id + '">לבחור<span class="sr-only"> ' + esc(m.name) + '</span></button></td></tr>';
     }).join('');
   }
 
   /* ---------- Events ---------- */
   function bind() {
     // שלב 1
-    qsa('.order-chips .chip').forEach(function (c) {
-      c.addEventListener('click', function () { order.group = c.getAttribute('data-group'); save(); renderStep1(); });
-    });
     var list = qs('#method-list');
     list.addEventListener('change', function (e) {
       if (e.target.name !== 'method') return;
-      order.method = e.target.value; save(); writeUrl(false);
-      qsa('.opt-card', list).forEach(function (l) { l.classList.toggle('is-selected', l.contains(e.target)); });
-      qs('#next-1').disabled = false;
-      renderStepper();
+      selectMethod(e.target.value, false);
     });
     list.addEventListener('click', function (e) {
       var q = e.target.closest('[data-info]');
-      if (q) openMethodDrawer(q.getAttribute('data-info'), q);
+      if (q) { openMethodDrawer(q.getAttribute('data-info'), q); return; }
+      var pk = e.target.closest('[data-pick]');
+      if (pk) { ui.nudge = false; selectMethod(pk.getAttribute('data-pick'), true); return; }
+      if (e.target.closest('#nudge-go')) { ui.nudge = false; go(nextFrom(1)); }
     });
     qs('#open-compare').addEventListener('click', function (e) { UI.drawer.open('dr-compare', { returnFocus: e.currentTarget }); });
-    qs('#next-1').addEventListener('click', function () { if (cur()) go(nextFrom(1)); });
+    qs('#compare-body').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-pick-cmp]');
+      if (!b) return;
+      UI.drawer.close();
+      if (order.step !== 1) return;
+      selectMethod(b.getAttribute('data-pick-cmp'), true);
+    });
+    qs('#next-1').addEventListener('click', next1);
+    document.addEventListener('click', function (e) { if (e.target.closest('[data-back-top]')) go(prevFrom(order.step)); });
 
     // שלב 2
     qsa('input[name="addr"]').forEach(function (r) {
@@ -345,6 +465,12 @@
     qsa('[data-extra]').forEach(function (i) {
       i.addEventListener('input', function () { order.extras[i.getAttribute('data-extra')] = i.value; save(); });
     });
+    qs('#to-pickup').addEventListener('click', function () {
+      go(1);
+      var g = qs('#grp-box-pickup');
+      if (g) { try { g.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } }
+    });
+    qsa('.order-sum__chg').forEach(function (b) { b.addEventListener('click', function () { go(Number(b.getAttribute('data-goto'))); }); });
     qs('#next-2').addEventListener('click', function () {
       if (order.auth && order.addr === 'other' && !validateOther()) return;
       go(3);
@@ -400,6 +526,7 @@
       order.step = clamp(st);
       if (order.step === 5) complete();
       ui.termsErr = false;
+      ui.methodErr = false;
       save();
       render();
       focusStep();
@@ -420,7 +547,7 @@
     if (stepP >= 1 && stepP <= 5) order.step = stepP;
     else if (p.get('reset') === '1' || !saved) order.step = 1;
     if (method(p.get('m'))) order.method = p.get('m');
-    if (['all', 'pickup', 'home', 'mail'].indexOf(p.get('group')) >= 0) order.group = p.get('group');
+    var grp = ['pickup', 'home', 'mail'].indexOf(p.get('group')) >= 0 ? p.get('group') : null; // הצ'יפים הוסרו (החלטה 3): ?group= רק גולל לקבוצה
     if (p.has('auth')) order.auth = p.get('auth') === '1' || p.get('auth') === 'true';
     if (p.get('addr') === 'moin' || p.get('addr') === 'other') order.addr = p.get('addr');
     if (p.get('terms') === '1') order.terms = true;
@@ -441,6 +568,7 @@
     render();
     if (termsErr && order.step === 3) { ui.termsErr = true; UI.fieldError(qs('#terms'), 'כדי להמשיך יש לאשר את תנאי השימוש.'); }
 
+    if (grp && order.step === 1 && grp !== 'home') { var gb = qs('#grp-box-' + grp); if (gb) { try { gb.scrollIntoView({ block: 'start' }); } catch (e) { /* */ } } }
     var info = p.get('info'), dr = p.get('drawer');
     if (order.step === 1 && method(info)) openMethodDrawer(info, qs('[data-info="' + info + '"]'));
     else if (dr === 'compare') UI.drawer.open('dr-compare', { returnFocus: qs('#open-compare') });

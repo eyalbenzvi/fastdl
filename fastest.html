@@ -66,8 +66,8 @@
               <li class="fast-tl__step fast-tl__step--key">
                 <span class="fast-tl__num">6</span>
                 <div class="fast-tl__body">
-                  <h2 class="fast-tl__t">הזמנה – בחרו איסוף עצמי</h2>
-                  <p class="muted">המהיר ביותר</p>
+                  <h2 class="fast-tl__t">הזמנה – בחרו איסוף מבארי או משלוח מהיר</h2>
+                  <p class="muted">איסוף מבארי ללא עלות, או משלוח מהיר עד הבית ב-<span class="num" dir="ltr">177</span> ₪ – שתיהן באותו יום</p>
                   <div class="fast-tl__acts"><a class="btn btn--secondary info-btn" href="login.html">להזמנה</a></div>
                 </div>
               </li>
@@ -88,10 +88,21 @@
                 <label class="label" for="paid">מתי שילמתם?</label>
                 <input id="paid" class="input fast-calc__input" type="date" value="2026-08-23" aria-describedby="calc-out">
               </div>
-              <div id="calc-out" class="fast-calc__out" aria-live="polite">
-                <p>הרישיון יכול להיות בידיים שלכם כבר ב-</p>
-                <p class="fast-calc__date" id="calc-date">יום שלישי, <span class="num" dir="ltr">25.8.2026</span></p>
-                <p class="small muted">באיסוף עצמי מדפוס בארי, מ-<span class="num" dir="ltr">11:00</span>. חישוב משוער לפי ימי עסקים (א׳–ה׳), להדגמה.</p>
+              <div id="calc-out" class="fast-calc__out" aria-live="polite" aria-atomic="true">
+                <p>הרישיון יכול להיות בידיים שלכם:</p>
+                <ul class="fast-res" id="calc-res">
+                  <li class="fast-res__row">
+                    <span class="fast-res__name">איסוף מדפוס בארי <span class="muted">· ללא עלות</span></span>
+                    <span class="fast-calc__date" id="calc-date">יום שלישי, <span class="num" dir="ltr">25.8.2026</span></span>
+                    <span class="small muted">מ-<span class="num" dir="ltr">11:00</span></span>
+                  </li>
+                  <li class="fast-res__row">
+                    <span class="fast-res__name">משלוח מהיר עד הבית <span class="muted">· <span class="num" dir="ltr">177</span> ₪</span></span>
+                    <span class="fast-calc__date" id="calc-date-home">עד יום שלישי, <span class="num" dir="ltr">25.8.2026</span></span>
+                    <span class="small muted">שליח מוסר לכם ביד, עם מעקב</span>
+                  </li>
+                </ul>
+                <p class="small muted">חישוב משוער לפי ימי עסקים (א׳–ה׳), להדגמה.</p>
               </div>
             </section>
 

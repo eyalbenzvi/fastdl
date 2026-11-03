@@ -29,7 +29,8 @@
               <h2 class="id-card__title" id="id-form-t">בדיקת מצב והזמנת משלוח</h2>
               <div class="field">
                 <label class="label" for="hb-id">מספר תעודת זהות</label>
-                <input id="hb-id" name="id" class="input input--num" inputmode="numeric" autocomplete="off" aria-invalid="false">
+                <input id="hb-id" name="id" class="input input--num" inputmode="numeric" autocomplete="off" aria-invalid="false" aria-describedby="hb-id-help">
+                <p id="hb-id-help" class="help">כפי שמופיע בתעודת הזהות, כולל הספרה האחרונה</p>
               </div>
               <div class="field">
                 <label class="label" for="hb-ph">מספר טלפון נייד</label>
@@ -107,7 +108,7 @@
             </div>
             <div class="acc">
               <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b2"><span>כמה עולה כל שיטת מסירה?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
-              <div class="acc__panel" id="acc-b2" hidden><p>איסוף מדפוס בארי ודואר רגיל – ללא עלות. דואר רשום <span class="num" dir="ltr">14.99</span> ₪, משלוח רגיל עד הבית <span class="num" dir="ltr">41</span> ₪, איסוף מנתב״ג <span class="num" dir="ltr">118</span> ₪, משלוח מהיר עד הבית <span class="num" dir="ltr">177</span> ₪. <a href="delivery.html">להשוואה המלאה</a></p></div>
+              <div class="acc__panel" id="acc-b2" hidden><ul class="price-groups"><li><strong>עד הבית עם שליח ומעקב:</strong> מהיר <span class="num" dir="ltr">177</span> ₪ · רגיל <span class="num" dir="ltr">41</span> ₪.</li><li><strong>איסוף עצמי:</strong> בארי ללא עלות · נתב״ג <span class="num" dir="ltr">118</span> ₪.</li><li><strong>בדואר:</strong> רשום עם מעקב <span class="num" dir="ltr">14.99</span> ₪ · רגיל ללא מעקב, ללא עלות.</li></ul><p><a href="delivery.html">להשוואה המלאה</a></p></div>
             </div>
             <div class="acc">
               <button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc-b3"><span>איך תדעו שזה אנחנו?</span><svg class="ico" data-icon="chevron-down" aria-hidden="true"></svg></button>
@@ -116,7 +117,7 @@
                   <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>הודעות ה-SMS שלנו נשלחות מהשולח <span class="tbc">[שם שולח לאישור]</span>.</span></li>
                   <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האתר שלנו נמצא רק בכתובת <strong class="num" dir="ltr">fastdl.co.il</strong>.</span></li>
                   <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>לא נבקש מכם פרטי אשראי בהודעת SMS או בטלפון.</span></li>
-                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האגרה משולמת למשרד התחבורה. אצלנו משלמים רק על משלוח מהיר – אם בחרתם בו.</span></li>
+                  <li><svg class="ico ico--20" data-icon="check" aria-hidden="true"></svg><span>האגרה משולמת למשרד התחבורה. אצלנו משלמים רק אם בחרתם שיטת מסירה בתשלום – ויש גם אפשרויות ללא עלות.</span></li>
                 </ul>
               </div>
             </div>

@@ -1,4 +1,4 @@
-/* contact.js – P17 צור קשר (contact.html?topic=lost | ?demo=error|sent) */
+/* contact.js – P17 צרו קשר (contact.html?topic=lost | ?demo=error|sent) */
 (function () {
   'use strict';
   var form = document.getElementById('contact-form');

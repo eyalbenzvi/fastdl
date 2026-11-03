@@ -7,6 +7,8 @@
   var PHONE = '077-998-5095';
   var TEL = 'tel:0779985095';
   var page = document.body.getAttribute('data-page') || '';
+  // מצב תהליך (החלטה 12 במסמך ההמלצות): <body data-flow="order"> – כותרת ופוטר מינימליים, בלי ניווט ותפריט
+  var FLOW = document.body.getAttribute('data-flow') === 'order';
 
   var NAV = [
     { t: 'בדיקת מצב והזמנה', href: 'login.html', pages: ['login', 'otp', 'status', 'order', 'reissue'] },
@@ -18,7 +20,7 @@
     { t: 'עמדות איסוף', href: 'pickup.html', page: 'pickup' },
     { t: 'שאלות ותשובות', href: 'faq.html', page: 'faq' },
     { t: 'על השירות', href: 'about.html', page: 'about' },
-    { t: 'צור קשר', href: 'contact.html', page: 'contact' }
+    { t: 'צרו קשר', href: 'contact.html', page: 'contact' }
   ];
   var MENU = [
     { t: 'בדיקת מצב והזמנת משלוח', d: 'איפה הרישיון שלי ואיך הוא יגיע אליי', href: 'login.html', pages: ['login', 'otp', 'status', 'order', 'reissue'] },
@@ -28,7 +30,7 @@
     { t: 'עמדות איסוף עצמי', d: 'כתובות, שעות פעילות והנחיות הגעה', href: 'pickup.html', pages: ['pickup'] },
     { t: 'שאלות ותשובות', d: 'המענה לשאלות הנפוצות ביותר', href: 'faq.html', pages: ['faq'] },
     { t: 'על השירות', d: 'מי אנחנו, וההרשאה מטעם משרד התחבורה', href: 'about.html', pages: ['about'] },
-    { t: 'צור קשר', d: 'טלפון, טופס פנייה ושעות מענה', href: 'contact.html', pages: ['contact'] },
+    { t: 'צרו קשר', d: 'טלפון, טופס פנייה ושעות מענה', href: 'contact.html', pages: ['contact'] },
     { t: 'הצהרת נגישות', d: 'התאמות הנגישות באתר ובמוקד', href: 'accessibility.html', pages: ['accessibility'] }
   ];
 
@@ -82,6 +84,31 @@
       '</div></div>';
   }
 
+  /* ---------- Order-flow mode: וורדמרק + טלפון המוקד + פס אמון; פוטר בשורה אחת ---------- */
+  function flowHeaderHTML() {
+    return '<a class="skip-link" href="#main">דלג לתוכן הראשי</a>' +
+      '<header class="site-header site-header--flow"><div class="wrap site-header__bar">' +
+      '<a class="wordmark" href="index.html" aria-label="רישיון עד הבית – מבית דפוס בארי, לעמוד הבית">' + wordmark() + '</a>' +
+      '<a class="header-phone header-phone--flow" href="' + TEL + '">' + I('phone', { size: 20 }) +
+      '<span class="header-phone__lbl hide-m">מוקד שירות</span><span class="num" dir="ltr">' + PHONE + '</span></a>' +
+      '</div></header>' +
+      '<div class="trust"><div class="wrap trust__bar">' +
+      '<div class="trust__items">' +
+      '<span class="trust__item">' + I('shield-check', { size: 18 }) + '<span class="hide-m">השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</span><span class="only-m">בהרשאת משרד התחבורה</span></span>' +
+      '<span class="trust__item">' + I('lock', { size: 18 }) + '<span class="hide-m">המידע שלכם מאובטח</span><span class="only-m">מאובטח</span></span>' +
+      '</div></div></div>';
+  }
+  function flowFooterHTML() {
+    var ext = I('external-link', { size: 16 }) + '<span class="sr-only">(נפתח בלשונית חדשה)</span>';
+    return '<footer class="site-footer site-footer--flow"><div class="wrap site-footer__line">' +
+      '<span>צריכים עזרה? <a href="' + TEL + '"><span class="num" dir="ltr">' + PHONE + '</span></a></span>' +
+      '<span class="site-footer__sep" aria-hidden="true">·</span>' +
+      '<a href="accessibility.html" target="_blank" rel="noopener">הצהרת נגישות' + ext + '</a>' +
+      '<span class="site-footer__sep" aria-hidden="true">·</span>' +
+      '<a href="#" target="_blank" rel="noopener">מדיניות פרטיות' + ext + '</a>' +
+      '</div></footer>';
+  }
+
   function menuHTML() {
     return '<aside class="drawer drawer--menu" id="menu-drawer" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden>' +
       '<div class="dialog__head"><p class="drawer__title" id="menu-title" data-dialog-title tabindex="-1">תפריט</p>' +
@@ -107,7 +134,7 @@
       '<div class="site-footer__brand"><span class="wordmark wordmark--dark">' + wordmark(true) + '</span>' +
       '<p class="site-footer__auth">' + I('shield-check', { size: 18 }) + 'השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</p></div>' +
       '<nav aria-label="קישורי שירות"><p class="site-footer__h">שירות</p><ul class="site-footer__list">' +
-      '<li><a href="faq.html">שאלות ותשובות</a></li><li><a href="contact.html">צור קשר</a></li><li><a href="pickup.html">עמדות איסוף</a></li><li><a href="delivery.html">שיטות מסירה</a></li></ul></nav>' +
+      '<li><a href="faq.html">שאלות ותשובות</a></li><li><a href="contact.html">צרו קשר</a></li><li><a href="pickup.html">עמדות איסוף</a></li><li><a href="delivery.html">שיטות מסירה</a></li></ul></nav>' +
       '<nav aria-label="מידע משפטי"><p class="site-footer__h">מידע</p><ul class="site-footer__list">' +
       '<li><a href="accessibility.html">הצהרת נגישות</a></li><li><a href="#">מדיניות פרטיות</a></li><li><a href="#">תנאי שימוש</a></li><li><a href="about.html">איך תדעו שזה אנחנו</a></li></ul></nav>' +
       '</div>' +
@@ -198,28 +225,28 @@
     var maintOn = (D.maintenance && D.maintenance.active) || UI.param('maint') === '1';
     var h = UI.qs('[data-slot="header"]');
     if (h) {
-      h.innerHTML = (maintOn ? maintenanceHTML() : '') + headerHTML();
+      h.innerHTML = (maintOn ? maintenanceHTML() : '') + (FLOW ? flowHeaderHTML() : headerHTML());
       var mc = UI.qs('.maint__close', h);
       if (mc) mc.addEventListener('click', function () {
         var m = UI.qs('.maint', h); if (m) m.remove();
         var skip = UI.qs('.skip-link'); if (skip) skip.focus();
         if (window.Layout.onMaintClose) window.Layout.onMaintClose();
       });
-      document.body.insertAdjacentHTML('beforeend', menuHTML());
+      if (!FLOW) document.body.insertAdjacentHTML('beforeend', menuHTML());
       // רכיב הנגישות עצמו טרם נבחר – באב-הטיפוס הכפתור מודיע על כך (לא מבוי סתום)
       var ab = UI.qs('.a11y-btn', h);
       if (ab) ab.addEventListener('click', function () { UI.toast('תפריט הנגישות [לאישור]'); });
     }
     var f = UI.qs('[data-slot="footer"]');
     if (f) {
-      f.innerHTML = footerHTML();
+      f.innerHTML = FLOW ? flowFooterHTML() : footerHTML();
       if (!UI.qs('[data-slot="demo-bar"]') && !document.body.hasAttribute('data-no-pill')) document.body.insertAdjacentHTML('beforeend', pillHTML());
     }
     var setMore = setupMore();
     setupMenu();
     setupPill();
     var demo = UI.param('demo');
-    if (demo === 'menu') openMenu();
+    if (demo === 'menu' && !FLOW) openMenu();
     if (demo === 'more' && setMore) setMore(true);
   }
 

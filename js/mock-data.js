@@ -58,8 +58,7 @@ window.FD_DATA = {
       "eta_display": "זמין לאיסוף מיום ד׳ 26.8, 11:00",
       "tracking": false,
       "tags": [
-        "ללא עלות",
-        "הכי מהיר"
+        "הכי מהיר לאיסוף"
       ],
       "needs_address": false,
       "address": "[לאישור]",
@@ -112,7 +111,7 @@ window.FD_DATA = {
       "eta_rule": "2–5 ימי עסקים",
       "eta_display": "יגיע בין 27.8 ל-1.9",
       "tracking": true,
-      "tags": [],
+      "tags": ["מסירה ביד"],
       "needs_address": true,
       "fit": "מסירה ביד עם מעקב, בלי לחץ זמן",
       "benefits": ["שליח מוסר לכם ביד","מעקב משלוח"],
@@ -143,11 +142,10 @@ window.FD_DATA = {
       "eta_display": "יגיע עד 14.9",
       "tracking": false,
       "tags": [
-        "ללא עלות",
         "ללא מעקב"
       ],
       "needs_address": true,
-      "fit": "ברירת המחדל אם לא בוחרים. נמסר לתיבה רק אם יש עליה שם מזהה",
+      "fit": "ברירת המחדל אם לא בוחרים",
       "benefits": [],
       "how": "בתיבת הדואר, ללא מעקב"
     }
