@@ -82,23 +82,90 @@
     }
   };
 
+  /* ---------- Motion (כניסה/יציאה) ----------
+     show(el): מוריד hidden ומנגן את מעבר הכניסה מ-.is-off (מוגדר ב-CSS לכל רכיב).
+     hide(el): מוסיף .is-off.is-closing, הרכיב inert בזמן היציאה, ו-hidden רק בסוף המעבר.
+     מעבר CSS ולא keyframes – פתיחה בזמן יציאה מתהפכת מהמקום הנוכחי. prefers-reduced-motion: מיידי. */
+  var reduceMQ = null;
+  try { reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) { /* */ }
+  function reducedMotion() { return !!(reduceMQ && reduceMQ.matches); }
+  function toMs(v) { v = String(v || '').trim(); var n = parseFloat(v) || 0; return /ms$/.test(v) ? n : n * 1000; }
+  function transitionMs(el) {
+    try {
+      var cs = window.getComputedStyle(el);
+      var d = cs.transitionDuration.split(','), l = cs.transitionDelay.split(','), m = 0;
+      for (var i = 0; i < d.length; i++) m = Math.max(m, toMs(d[i]) + toMs(l[i] || l[0]));
+      return m;
+    } catch (e) { return 0; }
+  }
+  function releaseClosingInert(el) {
+    if (!el.hasAttribute('data-closing-inert')) return;
+    el.removeAttribute('data-closing-inert');
+    if (!el.hasAttribute('data-inerted')) el.removeAttribute('inert');
+  }
+  function show(el) {
+    if (!el) return;
+    clearTimeout(el._fdHide); el._fdHide = null;
+    el.classList.remove('is-closing');
+    releaseClosingInert(el);
+    if (el.hidden) {
+      el.classList.add('is-off');
+      el.hidden = false;
+      void el.offsetWidth; // מצב ההתחלה נקלט לפני שמסירים is-off
+    }
+    el.classList.remove('is-off');
+  }
+  function hide(el, instant) {
+    if (!el || el.hidden) return;
+    clearTimeout(el._fdHide); el._fdHide = null;
+    function done() {
+      el._fdHide = null;
+      el.hidden = true;
+      el.classList.remove('is-off', 'is-closing');
+      releaseClosingInert(el);
+    }
+    if (instant || reducedMotion()) { done(); return; }
+    el.classList.add('is-closing', 'is-off');
+    if (!el.hasAttribute('inert')) { el.setAttribute('inert', ''); el.setAttribute('data-closing-inert', ''); }
+    var ms = transitionMs(el);
+    if (!ms) { done(); return; }
+    el._fdHide = setTimeout(done, ms + 30);
+  }
+  // חשיפת תוכן שנפתח במקום (אקורדיון, תשובה): opacity בלבד, 150ms, רק בפעולת משתמש.
+  // force: גם אם כבר גלוי והתוכן הוחלף (למשל תשובה אחרת באותה תיבה)
+  function reveal(el, force) {
+    if (!el) return;
+    var wasHidden = el.hidden;
+    el.hidden = false;
+    if (!wasHidden && !force) return;
+    if (reducedMotion() || !el.animate) return;
+    try {
+      var root = window.getComputedStyle(document.documentElement);
+      var ms = toMs(root.getPropertyValue('--dur-fast'));
+      if (ms) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: ms, easing: root.getPropertyValue('--ease').trim() || 'ease-out' });
+    } catch (e) { /* */ }
+  }
+  // iOS Safari מפעיל :active במגע רק כשיש מאזין touchstart
+  try { document.addEventListener('touchstart', function () {}, { passive: true }); } catch (e) { /* */ }
+
   /* ---------- Accordion ---------- */
   // מבנה: root מכיל .acc > button.acc__btn[aria-controls] + .acc__panel#id
   function accordion(root, opt) {
     opt = opt || {};
     var single = opt.single !== false;
     var btns = qsa('.acc__btn', root);
-    function set(btn, open) {
+    function set(btn, open, animate) {
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       var p = document.getElementById(btn.getAttribute('aria-controls'));
-      if (p) p.hidden = !open;
+      if (!p) return;
+      if (open && animate) reveal(p); else p.hidden = !open;
     }
     btns.forEach(function (b, i) {
       set(b, i === opt.openIndex);
       b.addEventListener('click', function () {
         var open = b.getAttribute('aria-expanded') !== 'true';
         if (single && open) btns.forEach(function (o) { if (o !== b) set(o, false); });
-        set(b, open);
+        set(b, open, true);
         if (opt.onToggle) opt.onToggle(i, open);
       });
     });
@@ -135,17 +202,18 @@
     var el = typeof id === 'string' ? document.getElementById(id) : id;
     if (!el) return;
     if (current) closeDialog(true);
-    // הפאנל חייב להיות ילד ישיר של body כדי ש-inert יעבוד על השאר
-    if (el.parentNode !== document.body) document.body.appendChild(el);
     if (!scrim) {
       scrim = document.createElement('div');
       scrim.className = 'scrim';
+      scrim.hidden = true;
       scrim.addEventListener('click', function () { closeDialog(); });
     }
-    document.body.appendChild(scrim);
-    document.body.appendChild(el);
-    scrim.hidden = false;
-    el.hidden = false;
+    // הפאנל וה-scrim ילדים ישירים של body כדי ש-inert יעבוד על השאר. מזיזים רק כשצריך:
+    // הזזה ב-DOM מאפסת מעבר שרץ (למשל פתיחה מחדש באמצע יציאה)
+    if (scrim.parentNode !== document.body) document.body.appendChild(scrim);
+    if (el.parentNode !== document.body) document.body.appendChild(el);
+    show(scrim);
+    show(el);
     current = { el: el, returnFocus: opt.returnFocus || document.activeElement, onClose: opt.onClose };
     backgroundEls().forEach(function (b) { b.setAttribute('inert', ''); b.setAttribute('data-inerted', ''); });
     document.body.style.overflow = 'hidden';
@@ -162,8 +230,10 @@
     if (!current) return;
     var c = current;
     current = null;
-    c.el.hidden = true;
-    if (scrim) scrim.hidden = true;
+    // silent = מעבר ישיר לדיאלוג אחר: הישן נעלם מיד, בלי שתי מגירות זזות יחד.
+    // אחרת יציאה של 150ms; הפאנל inert מיד, כך שהפוקוס, inert והגלילה מטופלים כרגיל כבר עכשיו
+    hide(c.el, silent);
+    if (scrim && !silent) hide(scrim);
     qsa('[data-inerted]').forEach(function (b) { b.removeAttribute('inert'); b.removeAttribute('data-inerted'); });
     document.body.style.overflow = '';
     document.removeEventListener('keydown', trap, true);
@@ -192,14 +262,15 @@
       toastEl.className = 'toast';
       toastEl.setAttribute('role', 'status');
       toastEl.setAttribute('aria-live', 'polite');
+      toastEl.hidden = true;
       document.body.appendChild(toastEl);
     }
-    toastEl.hidden = false;
+    show(toastEl);
     toastEl.textContent = '';
     // תזמון קצר כדי שקוראי מסך יכריזו גם על אותו טקסט פעמיים
     setTimeout(function () { toastEl.innerHTML = icon('check', { size: 18 }) + '<span>' + esc(text) + '</span>'; }, 30);
     clearTimeout(toastT);
-    if (ms !== 0) toastT = setTimeout(function () { toastEl.hidden = true; }, ms || 1600);
+    if (ms !== 0) toastT = setTimeout(function () { hide(toastEl); }, ms || 1600);
   }
 
   function copy(text) {
@@ -283,7 +354,7 @@
 
   window.UI = {
     qs: qs, qsa: qsa, esc: esc, icon: icon, hydrateIcons: hydrateIcons,
-    accordion: accordion, drawer: drawer, modal: modal,
+    accordion: accordion, drawer: drawer, modal: modal, show: show, hide: hide, reveal: reveal,
     toast: toast, copy: copy, param: param, params: params, setParams: setParams,
     store: store, setBusy: setBusy, fieldError: fieldError, focus: focusEl
   };

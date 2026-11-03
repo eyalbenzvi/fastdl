@@ -23,21 +23,23 @@
 
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent} /* במקום ההבהוב האפור של הדפדפן: מצב :active לכל רכיב לחיץ */
+a,button,label,input,select,textarea,summary,[role="button"]{touch-action:manipulation} /* בלי השהיית double-tap בהקשה */
+button,.btn,.chip,.demo-chip{-webkit-user-select:none;user-select:none} /* לחיצה ארוכה לא מסמנת את תווית הכפתור; טקסט תוכן נשאר בר-סימון */
 body{margin:0;background:var(--c-bg);color:var(--c-text);font-family:var(--font-sans);font-size:var(--fs-body);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
 html[lang="ar"] body{font-family:var(--font-ar);line-height:1.7}
 h1,h2,h3,h4,p,ul,ol,dl,dd,figure{margin:0}
 ul,ol{padding:0;list-style:none}
 img{max-width:100%;display:block}
 a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
-a:hover{color:var(--c-primary-hover)}
+@media (hover:hover) and (pointer:fine){a:hover{color:var(--c-primary-hover)}}
 :focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.page{min-height:100vh;display:flex;flex-direction:column}
+.page{min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
 .page>main{flex:1}
 
 /* ---------- Layout ---------- */
-.wrap{width:100%;max-width:calc(var(--container) + 48px);margin-inline:auto;padding-inline:24px}
+.wrap{width:100%;max-width:calc(var(--container) + 48px);margin-inline:auto;padding-inline:24px;padding-inline:max(24px,env(safe-area-inset-left,0px),env(safe-area-inset-right,0px))} /* viewport-fit=cover: התוכן לא נכנס מתחת לנוץ' בטלפון לרוחב */
 .wrap--text{max-width:calc(var(--container-text) + 48px)}
 .wrap--status{max-width:calc(var(--container-status) + 48px)}
 .wrap--form{max-width:calc(var(--container-form) + 48px)}
@@ -78,11 +80,11 @@ a:hover{color:var(--c-primary-hover)}
 .wordmark--dark{color:#fff}.wordmark--dark .wordmark__sub{color:#CFE0EA}
 
 /* ---------- Buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);padding:0 24px;border-radius:var(--radius-md);font:inherit;font-weight:var(--fw-semibold);font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center;transition:background-color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);padding:0 24px;border-radius:var(--radius-md);font:inherit;font-weight:var(--fw-semibold);font-size:17px;line-height:1.2;text-decoration:none;cursor:pointer;text-align:center;transition:background-color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
 .btn--primary{background:var(--c-primary);color:#fff;border:2px solid var(--c-primary)}
-.btn--primary:hover{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}
+.btn--primary:active{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}@media (hover:hover) and (pointer:fine){.btn--primary:hover{background:var(--c-primary-hover);border-color:var(--c-primary-hover);color:#fff}}
 .btn--secondary{background:#fff;color:var(--c-primary);border:2px solid var(--c-primary)}
-.btn--secondary:hover{background:var(--c-primary-50);color:var(--c-primary-hover)}
+.btn--secondary:active{background:var(--c-primary-50);color:var(--c-primary-hover)}@media (hover:hover) and (pointer:fine){.btn--secondary:hover{background:var(--c-primary-50);color:var(--c-primary-hover)}}
 .btn--sm{min-height:var(--control-h-sm);font-size:16px;padding:0 16px}
 .btn--block{width:100%}
 .btn[disabled],.btn[aria-disabled="true"]{background:var(--c-disabled-bg);border-color:var(--c-disabled-bg);color:var(--c-disabled-text);cursor:not-allowed}
@@ -90,7 +92,10 @@ a:hover{color:var(--c-primary-hover)}
 .link-btn{background:none;border:0;padding:0;font:inherit;color:var(--c-primary);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:var(--tap-min);text-align:start}
 .icon-btn{width:44px;height:44px;border:0;border-radius:10px;background:var(--c-navy-50);color:var(--c-navy);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 .icon-btn--ghost{background:transparent;color:var(--c-primary)}
-.icon-btn--ghost:hover{background:var(--c-primary-100)}
+.icon-btn--ghost:active{background:var(--c-primary-100)}@media (hover:hover) and (pointer:fine){.icon-btn--ghost:hover{background:var(--c-primary-100)}}
+/* משוב לחיצה: הקטנה עדינה ברגע המגע (pointer-down), חוזרת ב-150ms. רק transform – בלי שינוי פריסה */
+.icon-btn,.chip,.demo-chip{transition:transform var(--dur-fast) var(--ease)}
+.btn:not([disabled]):not([aria-disabled="true"]):active,.icon-btn:active,.chip:active,.demo-chip:active{transform:scale(.97)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin .8s linear infinite}
 
@@ -118,8 +123,9 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 
 /* ---------- Radio card (כרטיס בחירה) ---------- */
 .opt-card{position:relative;display:flex;gap:16px;align-items:flex-start;background:#fff;border:1.5px solid var(--c-border-strong);border-radius:var(--radius-lg);padding:20px 22px;cursor:pointer;width:100%}
-.opt-card:hover{border-color:var(--c-primary)}
-.opt-card:focus-within{outline:3px solid var(--c-focus);outline-offset:2px}
+.opt-card:active{border-color:var(--c-primary)}@media (hover:hover) and (pointer:fine){.opt-card:hover{border-color:var(--c-primary)}}
+.opt-card:has(:focus-visible){outline:3px solid var(--c-focus);outline-offset:2px} /* טבעת פוקוס רק במקלדת, לא אחרי הקשה */
+@supports not selector(:has(*)){.opt-card:focus-within{outline:3px solid var(--c-focus);outline-offset:2px}}
 .opt-card.is-selected,.opt-card:has(input:checked){background:var(--c-primary-50);border:2px solid var(--c-primary)}
 .opt-card input[type=radio]{width:22px;height:22px;margin:3px 0 0;accent-color:var(--c-primary);flex:none}
 .opt-card__q{position:absolute;inset-block-start:12px;inset-inline-end:12px} /* כפתור "?" בפינה השמאלית-עליונה ב-RTL */
@@ -156,7 +162,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .acc{border-bottom:1px solid var(--c-border)}
 .acc:last-child{border-bottom:0}
 .acc__btn{display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:16px 24px;background:none;border:0;font:inherit;font-size:18px;font-weight:var(--fw-semibold);color:var(--c-text);text-align:start;cursor:pointer}
-.acc__btn:hover{background:var(--c-row-hover)}
+.acc__btn:active{background:var(--c-row-hover)}@media (hover:hover) and (pointer:fine){.acc__btn:hover{background:var(--c-row-hover)}}
 .acc__btn .ico{color:var(--c-primary);transition:transform var(--dur-base) var(--ease)}
 .acc__btn[aria-expanded="true"] .ico{transform:rotate(180deg)}
 .acc__panel{padding:0 24px 22px}
@@ -182,8 +188,12 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .timeline__step--warn{font-weight:var(--fw-bold);color:var(--c-warning-marker)}
 .timeline__step--fail .timeline__dot{background:var(--c-danger);border-color:var(--c-danger);color:#fff}
 .timeline__step--fail{font-weight:var(--fw-bold);color:var(--c-danger)}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(3,81,224,.35)}70%{box-shadow:0 0 0 10px rgba(3,81,224,0)}100%{box-shadow:0 0 0 0 rgba(3,81,224,0)}}
-.timeline__step--current .timeline__dot{animation:pulse 2s ease-out infinite}
+/* פעימה בשלב הנוכחי (08 §8.1). טבעת ב-::before שגדלה ודועכת – transform+opacity בלבד, במקום box-shadow שמצייר מחדש כל פריים.
+   isolation על השלב: הטבעת (z-index:-1) נשארת מאחורי העיגול הלבן אבל מעל הכרטיס. 1.625 = (16px רדיוס + 10px) / 16px */
+.timeline__step--current{isolation:isolate}
+.timeline__step--current .timeline__dot{position:relative}
+.timeline__step--current .timeline__dot::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:rgba(3,81,224,.35);z-index:-1;opacity:0;animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.625);opacity:0}100%{transform:scale(1.625);opacity:0}}
 
 /* ---------- Stepper (order) ---------- */
 .stepper{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -199,18 +209,28 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .stepper-m__bar>span{display:block;height:100%;background:var(--c-primary)}
 
 /* ---------- Drawer / Modal ---------- */
-.scrim{position:fixed;inset:0;background:var(--c-scrim);z-index:80}
-.drawer{position:fixed;inset-block:0;left:0;width:min(460px,100%);background:#fff;z-index:90;overflow:auto;box-shadow:var(--shadow-drawer);padding:24px;display:flex;flex-direction:column;gap:20px}
+.scrim{position:fixed;inset:0;background:var(--c-scrim);z-index:80;transition:opacity var(--dur-base) var(--ease)}
+.drawer{position:fixed;inset-block:0;left:0;width:min(460px,100%);background:#fff;z-index:90;overflow:auto;overscroll-behavior:contain;box-shadow:var(--shadow-drawer);padding:24px;padding-inline:max(24px,env(safe-area-inset-left,0px),env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px;transition:transform var(--dur-base) var(--ease)}
 .drawer--menu{left:auto;right:0} /* תפריט נפתח מימין (צד ההתחלה ב-RTL); מגירות מידע משמאל */
-.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(860px,94vw);max-height:90vh;overflow:auto;background:#fff;border-radius:var(--radius-xl);z-index:90;padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--shadow-drawer)}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(860px,94vw);max-height:90vh;max-height:90dvh;overflow:auto;overscroll-behavior:contain;transition:transform var(--dur-base) var(--ease),opacity var(--dur-base) var(--ease);background:#fff;border-radius:var(--radius-xl);z-index:90;padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--shadow-drawer)}
 .dialog__head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+/* כניסה/יציאה (ui.js מוסיף .is-off לפני הופעה ולפני הסתרה; .is-closing מקצר ל-150ms).
+   מגירת מידע נכנסת ויוצאת משמאל, תפריט מימין, מודאל במרכז; ב-≤640 שלושתם עולים ויורדים מלמטה */
+.scrim.is-off{opacity:0}
+.drawer.is-off{transform:translateX(-100%)}
+.drawer--menu.is-off{transform:translateX(100%)}
+.modal.is-off{opacity:0;transform:translate(-50%,-50%) scale(.97)}
+.scrim.is-closing,.drawer.is-closing,.modal.is-closing,.toast.is-closing,.more-list.is-closing{transition-duration:var(--dur-fast);pointer-events:none}
 
 /* ---------- Toast ---------- */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--c-navy);color:#fff;padding:10px 20px;border-radius:10px;z-index:95;font-weight:var(--fw-semibold)}
+.toast{position:fixed;bottom:80px;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--c-navy);color:#fff;padding:10px 20px;border-radius:10px;z-index:95;font-weight:var(--fw-semibold);transition:transform var(--dur-base) var(--ease),opacity var(--dur-base) var(--ease)}
+.toast.is-off{opacity:0;transform:translate(-50%,100%)} /* נכנס מלמטה ויוצא לאותו כיוון */
 
 /* ---------- Skeleton ---------- */
-.skel{background:linear-gradient(90deg,#E6ECF0 0%,#F2F5F7 50%,#E6ECF0 100%);background-size:200% 100%;animation:sk 1.4s linear infinite;border-radius:var(--radius-sm)}
-@keyframes sk{to{background-position:-200% 0}}
+/* הברק נע כ-transform על ::after (קומפוזיציה בלבד) במקום background-position שמצייר מחדש כל פריים */
+.skel{position:relative;overflow:hidden;background:#E6ECF0;border-radius:var(--radius-sm)}
+.skel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(242,245,247,0) 0%,#F2F5F7 50%,rgba(242,245,247,0) 100%);transform:translateX(-100%);animation:sk 1.4s linear infinite}
+@keyframes sk{to{transform:translateX(100%)}}
 
 /* ---------- Header / trust bar / footer ---------- */
 .skip-link{position:absolute;inset-inline-start:16px;top:-80px;z-index:100;background:var(--c-navy);color:#fff!important;padding:12px 16px;border-radius:var(--radius-sm)}
@@ -219,13 +239,13 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .site-header__bar{height:var(--header-h);display:flex;align-items:center;justify-content:space-between;gap:24px}
 .nav{display:flex;align-items:center;gap:22px;position:relative}
 .nav__link{color:var(--c-navy)!important;text-decoration:none!important;font-weight:var(--fw-medium);padding:10px 2px;border-bottom:2px solid transparent;white-space:nowrap}
-.nav__link:hover,.nav__link[aria-current="page"]{border-bottom-color:var(--c-primary)}
+.nav__link[aria-current="page"]{border-bottom-color:var(--c-primary)}@media (hover:hover) and (pointer:fine){.nav__link:hover{border-bottom-color:var(--c-primary)}}
 .trust{background:var(--c-navy-50);border-bottom:1px solid var(--c-border);font-size:var(--fs-small);font-weight:var(--fw-medium)}
 .trust__bar{min-height:var(--trust-h);display:flex;align-items:center;justify-content:space-between;gap:16px}
 .trust .ico{color:var(--c-brand-cyan-dark)}
 .mot-placeholder{display:flex;align-items:center;justify-content:center;height:34px;padding:0 12px;border:1.5px dashed var(--c-input-border);border-radius:var(--radius-sm);color:var(--c-text-muted);font-size:13px;font-weight:var(--fw-semibold);white-space:nowrap}
 .site-footer{background:var(--c-navy);color:#fff;padding:56px 0 24px}
-.site-footer a{color:#fff}.site-footer a:hover{color:#CFE6F2}
+.site-footer a{color:#fff}@media (hover:hover) and (pointer:fine){.site-footer a:hover{color:#CFE6F2}}
 .site-footer__bottom{border-top:1px solid var(--c-footer-line);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:var(--fs-small);color:var(--c-footer-muted)}
 
 /* ---------- Demo bar (אב-טיפוס בלבד) ---------- */
@@ -234,7 +254,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
 .demo-bar__label{font-weight:var(--fw-bold);color:var(--c-demo-accent)}
 .demo-chip{min-height:36px;padding:0 12px;border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:transparent;font:inherit;font-weight:var(--fw-semibold);color:#fff;cursor:pointer}
 .demo-chip[aria-pressed="true"]{background:var(--c-demo-accent);border-color:var(--c-demo-accent);color:var(--c-demo-bg)}
-.demo-pill{position:fixed;bottom:16px;left:16px;z-index:70;display:flex;align-items:center;gap:10px;background:var(--c-demo-bg);color:#fff;border-radius:var(--radius-pill);padding:6px 8px 6px 16px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.demo-pill{position:fixed;bottom:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:16px;left:calc(16px + env(safe-area-inset-left,0px));z-index:70;display:flex;align-items:center;gap:10px;background:var(--c-demo-bg);color:#fff;border-radius:var(--radius-pill);padding:6px 8px 6px 16px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 
 /* ---------- Responsive helpers ---------- */
 .only-t,.only-m{display:none!important}
@@ -244,7 +264,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
   .g2,.g3,.g4,.kv{grid-template-columns:minmax(0,1fr)}
   .h-hero,.h1,.h1--page,.h1--flow{font-size:var(--fs-h1-m)}
   .h2{font-size:var(--fs-h2-m)}.h3{font-size:var(--fs-h3-m)}
-  .wrap{padding-inline:16px}
+  .wrap{padding-inline:16px;padding-inline:max(16px,env(safe-area-inset-left,0px),env(safe-area-inset-right,0px))}
   .card--pad{padding:20px}
   .btn--m-block{width:100%}
   .hide-m{display:none!important}.only-m{display:flex!important}
@@ -253,9 +273,10 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
   .timeline{grid-template-columns:minmax(0,1fr);gap:14px}
   .timeline__step{flex-direction:row;text-align:start}
   .timeline__track,.timeline__fill{display:none}
-  .drawer{inset-block:auto 0;left:0;right:0;width:100%;max-height:88vh;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
-  .modal{top:auto;bottom:0;left:0;transform:none;width:100%;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
-  .sticky-actions{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:var(--shadow-sticky);padding:12px 16px;margin-inline:-16px;flex-direction:column-reverse;align-items:stretch}
-  .otp input{width:44px;height:54px}
+  .drawer{inset-block:auto 0;left:0;right:0;width:100%;max-height:88vh;max-height:88dvh;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  .modal{top:auto;bottom:0;left:0;transform:none;width:100%;max-height:90dvh;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
+  .drawer.is-off,.drawer--menu.is-off,.modal.is-off{opacity:1;transform:translateY(100%)} /* bottom sheet */
+  .sticky-actions{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:var(--shadow-sticky);padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));margin-inline:-16px;flex-direction:column-reverse;align-items:stretch}
+  .otp input{width:44px;flex:0 1 44px;min-width:0;height:54px} /* מתכווץ רק כשאין מקום (מתחת ל-390) */
 }
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

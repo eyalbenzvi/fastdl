@@ -354,8 +354,8 @@
       UI.setParams({ ans: st.ans, docs: null });
       UI.qsa('.ans-btn', root).forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
       var box = document.getElementById('s0-ans');
-      box.hidden = false;
       box.innerHTML = s0Answer();
+      UI.reveal(box, true);
     } else if (a === 'sms') {
       var c = document.getElementById('sms-consent');
       if (c && !c.checked) { UI.fieldError(c, 'כדי לקבל עדכון יש לסמן את תיבת ההסכמה.'); c.focus(); return; }

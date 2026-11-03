@@ -75,7 +75,7 @@
       var on = Number(o.getAttribute('data-i')) === state.open;
       o.setAttribute('aria-expanded', on ? 'true' : 'false');
       var p = document.getElementById(o.getAttribute('aria-controls'));
-      if (p) p.hidden = !on;
+      if (p) { if (on) UI.reveal(p); else p.hidden = true; }
     });
   });
   chips.addEventListener('click', function (e) {

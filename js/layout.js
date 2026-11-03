@@ -70,7 +70,7 @@
       '</div>' +
       '<div class="header-tools-m only-t">' +
       '<a class="header-phone-m" href="' + TEL + '" aria-label="חיוג למוקד ' + PHONE + '">' + I('phone') + '</a>' +
-      '<button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu-drawer">' + I('menu', { size: 20 }) + 'תפריט</button>' +
+      '<button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu-drawer">' + I('menu', { size: 20 }) + '<span class="menu-btn__t">תפריט</span></button>' +
       '</div>' +
       '</div></header>' +
       '<div class="trust"><div class="wrap trust__bar">' +
@@ -153,10 +153,16 @@
     var btn = document.getElementById('more-btn');
     var list = document.getElementById('more-list');
     if (!btn || !list) return;
-    function set(open) { btn.setAttribute('aria-expanded', open ? 'true' : 'false'); list.hidden = !open; }
-    btn.addEventListener('click', function (e) { e.stopPropagation(); set(list.hidden); });
-    document.addEventListener('click', function (e) { if (!list.hidden && !list.contains(e.target) && e.target !== btn) set(false); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !list.hidden) { set(false); btn.focus(); } });
+    // מצב לוגי נפרד מ-hidden: בזמן אנימציית היציאה הרשימה עדיין גלויה אבל כבר "סגורה"
+    var isOpen = false;
+    function set(open) {
+      isOpen = !!open;
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (isOpen) UI.show(list); else UI.hide(list);
+    }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); set(!isOpen); });
+    document.addEventListener('click', function (e) { if (isOpen && !list.contains(e.target) && e.target !== btn) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen) { set(false); btn.focus(); } });
     list.addEventListener('focusout', function (e) {
       if (e.relatedTarget && !list.contains(e.relatedTarget) && e.relatedTarget !== btn) set(false);
     });
