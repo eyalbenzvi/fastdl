@@ -30,7 +30,7 @@
 
   /* ---------- טקסט: escape + מספרים ב-LTR + [לאישור] ---------- */
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '״'); }
-  function numify(s) { return s.replace(/\d+(?:[.:,–\-\/]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; }); }
+  function numify(s) { return s.replace(/\d+(?:[.:,\/]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; }); }
   function rich(s) {
     return String(s == null ? '' : s).split(/(\[[^\]]*\])/).map(function (part) {
       if (/^\[.*\]$/.test(part)) return '<span class="tbc">' + esc(part) + '</span>';
