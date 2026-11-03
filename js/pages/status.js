@@ -437,7 +437,7 @@
     return timeCard('clock', '<p class="time-card__t">אפשר לשנות את ההזמנה עד <strong>' + fd(T.close, T.closeTime) + '</strong></p>') +
       '<p>אחרי המועד הזה הייצור מתחיל, ו' + N() + ' ' + etaText(c.mid, c.prod, 'will') + '.</p>' +
       '<div class="st-block"><p class="status-strong">רוצים לקבל מהר יותר?</p>' +
-      '<p>אפשר לשנות לשיטה אחרת עד ' + fd(T.close, T.closeTime) + '. בשיטה יקרה יותר משלמים את המחיר המלא בניכוי מה ששילמתם' + paid + '. ' + tbc() + '</p>' +
+      '<p>אפשר לשנות לשיטה אחרת עד אותו מועד. ' + (m && m.price ? 'בשיטה יקרה יותר משלמים את המחיר המלא בניכוי מה ששילמתם' + paid + '. ' + tbc() : 'אם תבחרו שיטה בתשלום, תשלמו עליה בזמן השינוי.') + '</p>' +
       '<a class="btn btn--primary btn--m-block status-self-start" href="order.html?edit=1">עריכת ההזמנה</a></div>' +
       '<div class="st-block st-block--sep"><button type="button" class="btn btn--secondary btn--m-block status-self-start" id="prod-btn"' + act('prod') + '>אין לי מה לשנות – להתחיל עכשיו</button>' +
       '<p class="small muted">' + (e.shift ? 'כך ' + N() + ' יגיע יום מוקדם יותר. ' : '') + 'אחרי זה לא יהיה אפשר לשנות.</p></div>';
@@ -447,10 +447,11 @@
     var c = ctx('S3'), m = methodById(c.mid);
     var how = c.ordered ? esc(m.name) + (isPickup(c) ? '' : m.tracking ? ', עם מעקב' : ', ללא מעקב') : 'דואר רגיל, ללא מעקב';
     var when = c.re ? 'זמן אספקה: ' + rich(m.eta_rule) + ' מהייצור' : etaText(c.mid, c.prod, 'exp');
+    var upd = isPickup(c) ? 'מוכן לאיסוף' : 'יוצא';
     return timeCard(isPickup(c) ? 'store' : 'truck', '<p class="time-card__big">' + when + '</p><p class="muted">' + how + '</p>') +
       '<p>בשלב הזה כבר אי אפשר לשנות כתובת או שיטת משלוח – זה סימן שהתהליך מתקדם, לא תקלה.</p>' +
-      (st.notifyDone ? doneNote('נשלח לכם עדכון כש' + N() + ' יוצא.')
-        : '<button type="button" class="btn btn--secondary btn--m-block status-self-start"' + act('notify') + '>' + I('message', { size: 20 }) + 'שלחו לי עדכון כש' + N() + ' יוצא</button>') +
+      (st.notifyDone ? doneNote('נשלח לכם עדכון כש' + N() + ' ' + upd + '.')
+        : '<button type="button" class="btn btn--secondary btn--m-block status-self-start"' + act('notify') + '>' + I('message', { size: 20 }) + 'שלחו לי עדכון כש' + N() + ' ' + upd + '</button>') +
       (c.mid !== 'regular_mail' ? '' : '<p class="small muted">דואר רגיל נמסר לתיבת הדואר רק אם מופיע עליה שם מזהה, כמו שם משפחה.</p>');
   }
 
@@ -504,7 +505,8 @@
     return '<p>השליח הגיע ב' + fd(shipDate(c.mid, c.prod)) + ' ולא הצליח למסור את ' + N() + '. ' + N() + ' חזר אלינו ושמור אצלנו עד ' + tbc('[תאריך לאישור]') + '. מה אפשר לעשות:</p>' +
       '<ul class="st-list"><li>' + I('truck', { size: 20 }) + '<span>לתאם מסירה חוזרת לאותה כתובת</span></li>' +
       '<li>' + I('store', { size: 20 }) + '<span>לאסוף בעצמכם מדפוס בארי – ללא עלות</span></li></ul>' +
-      '<div class="status-actions status-actions--wide"><button type="button" class="btn btn--primary btn--m-block"' + act('redeliver') + '>לבחירת מסירה חוזרת</button>' + tbc() + '</div>';
+      '<button type="button" class="btn btn--primary btn--m-block status-self-start"' + act('redeliver') + '>לבחירת מסירה חוזרת</button>' +
+      '<p class="small muted">' + tbc('[לאישור: אפשרויות המסירה החוזרת ותהליך הבחירה]') + '</p>';
   }
 
   function nowS9() {
@@ -530,7 +532,7 @@
     if (st.s === 'loading') { root.innerHTML = skeleton(); return; }
     var d = STATE_UI[st.s];
     root.innerHTML =
-      '<div class="st-idwrap"><div class="status-id"><p class="muted">שלום, ישראלה · ' + docType() +
+      '<div class="st-idwrap"><div class="status-id"><p class="muted">שלום, ישראלה' + (st.s === 'S9' ? '' : ' · ' + docType()) +
       (multi() && st.s !== 'S9' ? ' · <a href="status.html?s=S9"' + act('switch') + '>החלפת בקשה (' + n('2') + ')</a>' : '') +
       '</p><a href="index.html"' + act('logout') + '>יציאה</a></div>' + freshLine() + '</div>' +
       '<div class="status-head">' + badge(d.tone, d.icon, d.badge) + '<h1 class="h1" id="status-h1" tabindex="-1">' + d.h1() + '</h1>' +

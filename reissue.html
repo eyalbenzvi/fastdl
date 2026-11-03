@@ -15,14 +15,14 @@
   <script defer src="js/layout.js"></script>
   <script defer src="js/pages/reissue.js"></script>
 </head>
-<body data-page="reissue">
+<body data-page="reissue" data-flow="order">
   <div class="page">
     <div data-slot="header"></div>
     <main id="main" tabindex="-1" class="reissue">
       <div class="wrap wrap--form order__inner">
 
         <div class="order__step" id="reissue-form">
-          <a class="back-link reissue__back" href="status.html?s=S7&amp;reveal=1"><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה למסך המצב</a>
+          <a class="back-link reissue__back" href="status.html?s=S7&amp;reveal=1"><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה לפרטי הבקשה</a>
           <h1 class="h1 h1--flow" id="reissue-h" tabindex="-1">הזמנת הנפקה חוזרת – ללא עלות</h1>
 
           <section class="card reissue-card" aria-labelledby="el-h">
@@ -65,12 +65,13 @@
             <h1 class="h1 h1--flow" id="reissue-done-h" tabindex="-1">ההזמנה החוזרת התקבלה!</h1>
             <p class="order-done__num">מספר הזמנה: <strong class="num" dir="ltr">FD-2026-0841274</strong></p>
             <div class="order-done__next">
-              <p class="order-done__t">מה קורה עכשיו</p>
+              <h2 class="order-done__t">מה עכשיו?</h2>
               <p>ייצור בקובץ הקרוב ← <span id="rd-name">משלוח מהיר עד הבית</span> ← <span id="rd-eta">עד יום עסקים אחד</span></p>
+              <p id="rd-track">הפעם הרישיון נשלח עם מעקב, ותוכלו לראות בדיוק מתי הוא מגיע.</p>
             </div>
             <p>שלחנו לכם SMS עם הפרטים.</p>
             <div class="order-done__btns">
-              <a class="btn btn--primary btn--m-block" href="status.html?s=S3">למסך המצב</a>
+              <a class="btn btn--primary btn--m-block" href="status.html?s=S3">לפרטי הבקשה שלי</a>
               <button type="button" class="btn btn--secondary btn--m-block">הוסיפו ליומן</button>
             </div>
           </div>

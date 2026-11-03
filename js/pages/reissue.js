@@ -27,6 +27,7 @@
     var m = cur();
     qs('#rd-name').textContent = m.name;
     qs('#rd-eta').innerHTML = numify(esc(m.eta_rule));
+    qs('#rd-track').hidden = !m.tracking; // כל השיטות בהנפקה חוזרת עם מעקב [לאישור]
     qs('#reissue-form').hidden = true;
     qs('#reissue-done').hidden = false;
     if (focus) {
