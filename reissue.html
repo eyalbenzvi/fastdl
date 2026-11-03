@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>הנפקה חוזרת ללא עלות – רישיון עד הבית</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/parts/order.css">
+  <script defer src="js/mock-data.js"></script>
+  <script defer src="js/icons.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/pages/reissue.js"></script>
+</head>
+<body data-page="reissue">
+  <div class="page">
+    <div data-slot="header"></div>
+    <main id="main" tabindex="-1" class="reissue">
+      <div class="wrap wrap--form order__inner">
+
+        <div class="order__step" id="reissue-form">
+          <a class="back-link reissue__back" href="status.html?s=S7&amp;reveal=1"><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה למסך המצב</a>
+          <h1 class="h1 h1--flow" id="reissue-h" tabindex="-1">הזמנת הנפקה חוזרת – ללא עלות</h1>
+
+          <section class="card reissue-card" aria-labelledby="el-h">
+            <h2 id="el-h" class="h2--card">בדיקת זכאות</h2>
+            <dl class="kv">
+              <div><dt>תאריך משלוח</dt><dd><span class="num" dir="ltr">26.8.2026</span></dd></div>
+              <div><dt>שיטה</dt><dd>דואר רגיל</dd></div>
+              <div><dt>ימי עסקים שעברו</dt><dd><span class="num" dir="ltr">21</span></dd></div>
+              <div><dt>סטטוס מסירה</dt><dd>אין תיעוד מסירה</dd></div>
+            </dl>
+            <div class="callout callout--success reissue-ok" role="status"><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p>אתם זכאים להנפקה חוזרת ללא עלות.</p></div>
+          </section>
+
+          <section class="card reissue-card reissue-card--tight" aria-labelledby="dm-h">
+            <h2 id="dm-h" class="h2--card">איך לשלוח את הרישיון החדש?</h2>
+            <p class="small muted">רק שיטות עם מעקב <span class="tbc">[לאישור]</span></p>
+            <div class="order-opts reissue-opts" id="reissue-methods" role="radiogroup" aria-label="שיטת מסירה"></div>
+          </section>
+
+          <section class="card reissue-card reissue-card--tight" aria-labelledby="ad-h">
+            <h2 id="ad-h" class="h2--card">כתובת למשלוח</h2>
+            <div class="reissue-addr"><span class="ibox ibox--navy"><svg class="ico" data-icon="lock" aria-hidden="true"></svg></span><p id="reissue-moin">רחוב העצמאות 10, באר שבע</p></div>
+            <p class="small muted">הכתובת הרשומה במשרד הפנים.</p>
+            <div class="g3 order-grid">
+              <div class="field"><label class="label" for="r-e">מספר כניסה</label><input id="r-e" class="input"></div>
+              <div class="field"><label class="label" for="r-c">אצל</label><input id="r-c" class="input"></div>
+              <div class="field"><label class="label" for="r-mb">מה כתוב על תיבת הדואר?</label><input id="r-mb" class="input"></div>
+            </div>
+          </section>
+
+          <div class="field">
+            <label class="check reissue-decl" for="decl"><input type="checkbox" id="decl" aria-invalid="false"><span>אני מצהיר/ה שלא קיבלתי את הרישיון שנשלח ב-<span class="num" dir="ltr">26.8.2026</span>.</span></label>
+          </div>
+          <button type="button" class="btn btn--primary btn--m-block reissue__submit" id="reissue-submit">אישור הזמנה חוזרת</button>
+        </div>
+
+        <div class="order__step" id="reissue-done" hidden>
+          <div class="card order-done reissue-done">
+            <span class="order-done__circle"><svg class="ico ico--48" data-icon="check" aria-hidden="true"></svg></span>
+            <h1 class="h1 h1--flow" id="reissue-done-h" tabindex="-1">ההזמנה החוזרת התקבלה!</h1>
+            <p class="order-done__num">מספר הזמנה: <strong class="num" dir="ltr">FD-2026-0841274</strong></p>
+            <div class="order-done__next">
+              <p class="order-done__t">מה קורה עכשיו</p>
+              <p>ייצור בקובץ הקרוב ← <span id="rd-name">משלוח מהיר עד הבית</span> ← <span id="rd-eta">עד יום עסקים אחד</span></p>
+            </div>
+            <p>שלחנו לכם SMS עם הפרטים.</p>
+            <div class="order-done__btns">
+              <a class="btn btn--primary btn--m-block" href="status.html?s=S3">למסך המצב</a>
+              <button type="button" class="btn btn--secondary btn--m-block">הוסיפו ליומן</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+    <div data-slot="footer"></div>
+  </div>
+</body>
+</html>
