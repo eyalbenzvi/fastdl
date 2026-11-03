@@ -26,17 +26,17 @@
         <form class="card auth-card" id="otp-form" novalidate>
           <div class="auth-card__head">
             <h1 class="h1 auth-card__title">הזינו את הקוד ששלחנו</h1>
-            <p class="lead muted">שלחנו קוד בן 6 ספרות לנייד <span class="num" dir="ltr" id="otp-phone">054-•••-4567</span>.</p>
+            <p class="lead muted">שלחנו קוד בן 6 ספרות לנייד <span class="num" dir="ltr" id="otp-phone" aria-hidden="true">054-•••-4567</span><span class="sr-only" id="otp-phone-sr">שמסתיים ב-4567</span>.</p>
           </div>
           <fieldset class="auth-otp" id="otp-fieldset">
             <legend class="label">קוד אימות</legend>
             <div class="otp" dir="ltr" id="otp-boxes">
-              <input id="otp-1" inputmode="numeric" autocomplete="one-time-code" maxlength="12" aria-label="ספרה 1 מתוך 6" aria-invalid="false">
-              <input id="otp-2" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 2 מתוך 6" aria-invalid="false">
-              <input id="otp-3" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 3 מתוך 6" aria-invalid="false">
-              <input id="otp-4" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 4 מתוך 6" aria-invalid="false">
-              <input id="otp-5" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 5 מתוך 6" aria-invalid="false">
-              <input id="otp-6" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="ספרה 6 מתוך 6" aria-invalid="false">
+              <input id="otp-1" inputmode="numeric" autocomplete="one-time-code" aria-label="ספרה 1 מתוך 6" aria-invalid="false">
+              <input id="otp-2" inputmode="numeric" autocomplete="off" aria-label="ספרה 2 מתוך 6" aria-invalid="false">
+              <input id="otp-3" inputmode="numeric" autocomplete="off" aria-label="ספרה 3 מתוך 6" aria-invalid="false">
+              <input id="otp-4" inputmode="numeric" autocomplete="off" aria-label="ספרה 4 מתוך 6" aria-invalid="false">
+              <input id="otp-5" inputmode="numeric" autocomplete="off" aria-label="ספרה 5 מתוך 6" aria-invalid="false">
+              <input id="otp-6" inputmode="numeric" autocomplete="off" aria-label="ספרה 6 מתוך 6" aria-invalid="false">
             </div>
             <p id="otp-err" class="error" role="alert" tabindex="-1" hidden></p>
           </fieldset>
@@ -47,7 +47,7 @@
             <p class="sr-only" id="otp-timer-live" aria-live="polite"></p>
             <p><button type="button" class="link-btn" id="otp-edit">המספר שגוי? חזרה לעריכה</button></p>
           </div>
-          <div class="callout callout--success" role="status" id="otp-ok" tabindex="-1" hidden><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p><strong class="callout__title">הקוד אומת.</strong> מעבירים אתכם למסך המצב.</p></div>
+          <div class="callout callout--success" role="status" id="otp-ok" tabindex="-1" hidden><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p><strong class="callout__title">הקוד אומת.</strong> מעבירים אתכם לפרטי הבקשה.</p></div>
           <button type="submit" class="btn btn--primary btn--m-block auth-card__submit" id="otp-submit">המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></button>
           <a class="btn btn--primary btn--m-block auth-card__submit" href="status.html?s=S1" id="otp-continue" hidden>המשך<svg class="ico ico--20" data-icon="chevron-forward-rtl" aria-hidden="true"></svg></a>
         </form>

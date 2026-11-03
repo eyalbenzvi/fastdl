@@ -29,7 +29,8 @@
   function rich(s) { // escape + מספרים ב-LTR + [לאישור] מודגש
     return String(s == null ? '' : s).split(/(\[[^\]]*\])/).map(function (part) {
       if (/^\[.*\]$/.test(part)) return tbc(esc(part));
-      return esc(part).replace(/\d+(?:[.:,\/-]\d+)*/g, function (x) { return n(x); });
+      // P1-1: רצפי ספרות מזוהים בטקסט הגולמי ורק אז כל קטע עובר escape – ישות כמו &#39; (גרש) לא נשברת
+      return part.split(/(\d+(?:[.:,\/-]\d+)*)/).map(function (x, i) { return i % 2 ? n(x) : esc(x); }).join('');
     }).join('');
   }
 
@@ -73,7 +74,7 @@
       var at = fd(e.from) + (e.time ? ', מ-' + n(e.time) : '');
       return mode === 'will' ? 'יהיה מוכן לאיסוף מ' + at : mode === 'tl' ? 'צפוי: מ' + at : 'מוכן לאיסוף מ' + at;
     }
-    var when = e.by ? 'עד ' + fd(e.by) : 'בין ' + fd(e.from) + ' ל' + fd(e.to);
+    var when = e.by ? 'עד\u00a0' + fd(e.by) : 'בין\u00a0' + fd(e.from) + ' ל' + fd(e.to); // P3-3: "עד"/"בין" לא נשארים לבד בסוף שורה
     return mode === 'will' ? 'יגיע ' + when : mode === 'tl' ? 'צפוי ' + when : 'צפוי להגיע ' + when;
   }
   function shipDate(mid, prod) { // יום יציאת המשלוח / מוכן לאיסוף
@@ -86,7 +87,8 @@
   var J = (function () {
     var demoParam = false;
     // ans/docs/reveal נכתבים ל-URL מפעולת משתמש (תשובה ב-S0, "לא קיבלתי" ב-S7) – לא מבטלים את נתוני המסע אחרי רענון (P2-3)
-    UI.params().forEach(function (v, k) { if (['s', 'step', 'doc', 'ans', 'docs', 'reveal'].indexOf(k) < 0) demoParam = true; });
+    // clean=1 (בלי רכיבי הדגמה, למבחני משתמשים) לא מבטל את נתוני המסע (B-10)
+    UI.params().forEach(function (v, k) { if (['s', 'step', 'doc', 'ans', 'docs', 'reveal', 'clean'].indexOf(k) < 0) demoParam = true; });
     if (demoParam) return null;
     var session = UI.store.get('fd.session', null);
     var order = committedView(UI.store.get('fd.order', null));
@@ -110,23 +112,27 @@
     for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
     return null;
   }
-  function mName(id) { var m = methodById(id); return m ? m.name : ''; }
   var ORDER_NO = (D.order_example && D.order_example.order_number) || 'FD-2026-0841273';
+  function tr(v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim(); }
   function moinWithExtras(x) {
     x = x || {};
     var parts = [rich(ADDR)];
-    if (x.entrance) parts.push('כניסה ' + rich(x.entrance));
-    if (x.care_of) parts.push('אצל ' + rich(x.care_of));
-    if (x.mailbox) parts.push('על תיבת הדואר: ' + rich(x.mailbox));
+    if (tr(x.entrance)) parts.push('כניסה ' + rich(tr(x.entrance)));
+    if (tr(x.care_of)) parts.push('אצל ' + rich(tr(x.care_of)));
+    if (tr(x.mailbox)) parts.push('על תיבת הדואר: ' + rich(tr(x.mailbox)));
     return parts.join(' · ');
   }
+  // P3-9: "רחוב" נוסף רק כשהמשתמש לא כתב סוג דרך בעצמו (כמו בסיכום של order.js)
+  var ROAD = /^(רחוב|רח['׳]|שדרות|שד['׳]|דרך|סמטת|סמ['׳]|כיכר|ככר|שכונת|שכ['׳]|מעלה|נתיב|שביל|כביש|טיילת|גבעת|קריית|קרית)(\s|$)/;
   function addrRow(o, m) { // מילון kv: "כתובת למשלוח" / "עמדת איסוף"
     if (!m.needs_address) return ['עמדת איסוף', rich(m.address || '')];
-    if (o.auth && o.addr === 'other' && o.other && o.other.street) {
-      var a = o.other;
-      var line = 'רחוב ' + a.street + ' ' + (a.house || '') + (a.entrance ? ', כניסה ' + a.entrance : '') + (a.apt ? ', דירה ' + a.apt : '') +
-        (a.city ? ', ' + a.city : '') + (a.zip ? ' ' + a.zip : '');
-      return ['כתובת למשלוח', rich(line.replace(/\s+/g, ' ').trim()) + (a.care_of ? ' · אצל ' + rich(a.care_of) : '') + (a.mailbox ? ' · על תיבת הדואר: ' + rich(a.mailbox) : '')];
+    if (o.auth && o.addr === 'other' && o.other && tr(o.other.street)) {
+      var a = o.other, st0 = tr(a.street);
+      var line = [(ROAD.test(st0) ? st0 : 'רחוב ' + st0) + (tr(a.house) ? ' ' + tr(a.house) : '')];
+      if (tr(a.entrance)) line.push('כניסה ' + tr(a.entrance));
+      if (tr(a.apt)) line.push('דירה ' + tr(a.apt));
+      if (tr(a.city) || tr(a.zip)) line.push(tr(tr(a.city) + ' ' + tr(a.zip)));
+      return ['כתובת למשלוח', rich(line.join(', ')) + (tr(a.care_of) ? ' · אצל ' + rich(tr(a.care_of)) : '') + (tr(a.mailbox) ? ' · על תיבת הדואר: ' + rich(tr(a.mailbox)) : '')];
     }
     return ['כתובת למשלוח', moinWithExtras(o.extras)];
   }
@@ -203,7 +209,8 @@
   function freshLine() {
     var t = today(), nx = nextBiz(t), tomorrow = iso(new Date(pd(t).getTime() + 864e5));
     var next = nx === tomorrow ? 'מחר בבוקר' : 'ב' + fd(nx) + ' בבוקר';
-    return '<p class="small muted st-fresh">' + I('refresh', { size: 16 }) + '<span>המידע עודכן היום, ' + fd(t, '05:00') + ' · <span class="st-nw">העדכון הבא: ' + next + '</span></span></p>';
+    // P3-3: "·" עובר לשורה הבאה יחד עם המקטע שאחריו (לא נשאר יתום בסוף/תחילת שורה)
+    return '<p class="small muted st-fresh">' + I('refresh', { size: 16 }) + '<span>המידע עודכן היום, ' + fd(t, '05:00') + ' <span class="st-nw">· העדכון הבא: ' + next + '</span></span></p>';
   }
 
   /* ---------- ציר: שלבים עם תאריכים ---------- */
@@ -213,18 +220,18 @@
     var prodDate = c.prod === 'wait' ? T.prodWait : T.prodNow;
     var r = [{ l: 'הבקשה התקבלה', cls: 'done', d: fd(T.received, T.receivedTime) }];
     // שלב 2
-    if (s === 'S1') r.push({ l: 'בחירת משלוח', cls: 'current', d: 'עד ' + fd(T.close, T.closeTime) });
+    if (s === 'S1') r.push({ l: 'בחירת משלוח', cls: 'current', d: 'עד\u00a0' + fd(T.close, T.closeTime) });
     else if (c.ordered) r.push({ l: 'הוזמן', cls: 'done', d: fd(c.re ? '2026-09-24' : '2026-08-25') });
     else r.push({ l: 'בחירת משלוח', cls: 'skip', d: 'לא נבחרה שיטה – דואר רגיל' });
     // שלב 3
     var p3 = { l: 'בייצור', cls: 'future', d: 'צפוי: ' + fd(prodDate, T.prodTime) };
     if (s === 'S1') p3.d = 'לכל המאוחר ב' + fd(T.prodWait);
-    if (c.re) p3.d = 'בקובץ הייצור הקרוב';
-    if (s === 'S3') { p3.cls = 'current'; p3.d = c.re ? 'בקובץ הייצור הקרוב' : 'מ' + fd(prodDate, T.prodTime); }
+    if (c.re) p3.d = 'בסבב הייצור הקרוב'; // "קובץ" – מונח פנימי (QA_COPY 3.7)
+    if (s === 'S3') { p3.cls = 'current'; p3.d = c.re ? 'בסבב הייצור הקרוב' : 'מ' + fd(prodDate, T.prodTime); }
     if (['S4', 'S5', 'S6', 'S7', 'S8'].indexOf(s) >= 0) { p3.cls = 'done'; p3.d = fd(prodDate); }
     r.push(p3);
     // שלב 4 / 5 – לפי השיטה
-    var l4 = pick ? 'מוכן לאיסוף' : 'נשלחה', l5 = pick ? 'נאסף' : 'נמסרה';
+    var l4 = pick ? 'מוכן לאיסוף' : 'נשלח', l5 = pick ? 'נאסף' : 'נמסר'; // כולם בזכר (הרישיון / התג), QA_COPY 2.8
     var s4 = { l: l4, cls: 'future', d: '' }, s5 = { l: l5, cls: 'future', d: '' };
     if (c.re) { // הנפקה חוזרת: מועדים לפי כלל השיטה, מהייצור
       var rm = methodById(c.mid);
@@ -233,7 +240,7 @@
       var sd = shipDate(c.mid, c.prod), e = eta(c.mid, c.prod);
       if (pick) s4.d = etaText(c.mid, c.prod, 'tl');
       else { s4.d = 'צפוי: ' + fd(sd); s5.d = etaText(c.mid, c.prod, 'tl'); }
-      if (pick) s5.d = 'ניתן לאסוף עד ' + tbc('[לאישור]');
+      if (pick) s5.d = 'אפשר לאסוף עד ' + tbc('[תאריך לאישור]');
       if (s === 'S4' || s === 'S5' || s === 'S7' || s === 'S8') {
         s4.cls = s === 'S7' ? 'warn' : s === 'S8' ? 'fail' : 'current';
         s4.d = pick ? 'מ' + fd(e.from) : fd(sd);
@@ -253,7 +260,7 @@
     S0: {
       tone: 'neutral', icon: 'search', badge: 'לא נמצאה בקשה', h1: function () { return 'עדיין לא מצאנו אצלנו בקשה על שמכם'; }, tl: false,
       kv: function () { return []; },
-      help: [['שאלות על אגרה ותשלום', 'faq.html'], ['המדריך: מה עושים מהתשלום ועד ' + 'הרישיון', 'guide.html']],
+      help: function () { return [['שאלות על אגרה ותשלום', 'faq.html'], ['המדריך: מה עושים מהתשלום ועד ' + N(), 'guide.html']]; },
       now: nowS0
     },
     S1: {
@@ -301,7 +308,7 @@
       now: nowS5
     },
     S6: {
-      tone: 'success', icon: 'check', badge: 'נמסרה', h1: function () { return N() + (isPickup(ctx('S6')) ? ' נאסף' : ' נמסר'); }, tl: true,
+      tone: 'success', icon: 'check', badge: 'נמסר', h1: function () { return N() + (isPickup(ctx('S6')) ? ' נאסף' : ' נמסר'); }, tl: true,
       kv: function () { return [['שיטת מסירה', 'משלוח מהיר עד הבית'], ['כתובת למשלוח', rich(ADDR)]]; },
       help: [['שאלות ותשובות', 'faq.html']],
       now: nowS6
@@ -346,10 +353,11 @@
       '<span class="st-dots" aria-hidden="true">' + list.map(function (x) { return '<span class="st-dot st-dot--' + x.cls + '"></span>'; }).join('') + '</span></div>' +
       '<button type="button" class="link-btn st-tlsum__btn" aria-expanded="' + st.tlOpen + '" aria-controls="status-tl-list"' + act('tl') + '>' +
       (st.tlOpen ? 'הסתרת השלבים' : 'כל השלבים') + I('chevron-down', { size: 18, cls: 'st-tlsum__chev' }) + '</button></div>' +
-      '<ol class="timeline st-tl" id="status-tl-list" aria-label="שלבי הטיפול בבקשה">' +
-      '<span class="timeline__track" aria-hidden="true"></span>' +
-      '<span class="timeline__fill" aria-hidden="true" style="width:' + (last * 20) + '%"></span>';
-    list.forEach(function (x, i) {
+      // A-06: הפסים בעטיפה ולא בתוך ה-<ol> (ב-<ol> רק <li>)
+      '<div class="st-tlbox"><span class="timeline__track" aria-hidden="true"></span>' +
+      '<span class="timeline__fill" aria-hidden="true" style="width:' + (last * 20) + '%"></span>' +
+      '<ol class="timeline st-tl" id="status-tl-list" aria-label="שלבי הטיפול בבקשה">';
+    list.forEach(function (x) {
       var isCur = ['current', 'warn', 'fail'].indexOf(x.cls) >= 0;
       var dot = x.cls === 'done' ? I('check', { size: 18, style: 'stroke-width:3' })
         : (x.cls === 'warn' || x.cls === 'fail') ? '<span aria-hidden="true" class="timeline__bang">!</span>'
@@ -357,9 +365,8 @@
       html += '<li class="timeline__step timeline__step--' + x.cls + '"' + (isCur ? ' aria-current="step"' : '') + '>' +
         '<span class="timeline__dot">' + dot + '</span><span class="st-tl__txt"><span class="st-tl__l">' + x.l + '<span class="sr-only">' + SR[x.cls] + '</span></span>' +
         (x.d ? '<span class="st-tl__d">' + x.d + '</span>' : '') + '</span></li>';
-      void i;
     });
-    return html + '</ol></div>';
+    return html + '</ol></div></div>';
   }
 
   function kvSection(rows) {
@@ -395,14 +402,20 @@
   }
 
   /* ---------- "מה עכשיו?" per state ---------- */
-  var ANS = ['היום או אתמול', 'לפני 2–7 ימים', 'לפני 1–8 שבועות', 'לפני יותר מחודשיים, או ש' + 'הרישיון לא הגיע'];
+  function ANS() { return ['היום או אתמול', 'לפני 2–7 ימים', 'לפני 1–8 שבועות', 'לפני יותר מחודשיים, או ש' + N() + ' לא הגיע']; }
+  // 3.44: הנייד הממוסך לא מוקרא כ"תבליט תבליט…" – לקורא מסך "נייד שמסתיים ב-4567"
+  function maskedPhone(ph) {
+    var last = String(ph).replace(/\D/g, '').slice(-4);
+    return '<span aria-hidden="true">' + n(esc(ph)) + '</span><span class="sr-only">נייד שמסתיים ב-' + n(last) + '</span>';
+  }
 
   function smsBlock(withConsent) {
     if (st.smsDone) return doneNote('נרשמתם לעדכון ב-SMS.');
     var h = '';
     if (withConsent) {
+      // QA_COPY 2.11: בלי צורת לוכסן – בנוי כמו "אישור: קראתי את תנאי השימוש"
       h += '<div class="field"><label class="check" for="sms-consent"><input type="checkbox" id="sms-consent">' +
-        '<span>אני מסכים/ה לקבל עדכון ב-SMS על הבקשה שלי לנייד ' + n(J && J.session && J.session.phoneMasked ? esc(J.session.phoneMasked) : ((D.citizen && D.citizen.mobile_masked) || '054-•••-4567')) + '</span></label></div>';
+        '<span>אישור: אפשר לשלוח לי עדכון ב-SMS על הבקשה לנייד ' + maskedPhone(J && J.session && J.session.phoneMasked ? J.session.phoneMasked : ((D.citizen && D.citizen.mobile_masked) || '054-•••-4567')) + '</span></label></div>';
     }
     return h + '<button type="button" class="btn btn--primary btn--m-block status-self-start"' + act('sms') + '>עדכנו אותי ב-SMS</button>';
   }
@@ -429,7 +442,7 @@
   function nowS0() {
     return '<p>זה לא אומר שמשהו השתבש. בקשות מגיעות אלינו פעם ביום, לפנות בוקר. כדי שנכוון אתכם נכון:</p>' +
       '<fieldset class="s0-q"><legend class="s0-q__legend">מתי השלמתם את התשלום (והצילום, אם נדרש)?</legend><div class="g2 s0-q__grid">' +
-      ANS.map(function (t, i) { return '<button type="button" class="ans-btn" aria-pressed="' + (st.ans === i) + '"' + act('ans', ' data-i="' + i + '"') + '>' + I('check', { size: 20, cls: 'ans-btn__ico' }) + '<span>' + t + '</span></button>'; }).join('') +
+      ANS().map(function (t, i) { return '<button type="button" class="ans-btn" aria-pressed="' + (st.ans === i) + '"' + act('ans', ' data-i="' + i + '"') + '>' + I('check', { size: 20, cls: 'ans-btn__ico' }) + '<span>' + t + '</span></button>'; }).join('') +
       '</div></fieldset>' +
       '<div id="s0-ans" class="s0-ans" role="region" aria-label="מה לעשות"' + (st.ans < 0 ? ' hidden' : '') + '>' + s0Answer() + '</div>' +
       '<p class="small s0-foot">לא שילמתם עדיין את האגרה? ' + ext('לתשלום באתר משרד התחבורה') + '</p>';
@@ -441,10 +454,10 @@
       '<a class="btn btn--primary btn--m-block status-self-start" href="order.html">לבחירת משלוח או איסוף' + I('chevron-forward-rtl', { size: 20 }) + '</a>' +
       '<div class="callout callout--warning" role="note">' + I('alert-triangle') + '<p>אם לא תבחרו עד המועד הזה, ' + N() + ' יישלח בדואר רגיל: <strong>עד ' + n('14') + ' ימי עסקים, ללא מעקב</strong>, ויימסר לתיבת הדואר רק אם יש עליה שם מזהה.</p></div>' +
       '<div class="st-choices"><p class="status-strong">מה אפשר לבחור:</p><ul class="st-list">' +
-      '<li>' + I('truck', { size: 20 }) + '<span>משלוח מהיר עד הבית – מחר, ' + fd('2026-08-26') + ' · ' + n('177 ₪') + '</span></li>' +
+      '<li>' + I('truck', { size: 20 }) + '<span>משלוח מהיר עד הבית – מחר, ' + fd('2026-08-26') + ' <span class="st-nw">· ' + n('177 ₪') + '</span></span></li>' +
       '<li>' + I('home-check', { size: 20 }) + '<span>עד הבית עם שליח ומעקב – מ-' + n('41 ₪') + '</span></li>' +
       '<li>' + I('store', { size: 20 }) + '<span>איסוף עצמי – גם ללא עלות</span></li></ul></div>' +
-      '<p class="st-note">' + I('message', { size: 20 }) + '<span>נשלח לכם תזכורת ב-SMS לפני שהמועד נגמר ' + tbc() + '</span></p>' +
+      '<p class="st-note">' + I('message', { size: 20 }) + '<span>נשלח לכם תזכורת ב-SMS לפני שהמועד יסתיים ' + tbc() + '</span></p>' +
       '<button type="button" class="link-btn status-self-start"' + act('cal') + '>' + I('calendar', { size: 18 }) + 'עוד לא מחליטים? הוסיפו תזכורת ליומן</button>';
   }
 
@@ -457,17 +470,18 @@
       '<p>אפשר לשנות לשיטה אחרת עד אותו מועד. ' + (paid ? 'בשיטה יקרה יותר משלמים את המחיר המלא בניכוי מה ששילמתם' + paid + '. ' + tbc() : 'אם תבחרו שיטה בתשלום, תשלמו עליה בזמן השינוי.') + '</p>' +
       '<a class="btn btn--primary btn--m-block status-self-start" href="order.html?edit=1">עריכת ההזמנה</a></div>' +
       '<div class="st-block st-block--sep"><button type="button" class="btn btn--secondary btn--m-block status-self-start" id="prod-btn"' + act('prod') + '>אין לי מה לשנות – להתחיל עכשיו</button>' +
-      '<p class="small muted">' + (e.shift ? 'כך ' + N() + ' יגיע יום מוקדם יותר. ' : '') + 'אחרי זה לא יהיה אפשר לשנות.</p></div>';
+      // QA_COPY 2.5: באיסוף הרישיון לא "מגיע" – הוא מוכן לאיסוף
+      '<p class="small muted">' + (e.shift ? 'כך ' + N() + (e.pickup ? ' יהיה מוכן לאיסוף יום מוקדם יותר. ' : ' יגיע יום מוקדם יותר. ') : '') + 'אחרי זה לא יהיה אפשר לשנות.</p></div>';
   }
 
   function nowS3() {
     var c = ctx('S3'), m = methodById(c.mid);
     var how = c.ordered ? esc(m.name) + (isPickup(c) ? '' : m.tracking ? ', עם מעקב' : ', ללא מעקב') : 'דואר רגיל, ללא מעקב';
     var when = c.re ? 'זמן אספקה: ' + rich(m.eta_rule) + ' מהייצור' : etaText(c.mid, c.prod, 'exp');
-    var upd = isPickup(c) ? 'מוכן לאיסוף' : 'יוצא';
+    var upd = isPickup(c) ? 'מוכן לאיסוף' : 'יוצא', updDone = isPickup(c) ? 'יהיה מוכן לאיסוף' : 'ייצא לדרך'; // 3.35: עתיד
     return timeCard(isPickup(c) ? 'store' : 'truck', '<p class="time-card__big">' + when + '</p><p class="muted">' + how + '</p>') +
-      '<p>בשלב הזה כבר אי אפשר לשנות כתובת או שיטת משלוח – זה סימן שהתהליך מתקדם, לא תקלה.</p>' +
-      (st.notifyDone ? doneNote('נשלח לכם עדכון כש' + N() + ' ' + upd + '.')
+      '<p>בשלב הזה כבר אי אפשר לשנות כתובת או שיטת מסירה – זה סימן שהתהליך מתקדם, לא תקלה.</p>' +
+      (st.notifyDone ? doneNote('נשלח לכם עדכון כש' + N() + ' ' + updDone + '.')
         : '<button type="button" class="btn btn--secondary btn--m-block status-self-start"' + act('notify') + '>' + I('message', { size: 20 }) + 'שלחו לי עדכון כש' + N() + ' ' + upd + '</button>') +
       (c.mid !== 'regular_mail' ? '' : '<p class="small muted">דואר רגיל נמסר לתיבת הדואר רק אם מופיע עליה שם מזהה, כמו שם משפחה.</p>');
   }
@@ -483,8 +497,8 @@
     return '<div class="place-card"><p class="place-card__t">' + I('plane') + 'איסוף מנתב״ג – טרמינל 3</p>' +
       '<p>אולם מקבלי הפנים, ליד שער יציאה 1, עמדת ״על הקו״</p>' +
       '<p class="muted">א׳–ה׳ ' + n('07:00–22:00') + ' · שישי וערבי חג עד ' + n('15:00') + '</p>' +
-      '<p><strong>מחכה לכם מ' + fd(eta('pickup_tlv_airport', 'now').from) + ' · ניתן לאסוף עד ' + tbc('[תאריך לאישור]') + '</strong></p>' +
-      '<p>מה להביא: תעודה מזהה ומספר הזמנה ' + n(ORDER_NO) + ' (שמור גם ב-SMS)</p></div>' +
+      '<p><strong>מחכה לכם מ' + fd(eta('pickup_tlv_airport', 'now').from) + ' <span class="st-nw">· אפשר לאסוף עד</span> ' + tbc('[תאריך לאישור]') + '</strong></p>' +
+      '<p>מה להביא: תעודה מזהה ומספר ההזמנה ' + n(ORDER_NO) + ' (הוא מופיע גם ב-SMS) ' + tbc('[לאישור: האם מספר ההזמנה נדרש]') + '</p></div>' +
       '<div class="status-actions">' +
       '<a class="btn btn--primary btn--m-block" href="#" target="_blank" rel="noopener">ניווט לעמדה' + I('external-link', { size: 18 }) + '<span class="sr-only">(נפתח בלשונית חדשה)</span></a>' +
       '<button type="button" class="btn btn--secondary btn--m-block"' + act('cal') + '>הוסיפו ליומן</button></div>' +
@@ -503,16 +517,17 @@
     var sent = shipDate('regular_mail', 'wait');
     var h = '<p class="status-lead">' + N() + ' נשלח בדואר רגיל ב' + fd(sent) + ', ועברו מאז ' + n('21') + ' ימי עסקים.</p>' +
       '<p>בדואר רגיל אין מעקב, ולכן אין לנו אישור שהוא הגיע. זה לא בהכרח אומר שהוא אבד.</p>';
-    if (st.gotIt) return h + doneNote('תודה, סגרנו את הפנייה.');
+    if (st.gotIt) return h + doneNote('תודה על העדכון.');
     if (!st.reveal) {
-      return h + '<div class="status-actions status-actions--wide"><button type="button" class="btn btn--primary btn--m-block" aria-expanded="false" aria-controls="s7-reveal"' + act('reveal') + '>לא קיבלתי את ' + N() + '</button>' + gotItBtn() + '</div>' +
+      // A-07: פעולה (מחליפה את התוכן ומעבירה פוקוס), לא כפתור חשיפה – בלי aria-expanded
+      return h + '<div class="status-actions status-actions--wide"><button type="button" class="btn btn--primary btn--m-block"' + act('reveal') + '>לא קיבלתי את ' + N() + '</button>' + gotItBtn() + '</div>' +
         '<div id="s7-reveal" aria-live="polite"></div>';
     }
     return h + '<div id="s7-reveal" class="s7-reveal" aria-live="polite">' +
       '<div class="place-card"><p class="status-strong s7-reveal__t" tabindex="-1">בדיקת זכאות</p><dl class="kv">' +
       '<div><dt>נשלח בתאריך</dt><dd>' + fd(sent) + '</dd></div><div><dt>שיטת מסירה</dt><dd>דואר רגיל</dd></div>' +
-      '<div><dt>ימי עסקים שעברו</dt><dd>' + n('21') + '</dd></div><div><dt>סטטוס מסירה</dt><dd>אין תיעוד מסירה</dd></div></dl></div>' +
-      '<div class="callout callout--success" role="status">' + I('check-circle') + '<p class="callout__title">אתם זכאים להנפקה חוזרת ללא עלות, עד ' + tbc('[תאריך לאישור]') + '</p></div>' +
+      '<div><dt>ימי עסקים שעברו</dt><dd>' + n('21') + '</dd></div><div><dt>מצב המסירה</dt><dd>אין תיעוד מסירה</dd></div></dl></div>' +
+      '<div class="callout callout--success" role="status">' + I('check-circle') + '<p class="callout__title">אתם זכאים להנפקה חוזרת ללא עלות, עד ' + tbc('[תאריך לאישור]') + '.</p></div>' +
       '<p class="st-note">' + I('info', { size: 20 }) + '<span>הפעם אפשר לבחור משלוח עם מעקב.</span></p>' +
       '<div class="status-actions status-actions--wide"><a class="btn btn--primary btn--m-block" href="reissue.html">להזמנת הנפקה חוזרת' + I('chevron-forward-rtl', { size: 20 }) + '</a>' + gotItBtn() + '</div></div>';
   }
@@ -560,7 +575,8 @@
     var d = STATE_UI[st.s];
     document.title = d.h1().replace(/\u00a0/g, ' ') + SITE; // F05: כותרת הלשונית = H1 של המצב
     root.innerHTML =
-      '<div class="st-idwrap"><div class="status-id"><p class="muted">שלום, ישראלה' + (st.s === 'S9' ? '' : ' · ' + docType()) +
+      // QA_COPY 2.2: ב-S0 (לא נמצאה בקשה) וב-S9 – בלי סוג תעודה
+      '<div class="st-idwrap"><div class="status-id"><p class="muted">' + greeting() + (st.s === 'S9' || st.s === 'S0' ? '' : ' · ' + docType()) +
       (multi() && st.s !== 'S9' ? ' · <a href="status.html?s=S9"' + act('switch') + '>החלפת בקשה (' + n('2') + ')</a>' : '') +
       '</p><a href="index.html" class="st-logout"' + act('logout') + '>יציאה</a></div>' + freshLine() + '</div>' +
       '<div class="status-head">' + badge(d.tone, d.icon, d.badge) + '<h1 class="h1" id="status-h1" tabindex="-1">' + d.h1() + '</h1>' +
@@ -568,13 +584,19 @@
       (d.tl ? timeline() : '') +
       '<section class="card status-now" aria-labelledby="now-h"><h2 id="now-h" class="h2">מה עכשיו?</h2>' + d.now() + '</section>' +
       kvSection(d.kv()) +
-      helpSection(d.help);
+      helpSection(typeof d.help === 'function' ? d.help() : d.help);
+  }
+  // השם בהדמיה שייך לת״ז של ישראלה; במסע עם ת״ז אחרת (יוסי, דנה, אברהם…) – ברכה בלי שם
+  function greeting() {
+    var c = D.citizen || {};
+    var other = J && J.session && J.session.id && c.id_number && String(J.session.id).replace(/\D/g, '').replace(/^0+/, '') !== String(c.id_number).replace(/^0+/, '');
+    return other || !c.first_name ? 'שלום' : 'שלום, ' + esc(c.first_name);
   }
 
   function renderDemoBar() {
     var focused = document.activeElement && document.activeElement.getAttribute('data-demo-i');
     Layout.demoBar({
-      prefix: 'הצג מצב:',
+      prefix: 'הצגת מצב:',
       items: KEYS.map(function (k) {
         return {
           label: k === 'loading' ? 'טעינה' : k,
@@ -706,7 +728,7 @@
       UI.motion.expand(document.getElementById('s7-reveal'), { fromZero: true });
       var t = UI.qs('.s7-reveal__t', root); if (t) UI.focusInto(document.getElementById('s7-reveal') || t, { target: t });
     } else if (a === 'gotit') {
-      st.gotIt = true; render();
+      st.gotIt = true; st.reveal = false; UI.setParams({ reveal: null }); render(); // B-08: רענון לא מחזיר את בדיקת הזכאות
       var g = UI.qs('.status-done', root); if (g) UI.focusInto(g, { target: g });
     } else if (a === 'redeliver') {
       placeholderToast('בחירת מסירה חוזרת');
@@ -736,5 +758,6 @@
   render();
   renderDemoBar();
   if (st.docs) openDocs(document.getElementById('docs-btn'));
-  if (st.s === 'S4' && UI.param('demo') === 'toast') UI.toast('הועתק', 0);
+  // B-12 / QA_VISUAL P3-1: טוסט ההדגמה במשך רגיל (לא קבוע) – לא מסתיר את הכפתור הראשי ואת קישורי העזרה
+  if (st.s === 'S4' && UI.param('demo') === 'toast') UI.toast('הועתק', 4000);
 })();

@@ -15,22 +15,65 @@
   var ERR_PH = 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.';
   var ERR_TXT = 'יש לכתוב את הפנייה.';
 
-  var topic = UI.param('topic');
-  if (topic && sub.querySelector('option[value="' + topic.replace(/[^a-z]/g, '') + '"]')) sub.value = topic;
+  var ord = document.getElementById('c-ord');
+  var cut = document.getElementById('c-cnt-cut');
+  var demo = UI.param('demo');
+
+  // QA_INPUTS P3-18: מציבים את הערך המנוקה (‎?topic=lo%20st לא משאיר את הבחירה ריקה)
+  var topic = (UI.param('topic') || '').replace(/[^a-z]/g, '');
+  if (topic && sub.querySelector('option[value="' + topic + '"]')) sub.value = topic;
+
+  /* QA_INPUTS P3-13: טיוטת הפנייה נשמרת ב-sessionStorage של הלשונית ('fd.contactDraft') – רענון לא מוחק עד 1000 תווים.
+     נמחקת בשליחה. חריג מתועד לכלל 13 (DECISIONS.md); בלי אחסון – הטופס עובד כרגיל */
+  var DRAFT = 'fd.contactDraft';
+  var FIELDS = [['sub', sub], ['ord', ord], ['name', name], ['ph', ph], ['txt', txt]];
+  function saveDraft() {
+    var d = {}, any = false;
+    FIELDS.forEach(function (f) { d[f[0]] = f[1].value; if (f[1].value && f[0] !== 'sub') any = true; });
+    if (any || d.sub) UI.store.set(DRAFT, d); else UI.store.remove(DRAFT);
+  }
+  if (!demo) {
+    var dr = UI.store.get(DRAFT, null);
+    if (dr && typeof dr === 'object') FIELDS.forEach(function (f) {
+      var v = dr[f[0]];
+      if (typeof v !== 'string' || !v) return;
+      if (f[0] === 'sub' && (topic || !sub.querySelector('option[value="' + v.replace(/[^a-z]/g, '') + '"]'))) return;
+      f[1].value = v;
+    });
+  }
+  form.addEventListener('input', saveDraft);
+  form.addEventListener('change', saveDraft);
 
   // המספר הגלוי מתעדכן בכל הקשה; קורא המסך מקבל הכרזה רק בספים – כל 100 תווים, ובכל הקשה ב-100 האחרונים (F09)
   var live = document.getElementById('c-cnt-live');
-  var MAX = Number(txt.getAttribute('maxlength')) || 1000;
+  var MAX = Number(txt.getAttribute('data-max')) || 1000;
   var lastBucket = 0;
-  function count(announce) {
-    var n = txt.value.length;
+  /* QA_INPUTS P3-18: סופרים תווים נראים (אימוג'י משפחה = 1), והמגבלה נאכפת לפי אותה ספירה – לא maxlength (יחידות UTF-16).
+     טקסט ארוך מדי (בעיקר בהדבקה) נחתך, ומוצגת הודעה שהטקסט קוצר */
+  var seg = null;
+  try { if (window.Intl && Intl.Segmenter) seg = new Intl.Segmenter('he', { granularity: 'grapheme' }); } catch (e) { seg = null; }
+  function chars(v) {
+    if (seg) { var a = []; var it = seg.segment(v)[Symbol.iterator](); for (var r = it.next(); !r.done; r = it.next()) a.push(r.value.segment); return a; }
+    return Array.from ? Array.from(v) : v.split('');
+  }
+  function enforce() {
+    var c = chars(txt.value);
+    if (c.length <= MAX) return false;
+    txt.value = c.slice(0, MAX).join('');
+    return true;
+  }
+  function count(announce, wasCut) {
+    var n = chars(txt.value).length;
     cnt.textContent = String(n);
+    if (cut) cut.hidden = !wasCut;
     if (!live || !announce) return;
     var bucket = Math.floor(n / 100);
-    if (n >= MAX - 100 || bucket !== lastBucket) live.textContent = n + ' / ' + MAX + ' תווים';
+    if (wasCut) live.textContent = 'הטקסט קוצר ל-' + MAX + ' תווים';
+    else if (n >= MAX - 100 || bucket !== lastBucket) live.textContent = n + ' מתוך ' + MAX + ' תווים';
     lastBucket = bucket;
   }
-  txt.addEventListener('input', function () { count(true); });
+  txt.addEventListener('input', function () { var c = enforce(); count(true, c); });
+  enforce();
   count(false);
   lastBucket = Math.floor(txt.value.length / 100);
 
@@ -64,10 +107,10 @@
     e.preventDefault();
     var bad = validate();
     if (bad) { UI.focus(bad); return; }
+    UI.store.remove(DRAFT);
     showSent(true);
   });
 
-  var demo = UI.param('demo');
   if (demo === 'error') UI.fieldError(sub, ERR_SUB);
   else if (demo === 'sent') showSent(false);
 })();

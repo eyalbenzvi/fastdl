@@ -7,6 +7,8 @@
 
   // טקסט מהנתונים → HTML: [..] מסומן כ-tbc, מספרים/שעות עטופים ב-num
   function fmt(s) {
+    // מירכאות ישרות בנתונים (עמדת "על הקו") → ״…״ לפי סגנון הבית (QA_COPY 2.6)
+    s = String(s == null ? '' : s).replace(/"([^"]+)"/g, '״$1״');
     return esc(s).split(/(\[[^\]]*\])/).map(function (part) {
       if (/^\[.*\]$/.test(part)) return '<span class="tbc">' + part + '</span>';
       return part.replace(/\d+(?:[.:–-]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; });
@@ -34,7 +36,7 @@
   function benefits(m) {
     var b = m.benefits || [];
     if (!b.length) {
-      return m.id === 'regular_mail' ? '<p class="dl-ben dl-ben--plain">ללא מעקב · נמסר רק לתיבה שיש עליה שם</p>' : '';
+      return m.id === 'regular_mail' ? '<p class="dl-ben dl-ben--plain">ללא מעקב · נמסר רק לתיבה שיש עליה שם מזהה</p>' : '';
     }
     return '<ul class="dl-ben">' + b.map(function (x) {
       return '<li>' + UI.icon('check', { size: 16 }) + '<span>' + fmt(x) + '</span></li>';
@@ -96,7 +98,7 @@
     if (m.how) list.push(['איך מקבלים', fmt(m.how)]);
     var ben = benefits(m);
     if (ben) list.push([(m.benefits || []).length ? 'מה מקבלים' : 'שימו לב', ben]);
-    list.push(['מתאים ל…', fmt(m.fit)]);
+    if (m.fit) list.push(['למי זה מתאים', fmt(m.fit)]);
     var isPickup = m.group === 'איסוף עצמי';
     if (isPickup) {
       if (m.address) list.push(['כתובת', fmt(m.address)]);

@@ -18,7 +18,7 @@
 <body data-page="home-ar">
   <div class="page">
     <a class="skip-link" href="#main">انتقلوا إلى المحتوى الرئيسي</a>
-    <div class="ar-draft" role="note">ترجمة أولية – للمراجعة من قِبل مترجم · <span lang="he">תרגום טיוטה – לבדיקת מתרגם</span></div>
+    <aside class="ar-draft" aria-label="ملاحظة الترجمة">ترجمة أولية – للمراجعة من قِبل مترجم · <span lang="he">תרגום טיוטה – לבדיקת מתרגם</span></aside>
     <header class="site-header">
       <div class="wrap site-header__bar">
         <a class="wordmark" href="home-ar.html" aria-label="الرخصة حتى البيت – من مطبعة بئيري، إلى الصفحة الرئيسية">
@@ -28,7 +28,7 @@
         <nav class="nav hide-t" aria-label="التنقل الرئيسي">
           <a class="nav__link" href="login.html" hreflang="he">فحص الحالة والطلب <span class="ar-he">(بالعبرية)</span></a>
           <a class="nav__link" href="guide.html" hreflang="he">ماذا عليّ أن أفعل؟ <span class="ar-he">(بالعبرية)</span></a>
-          <a class="nav__link" href="fastest.html" hreflang="he">أسرع رخصة <span class="ar-he">(بالعبرية)</span></a>
+          <a class="nav__link" href="fastest.html" hreflang="he">أسرع طريقة للحصول على الرخصة <span class="ar-he">(بالعبرية)</span></a>
           <a class="nav__link" href="delivery.html" hreflang="he">طرق التسليم والأسعار <span class="ar-he">(بالعبرية)</span></a>
         </nav>
         <div class="ar-tools">
@@ -38,25 +38,25 @@
         </div>
       </div>
     </header>
-    <div class="trust">
+    <section class="trust" aria-label="عن الخدمة">
       <div class="wrap ar-trust">
         <span class="trust__item"><svg class="ico ico--18" data-icon="shield-check" aria-hidden="true"></svg>تُشغَّل الخدمة بتصريح من وزارة المواصلات ووفق تعليماتها</span>
         <span class="trust__item hide-m"><svg class="ico ico--18" data-icon="lock" aria-hidden="true"></svg>معلوماتكم محميّة</span>
       </div>
-    </div>
+    </section>
 
     <main id="main" tabindex="-1">
       <section class="home-hero home-hero--ar">
         <div class="wrap home-hero__grid g-hero">
           <div class="home-hero__text">
             <h1 class="h1">أنهيتم الدفع مقابل الرخصة؟<br><span class="accent">هنا تختارون كيف ستصلكم</span></h1>
-            <p class="home-hero__lead">بعد دفع الرسوم والتصوير (إذا لزم)، يصلنا الطلب من وزارة المواصلات. ومن تلك اللحظة لديكم 48 ساعة (في أيام العمل) لاختيار توصيل سريع أو استلام ذاتي.</p>
+            <p class="home-hero__lead">بعد دفع الرسوم والتصوير (إذا لزم الأمر)، يصلنا الطلب من وزارة المواصلات. ومن تلك اللحظة لديكم 48 ساعة (في أيام العمل) لاختيار طريقة استلام الرخصة: التوصيل إلى البيت، أو الاستلام الذاتي، أو البريد.</p>
             <form class="card card--raised id-card" id="ar-form" action="login.html" novalidate aria-labelledby="ar-form-t">
               <h2 class="id-card__title" id="ar-form-t">فحص الحالة وطلب التوصيل</h2>
-              <div class="field"><label class="label" for="ar-id">رقم الهوية</label><input id="ar-id" name="id" class="input input--num" inputmode="numeric" autocomplete="off" aria-invalid="false"></div>
+              <div class="field"><label class="label" for="ar-id">رقم الهوية</label><input id="ar-id" name="tz" class="input input--num" inputmode="numeric" autocomplete="off" aria-invalid="false" aria-describedby="ar-id-help"><p id="ar-id-help" class="help">كما يظهر في بطاقة الهوية، بما في ذلك الرقم الأخير</p></div>
               <div class="field"><label class="label" for="ar-ph">رقم الهاتف المحمول</label><input id="ar-ph" name="phone" class="input input--num" type="tel" inputmode="tel" autocomplete="tel" aria-invalid="false"></div>
               <button type="submit" class="btn btn--primary btn--block" id="ar-submit">أرسلوا لي رمز التحقق</button>
-              <p class="ar-help"><svg class="ico ico--18" data-icon="phone" aria-hidden="true"></svg><!-- ملاحظة للمترجم (L-14): "للمساعدة بالعربية" --><span>لمساعدة بالعربية: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · <span lang="he">המשך התהליך בעברית</span></span></p>
+              <p class="ar-help"><svg class="ico ico--18" data-icon="phone" aria-hidden="true"></svg><span>للمساعدة بالعربية: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a> · <span lang="he">המשך התהליך בעברית</span></span></p>
               <p class="small muted">سنرسل رمزًا عبر SMS إلى الرقم الذي أدخلتموه. لن نستخدم الرقم لأي غرض آخر. <a href="login.html" hreflang="he">لماذا نطلب ذلك؟ <span class="ar-he">(بالعبرية)</span></a></p>
             </form>
           </div>
@@ -77,10 +77,10 @@
       <section class="home-alt">
         <div class="wrap">
           <div class="card home-alt__card">
-            <p class="home-alt__q">لم تدفعوا بعد أو لستم متأكدين ماذا تفعلون؟</p>
+            <p class="home-alt__q">لم تدفعوا بعد، أو لستم متأكدين مما عليكم فعله؟</p>
             <div class="home-alt__actions">
               <a class="btn btn--secondary" href="guide.html" hreflang="he">ماذا عليّ أن أفعل الآن؟ <span class="ar-he">(بالعبرية)</span></a>
-              <a class="home-alt__link" href="fastest.html" hreflang="he">تحتاجون الرخصة بشكل عاجل؟ <span class="ar-he">(بالعبرية)</span> ←</a>
+              <a class="home-alt__link" href="fastest.html" hreflang="he">هل تحتاجون إلى الرخصة بشكل عاجل؟ <span class="ar-he">(بالعبرية)</span> ←</a>
             </div>
           </div>
         </div>
@@ -92,8 +92,8 @@
             <h2 id="how-ar" class="h2 home-how__title">كيف يعمل ذلك؟</h2>
             <ol class="g4 home-how__list">
               <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">1</span></span><p>دفع الرسوم في موقع وزارة المواصلات</p></li>
-              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">2</span></span><p>التصوير في محطة مرخّصة – إذا لزم</p></li>
-              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">3</span></span><p>ينتقل الطلب إلينا – عادةً في صباح اليوم التالي</p></li>
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">2</span></span><p>التصوير في محطة مرخّصة – إذا لزم الأمر</p></li>
+              <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">3</span></span><p>ينتقل الطلب إلينا – عادةً في يوم العمل التالي، صباحًا</p></li>
               <li class="home-how__step"><span class="ibox ibox--52 ibox--primary ar-step-num"><span class="num">4</span></span><p>تختارون التوصيل أو الاستلام خلال 48 ساعة</p></li>
             </ol>
           </div>
@@ -105,8 +105,8 @@
           <ul class="g4 home-trust__list">
             <li class="home-trust__t">الموقع الرسمي لاختيار طريقة استلام الرخصة</li>
             <li class="home-trust__t">خدمة آمنة</li>
-            <li class="home-trust__t">48 ساعة للاختيار من لحظة استلام الطلب</li>
-            <li><p><a class="home-trust__phone" href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a><br><span class="small muted">الأحد–الخميس <span class="num" dir="ltr">08:00–17:00</span></span></p></li>
+            <li class="home-trust__t">48 ساعة (في أيام العمل) للاختيار من لحظة استلام الطلب</li>
+            <li><p><a class="home-trust__phone" href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a><br><span class="small muted">الأحد–الخميس <span class="num" dir="ltr">08:00–17:00</span> · الجمعة وعشية الأعياد <span class="num" dir="ltr">08:00–13:00</span></span></p></li>
           </ul>
         </div>
       </section>
@@ -114,7 +114,7 @@
 
     <footer class="site-footer ar-footer">
       <div class="wrap ar-footer__bar">
-        <span>© مطبعة بئيري · تُشغَّل الخدمة بتصريح من وزارة المواصلات</span>
+        <span>© مطبعة بئيري · تُشغَّل الخدمة بتصريح من وزارة المواصلات ووفق تعليماتها</span>
         <span>مركز الخدمة: <a href="tel:0779985095"><span class="num" dir="ltr">077-998-5095</span></a></span>
       </div>
     </footer>

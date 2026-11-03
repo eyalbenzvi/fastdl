@@ -17,9 +17,7 @@
   }
   // P12: הבקשה מגיעה ביום העסקים הבא, והאיסוף מבארי ביום העסקים שאחריו
   function fastestPickup(paidDate) { var a = nextBusinessDay(paidDate); return a ? nextBusinessDay(a) : null; }
-  function formatShort(d) { return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear(); }
-  function formatHe(date) { var d = parse(date); return d ? 'יום ' + DAYS[d.getDay()] + ', ' + formatShort(d) : ''; }
   function toISO(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 
-  window.Dates = { parse: parse, isBusinessDay: isBusinessDay, nextBusinessDay: nextBusinessDay, fastestPickup: fastestPickup, formatHe: formatHe, formatShort: formatShort, toISO: toISO, DAYS: DAYS };
+  window.Dates = { parse: parse, isBusinessDay: isBusinessDay, nextBusinessDay: nextBusinessDay, fastestPickup: fastestPickup, toISO: toISO, DAYS: DAYS };
 })();

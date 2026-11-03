@@ -1,6 +1,7 @@
 /* נתוני דמה – נטען כ-<script src="js/mock-data.js"> כדי שהאתר יעבוד גם מ-file:// בלי fetch. מקור: data/mock-data.json */
 window.FD_DATA = {
-  "_note": "נתוני דמה לאב-טיפוס בלבד. כל הנתונים בדויים. 'now' ברירת מחדל: 2026-08-25T02:12 (יום ג׳). ימי עסקים: א׳–ה׳.",
+  "_note": "נתוני דמה לאב-טיפוס בלבד. כל הנתונים בדויים. 'now' ברירת מחדל: 2026-08-25T02:12 (יום ג׳). ימי עסקים: א׳–ה׳. פורמט מועד: \"יום ד׳ 26.8 בשעה 05:12\".",
+  "now": "2026-08-25T02:12",
   "service": {
     "name": "רישיון עד הבית",
     "operator": "דפוס בארי",
@@ -41,9 +42,9 @@ window.FD_DATA = {
   "request": {
     "document_type": "רישיון נהיגה",
     "received_at": "2026-08-24T05:12",
-    "received_display": "יום ב׳, 24.8.2026, 05:12",
+    "received_display": "יום ב׳ 24.8 בשעה 05:12",
     "window_closes_at": "2026-08-26T05:12",
-    "window_closes_display": "יום ד׳, 26.8.2026 בשעה 05:12",
+    "window_closes_display": "יום ד׳ 26.8 בשעה 05:12",
     "countdown_reliable": true,
     "remaining_display": "נותרו כ-27 שעות"
   },
@@ -55,7 +56,7 @@ window.FD_DATA = {
       "price": 0,
       "price_display": "ללא עלות",
       "eta_rule": "למחרת יום ההזמנה, מ-11:00",
-      "eta_display": "זמין לאיסוף מיום ד׳ 26.8, 11:00",
+      "eta_display": "זמין לאיסוף מיום ד׳ 26.8, מ-11:00",
       "tracking": false,
       "tags": [
         "הכי מהיר לאיסוף"
@@ -78,7 +79,7 @@ window.FD_DATA = {
       "tracking": false,
       "tags": [],
       "needs_address": false,
-      "address": "טרמינל 3, אולם מקבלי הפנים, ליד שער יציאה 1, עמדת \"על הקו\" [לאמת מול כתובת: כרמלית 3]",
+      "address": "טרמינל 3, אולם מקבלי הפנים, ליד שער יציאה 1, עמדת ״על הקו״ [לאמת מול כתובת: כרמלית 3]",
       "hours": "א׳–ה׳ 07:00–22:00 · שישי וערבי חג עד 15:00",
       "hold_days": "[לאישור]",
       "fit": "למי שגרים במרכז או עוברים בנתב״ג",
@@ -109,7 +110,7 @@ window.FD_DATA = {
       "price": 41,
       "price_display": "41 ₪",
       "eta_rule": "2–5 ימי עסקים",
-      "eta_display": "יגיע בין 27.8 ל-1.9",
+      "eta_display": "יגיע בין יום ה׳ 27.8 ליום ג׳ 1.9",
       "tracking": true,
       "tags": ["מסירה ביד"],
       "needs_address": true,
@@ -124,7 +125,7 @@ window.FD_DATA = {
       "price": 14.99,
       "price_display": "14.99 ₪",
       "eta_rule": "עד 14 ימי עסקים",
-      "eta_display": "יגיע עד 14.9",
+      "eta_display": "יגיע עד יום ב׳ 14.9",
       "tracking": true,
       "tags": [],
       "needs_address": true,
@@ -139,7 +140,7 @@ window.FD_DATA = {
       "price": 0,
       "price_display": "ללא עלות",
       "eta_rule": "עד 14 ימי עסקים",
-      "eta_display": "יגיע עד 14.9",
+      "eta_display": "יגיע עד יום ב׳ 14.9",
       "tracking": false,
       "tags": [
         "ללא מעקב"
@@ -154,7 +155,7 @@ window.FD_DATA = {
     "order_number": "FD-2026-0841273",
     "method_id": "express_home",
     "production": "immediate",
-    "production_display": "ייצור מיידי – קובץ הייצור של 25.8.2026 ב-07:00",
+    "production_display": "כן, התחילו עכשיו – סבב הייצור של יום ג׳ 25.8 בשעה 07:00",
     "amount": 177
   },
   "states": {
@@ -172,7 +173,7 @@ window.FD_DATA = {
       "badge": "הזמנה בוצעה",
       "tone": "info",
       "timeline_step": 2,
-      "order_editable_until": "26.8.2026 בשעה 05:12",
+      "order_editable_until": "יום ד׳ 26.8 בשעה 05:12",
       "method": "איסוף מנתב״ג",
       "paid": "118 ₪"
     },
@@ -180,7 +181,7 @@ window.FD_DATA = {
       "badge": "בייצור",
       "tone": "info",
       "timeline_step": 3,
-      "production_at": "25.8.2026, 07:00",
+      "production_at": "יום ג׳ 25.8 בשעה 07:00",
       "method_display_variants": [
         "דואר רגיל (לא בוצעה הזמנה)",
         "משלוח מהיר עד הבית"
@@ -194,7 +195,7 @@ window.FD_DATA = {
       "method": "משלוח מהיר עד הבית",
       "carrier": "[שם חברת השילוח]",
       "tracking_number": "123456789",
-      "eta": "עד יום ד׳, 26.8.2026"
+      "eta": "עד יום ד׳ 26.8"
     },
     "S5": {
       "badge": "מחכה לכם",
@@ -205,7 +206,7 @@ window.FD_DATA = {
       "pickup_until": "[לאישור]"
     },
     "S6": {
-      "badge": "נמסרה",
+      "badge": "נמסר",
       "tone": "success",
       "timeline_step": 5,
       "delivered_at": "26.8.2026",
@@ -247,8 +248,8 @@ window.FD_DATA = {
     "הבקשה התקבלה",
     "בחירת משלוח",
     "בייצור",
-    "נשלחה",
-    "נמסרה"
+    "נשלח",
+    "נמסר"
   ],
   "faq_categories": [
     "אגרה ותשלום",

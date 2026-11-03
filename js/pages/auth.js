@@ -10,14 +10,37 @@
   var WRONG = '111111';       // הקוד היחיד שנחשב שגוי
   var ERR_ID = 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).';
   var ERR_PH = 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.';
+  var EMPTY_ID = 'יש למלא מספר תעודת זהות.';   // כמו בשלב 4 ובצרו קשר (QA_INPUTS P3-1)
+  var EMPTY_PH = 'יש למלא מספר נייד.';
   var SCENARIOS = [ // הכותרות = התגים במסך המצב (status.js STATE_UI)
     ['S0', 'לא נמצאה בקשה'], ['S1', 'אפשר להזמין'], ['S2', 'הזמנה בוצעה'], ['S3', 'בייצור'], ['S4', 'בדרך אליכם'],
-    ['S5', 'מחכה לכם'], ['S6', 'נמסרה'], ['S7', 'לא אושרה מסירה'], ['S8', 'המסירה נכשלה'], ['S9', '2 בקשות']
+    ['S5', 'מחכה לכם'], ['S6', 'נמסר'], ['S7', 'לא אושרה מסירה'], ['S8', 'המסירה נכשלה'], ['S9', '2 בקשות']
   ];
   function validScenario(s) { return SCENARIOS.some(function (x) { return x[0] === s; }); }
 
   if (UI.param('reset') === '1') ['fd.session', 'fd.order', 'fd.reissue', 'fd.login', 'fd.phone', 'fd.scenario'].forEach(function (k) { UI.store.remove(k); });
   if (validScenario(UI.param('scenario'))) UI.store.set('fd.scenario', UI.param('scenario'));
+  // B-03: הפרמטרים נצרכו – מוסרים מה-URL (replace), כך ש-Back לעמוד הזה לא מאפס שוב את המסע
+  if (UI.param('reset') !== null || UI.param('scenario') !== null) UI.setParams({ reset: null, scenario: null });
+
+  /* ספרות ערביות-הודיות ופרסיות → 0–9 (QA_INPUTS P1-2). Validate.toLatinDigits כשקיים; אחרת מיפוי מקומי */
+  function latin(s) {
+    s = String(s == null ? '' : s);
+    if (window.Validate && Validate.toLatinDigits) return Validate.toLatinDigits(s);
+    return s.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, function (c) { var n = c.charCodeAt(0); return String(n >= 0x06F0 ? n - 0x06F0 : n - 0x0660); });
+  }
+  // מאזין שנרשם לפני bindNormalize – ההמרה קודמת לסינון, והסמן נשאר במקומו (אותו אורך)
+  function latinInput(el) {
+    if (!el) return;
+    el.addEventListener('input', function () {
+      var v = el.value, l = latin(v);
+      if (l === v) return;
+      var a = null, b = null;
+      try { a = el.selectionStart; b = el.selectionEnd; } catch (x) { /* */ }
+      el.value = l;
+      if (a !== null && document.activeElement === el) { try { el.setSelectionRange(a, b); } catch (x) { /* */ } }
+    });
+  }
   function scenario() { var s = UI.store.get('fd.scenario', 'S1'); return validScenario(s) ? s : 'S1'; }
 
   Layout.demoBar({
@@ -62,6 +85,7 @@
     var saved = UI.store.get('fd.login', null);
     if (saved) { id.value = saved.id || ''; ph.value = saved.ph || ''; }
 
+    latinInput(id); latinInput(ph);
     // P1-1/P2-1: מסננים (רווחים, מקפים, ‎+972 → 0) ורק אז חותכים – בלי maxlength שחותך לפני הסינון
     Validate.bindNormalize(id, 'id', function () { if (id.getAttribute('aria-invalid') === 'true') UI.fieldError(id, null); });
     Validate.bindNormalize(ph, 'mobile', function () { if (ph.getAttribute('aria-invalid') === 'true') UI.fieldError(ph, null); });
@@ -70,10 +94,12 @@
     function validate() {
       var badId = !Validate.israeliId(id.value);
       var badPh = !Validate.mobile(ph.value);
-      UI.fieldError(id, badId ? ERR_ID : null);
-      UI.fieldError(ph, badPh ? ERR_PH : null);
+      UI.fieldError(id, badId ? (Validate.digits(id.value) ? ERR_ID : EMPTY_ID) : null);
+      UI.fieldError(ph, badPh ? (Validate.digits(ph.value) ? ERR_PH : EMPTY_PH) : null);
       return badId ? id : (badPh ? ph : null);
     }
+    // B-05: בזמן "שולחים קוד…" השדות נעולים (readOnly), כדי שמסך הקוד לא יציג מספר ישן
+    function lock(on) { id.readOnly = on; ph.readOnly = on; }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -81,13 +107,16 @@
       var bad = validate();
       if (bad) { bad.focus(); return; }
       UI.store.set('fd.login', { id: Validate.digits(id.value), ph: ph.value });
-      UI.store.set('fd.phone', Validate.digits(ph.value));
+      var d = Validate.digits(ph.value);
+      UI.store.set('fd.phone', d);
       UI.setBusy(btn, true, 'שולחים קוד…');
+      lock(true);
       // push: Back ממסך הקוד חוזר לטופס (לתיקון המספר). מסך הקוד מוחלף במסך המצב (P1-5)
-      setTimeout(function () { window.location.href = 'otp.html'; }, 1200);
+      // ?ph= – גם כשהאחסון חסום מסך הקוד מציג את המספר שהוזן (QA_INPUTS P3-14), כמו בבית B
+      setTimeout(function () { window.location.href = 'otp.html?ph=' + encodeURIComponent(Validate.maskMobile(d)); }, 1200);
     });
     // חזרה מ-bfcache (Back) – משחררים את מצב הטעינה
-    window.addEventListener('pageshow', function (e) { if (e.persisted && demo !== 'loading') UI.setBusy(btn, false); });
+    window.addEventListener('pageshow', function (e) { if (e.persisted && demo !== 'loading') { UI.setBusy(btn, false); lock(false); } });
 
     if (UI.param('check') === '1' && saved) {
       // הגעה מהבית בערבית עם ערכים חסרים/שגויים (F01): הערכים מולאו מראש, ומציגים את השגיאות מיד
@@ -99,6 +128,7 @@
     } else if (demo === 'loading') {
       id.value = '000000018'; ph.value = '0541234567';
       UI.setBusy(btn, true, 'שולחים קוד…');
+      lock(true);
     }
   }
 
@@ -129,7 +159,12 @@
     // מספר הנייד הממוסך: מה שהוזן ב-login, או ?ph=, או ברירת המחדל
     var phone = Validate.digits(UI.store.get('fd.phone', '') || UI.param('ph') || '');
     var masked = Validate.mobile(phone) ? Validate.maskMobile(phone) : ((UI.param('ph') || '').indexOf('•') > 0 ? UI.param('ph') : '');
-    if (masked) document.getElementById('otp-phone').textContent = masked;
+    if (masked) {
+      document.getElementById('otp-phone').textContent = masked;
+      // קוראי מסך: "נייד שמסתיים ב-4567" במקום "תבליט תבליט תבליט" (QA_COPY 3.44)
+      var srPh = document.getElementById('otp-phone-sr');
+      if (srPh) srPh.textContent = 'שמסתיים ב-' + masked.slice(-4);
+    }
 
     document.getElementById('otp-edit').addEventListener('click', function () { window.location.href = 'login.html'; });
 
@@ -140,18 +175,29 @@
       boxes[next].focus();
       boxes[next].select && boxes[next].select();
     }
+    function onlyDigits(s) { return latin(s).replace(/\D/g, ''); }
+    /* P2-7/P3-8: בלי maxlength בתיבות. ספרה שהוקלדה לתיבה מלאה (מגע/IME, שם e.key הוא "Unidentified")
+       מחליפה את הקיימת; רצף של כמה ספרות (מילוי אוטומטי/הדבקת IME) מתפזר – 6 ספרות תמיד מהתיבה הראשונה */
     boxes.forEach(function (b, i) {
-      b.addEventListener('input', function () {
-        var d = b.value.replace(/\D/g, '');
+      b.addEventListener('input', function (e) {
+        var d = onlyDigits(b.value);
         clearError();
-        if (d.length > 1) { b.value = ''; fill(d.length >= 6 ? 0 : i, d.slice(0, 6)); return; }
+        if (d.length > 1) {
+          var typed = onlyDigits(e && e.data);
+          if (typed.length === 1 && d.length === 2 && e.inputType !== 'insertFromPaste') {
+            b.value = typed;
+            if (i < boxes.length - 1) boxes[i + 1].focus();
+            return;
+          }
+          b.value = ''; fill(d.length >= 6 ? 0 : i, d.slice(0, 6)); return;
+        }
         b.value = d;
         if (d && i < boxes.length - 1) boxes[i + 1].focus();
       });
       b.addEventListener('paste', function (e) {
         var t = '';
         try { t = (e.clipboardData || window.clipboardData).getData('text'); } catch (x) { /* */ }
-        var d = String(t || '').replace(/\D/g, '');
+        var d = onlyDigits(t);
         if (!d) { e.preventDefault(); return; }
         e.preventDefault();
         clearError();
@@ -174,7 +220,11 @@
         } else if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); boxes[i - 1].focus(); }
         else if (e.key === 'ArrowRight' && i < boxes.length - 1) { e.preventDefault(); boxes[i + 1].focus(); }
       });
-      b.addEventListener('focus', function () { try { b.select(); } catch (x) { /* */ } });
+      b.addEventListener('focus', function () {
+        // P3-8: אין מילוי מחוץ לסדר – הקשה על תיבה כשתיבה קודמת ריקה מעבירה לתיבה הריקה הראשונה
+        for (var j = 0; j < i; j++) { if (!boxes[j].value) { boxes[j].focus(); return; } }
+        try { b.select(); } catch (x) { /* */ }
+      });
     });
 
     function code() { return boxes.map(function (b) { return b.value; }).join(''); }
@@ -193,7 +243,7 @@
     /* טיימר – מתעדכן כל שנייה, מוכרז רק כל 15 שניות ובסיום */
     function fmt(s) { return '0:' + (s < 10 ? '0' : '') + s; }
     function renderTimer(announce) {
-      if (attempts <= 0) return; // חסום – אין מונה ואין "שלחו שוב"
+      if (attempts <= 0 || verified) return; // חסום/אומת – אין מונה ואין "שלחו שוב"
       var waiting = sec > 0;
       timerEl.hidden = !waiting;
       resendEl.hidden = waiting;
@@ -212,7 +262,7 @@
       }, 1000);
     }
     document.getElementById('otp-resend-btn').addEventListener('click', function () {
-      if (attempts <= 0) return;
+      if (verified || attempts <= 0) return; // B-06: לא מוחקים קוד שכבר אומת
       startTimer(45);
       live.textContent = 'לא קיבלתם? שליחה חוזרת בעוד ' + fmt(45);
       boxes.forEach(function (b) { b.value = ''; });
@@ -233,6 +283,12 @@
     function goStatus() { window.location.replace(cont.getAttribute('href')); }
     function setVerified(auto) {
       verified = true;
+      // B-06: אחרי אימות אין מונה ואין "שלחו שוב"
+      clearInterval(iv);
+      timerEl.hidden = true;
+      resendEl.hidden = true;
+      live.textContent = '';
+      boxes.forEach(function (b) { b.readOnly = true; });
       cont.setAttribute('href', 'status.html?s=' + scenario());
       if (auto) startSession();
       cont.addEventListener('click', function (e) {
@@ -260,7 +316,7 @@
       live.textContent = '';
       boxes.forEach(function (b) { b.disabled = true; });
       submit.disabled = true;
-      showError('חסמנו זמנית את הניסיונות. נסו שוב בעוד 10 דקות או פנו למוקד. <span class="tbc">[לאישור]</span>');
+      showError('הגעתם למספר הניסיונות המרבי. אפשר לנסות שוב בעוד 10 דקות, או לחייג למוקד. <span class="tbc">[לאישור]</span>');
       try { err.focus({ preventScroll: true }); } catch (x) { err.focus(); }
       UI.ensureVisible(err);
     }

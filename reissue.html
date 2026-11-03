@@ -26,14 +26,15 @@
         <div class="order__step" id="reissue-form">
           <a class="back-link reissue__back" href="status.html?s=S7&amp;reveal=1"><svg class="ico ico--18" data-icon="chevron-back-rtl" aria-hidden="true"></svg>חזרה לפרטי הבקשה</a>
           <h1 class="h1 h1--flow" id="reissue-h" tabindex="-1">הזמנת הנפקה חוזרת – ללא עלות</h1>
+          <form id="reissue-fm" class="order-form-wrap" novalidate>
 
           <section class="card reissue-card" aria-labelledby="el-h">
             <h2 id="el-h" class="h2--card">בדיקת זכאות</h2>
             <dl class="kv">
-              <div><dt>תאריך משלוח</dt><dd><span class="num" dir="ltr">26.8.2026</span></dd></div>
-              <div><dt>שיטה</dt><dd>דואר רגיל</dd></div>
+              <div><dt>תאריך משלוח</dt><dd><span class="nowrap">יום ד׳ <span class="num" dir="ltr">26.8</span></span></dd></div>
+              <div><dt>שיטת מסירה</dt><dd>דואר רגיל</dd></div>
               <div><dt>ימי עסקים שעברו</dt><dd><span class="num" dir="ltr">21</span></dd></div>
-              <div><dt>סטטוס מסירה</dt><dd>אין תיעוד מסירה</dd></div>
+              <div><dt>מצב המסירה</dt><dd>אין תיעוד מסירה</dd></div>
             </dl>
             <div class="callout callout--success reissue-ok" role="status"><svg class="ico" data-icon="check-circle" aria-hidden="true"></svg><p>אתם זכאים להנפקה חוזרת ללא עלות.</p></div>
           </section>
@@ -49,29 +50,30 @@
             <div class="reissue-addr"><span class="ibox ibox--navy"><svg class="ico" data-icon="lock" aria-hidden="true"></svg></span><p id="reissue-moin">רחוב העצמאות 10, באר שבע</p></div>
             <p class="small muted">הכתובת הרשומה במשרד הפנים.</p>
             <div class="g3 order-grid">
-              <div class="field"><label class="label" for="r-e">מספר כניסה</label><input id="r-e" class="input"></div>
-              <div class="field"><label class="label" for="r-c">אצל</label><input id="r-c" class="input"></div>
-              <div class="field"><label class="label" for="r-mb">מה כתוב על תיבת הדואר?</label><input id="r-mb" class="input"></div>
+              <div class="field"><label class="label" for="r-e">מספר כניסה</label><input id="r-e" class="input" autocomplete="off" enterkeyhint="next" maxlength="20"></div>
+              <div class="field"><label class="label" for="r-c">אצל</label><input id="r-c" class="input" autocomplete="off" enterkeyhint="next" maxlength="60"></div>
+              <div class="field"><label class="label" for="r-mb">מה כתוב על תיבת הדואר?</label><input id="r-mb" class="input" autocomplete="off" enterkeyhint="done" maxlength="60"></div>
             </div>
           </section>
 
           <div class="field">
-            <label class="check reissue-decl" for="decl"><input type="checkbox" id="decl" aria-invalid="false"><span>אני מצהיר/ה שלא קיבלתי את הרישיון שנשלח ב-<span class="num" dir="ltr">26.8.2026</span>.</span></label>
+            <label class="check reissue-decl" for="decl"><input type="checkbox" id="decl" aria-invalid="false"><span>הצהרה: לא קיבלתי את הרישיון שנשלח <span class="nowrap">ביום ד׳ <span class="num" dir="ltr">26.8</span></span>.</span></label>
           </div>
-          <button type="button" class="btn btn--primary btn--m-block reissue__submit" id="reissue-submit">אישור הזמנה חוזרת</button>
+          <button type="submit" class="btn btn--primary btn--m-block reissue__submit" id="reissue-submit">אישור ההנפקה החוזרת</button>
+          </form>
         </div>
 
         <div class="order__step" id="reissue-done" hidden>
           <div class="card order-done reissue-done">
             <span class="order-done__circle"><svg class="ico ico--48" data-icon="check" aria-hidden="true"></svg></span>
-            <h1 class="h1 h1--flow" id="reissue-done-h" tabindex="-1">ההזמנה החוזרת התקבלה!</h1>
+            <h1 class="h1 h1--flow" id="reissue-done-h" tabindex="-1">ההנפקה החוזרת התקבלה!</h1>
             <p class="order-done__num">מספר הזמנה: <strong class="num" dir="ltr">FD-2026-0841274</strong></p>
             <div class="order-done__next">
               <h2 class="order-done__t">מה עכשיו?</h2>
-              <p>ייצור בקובץ הקרוב ← <span id="rd-name">משלוח מהיר עד הבית</span> ← <span id="rd-eta">עד יום עסקים אחד</span></p>
+              <p>ייצור בבוקר הקרוב ← <span id="rd-name">משלוח מהיר עד הבית</span> ← <span id="rd-eta">עד יום עסקים אחד</span></p>
               <p id="rd-track">הפעם הרישיון נשלח עם מעקב, ותוכלו לראות בדיוק מתי הוא מגיע.</p>
             </div>
-            <p>שלחנו לכם SMS עם הפרטים.</p>
+            <p>שלחנו לכם עכשיו SMS עם פרטי ההזמנה.</p>
             <div class="order-done__btns">
               <a class="btn btn--primary btn--m-block" href="status.html?s=S3">לפרטי הבקשה שלי</a>
               <button type="button" class="btn btn--secondary btn--m-block">הוסיפו ליומן</button>

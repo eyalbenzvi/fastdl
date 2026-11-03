@@ -8,7 +8,7 @@
       b.addEventListener('click', function () { UI.copy(b.getAttribute('data-copy')); });
     });
     UI.qsa('[data-ds-menu]').forEach(function (b) {
-      b.addEventListener('click', function () { if (window.Layout) Layout.openMenu(); });
+      b.addEventListener('click', function () { if (window.Layout) Layout.openMenu(b); }); // B-07: הפוקוס חוזר לכפתור הדוגמה
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

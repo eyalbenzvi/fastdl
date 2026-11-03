@@ -8,9 +8,11 @@
   function qs(sel, root) { return (root || document).querySelector(sel); }
   function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
+  /* escape לטקסט ולערכי מאפיינים במירכאות כפולות (כל התבניות באתר). הגרש ' לא מוחלף: הוא בטוח בשני ההקשרים,
+     והישות &#39; (עם ספרות) נשברה כשעמוד עטף ספרות ב-<span class="num"> אחרי ה-escape (QA_INPUTS P1-1) */
   function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
 
@@ -59,7 +61,7 @@
       });
       var q = p.toString();
       var url = window.location.pathname + (q ? '?' + q : '') + window.location.hash;
-      if (push) history.pushState(null, '', url); else history.replaceState(null, '', url);
+      if (push) history.pushState(null, '', url); else history.replaceState(history.state, '', url); // replace שומר את ה-state (סימון הדיאלוג בהיסטוריה)
       _params = null;
     } catch (e) { /* file:// בדפדפנים מסוימים – מתעלמים */ }
   }
@@ -292,10 +294,6 @@
         if (opt.onToggle) opt.onToggle(i, open);
       });
     });
-    return {
-      open: function (i) { btns.forEach(function (b, j) { set(b, j === i ? true : (single ? false : b.getAttribute('aria-expanded') === 'true')); }); },
-      closeAll: function () { btns.forEach(function (b) { set(b, false); }); }
-    };
   }
 
   /* ---------- Dialogs (drawer + modal) ---------- */
@@ -316,9 +314,82 @@
     var f = qsa(FOCUSABLE, current.el).filter(function (x) { return x.offsetParent !== null || x === document.activeElement; });
     if (!f.length) { e.preventDefault(); return; }
     var first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && (document.activeElement === first || !current.el.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    // B-02: אלמנט שאינו ברשימה (כותרת הדיאלוג עם tabindex=-1, או פוקוס מחוץ לפאנל) נחשב "לפני הראשון":
+    // Shift+Tab ממנו עובר לאחרון ולא בורח ל-BODY; Tab ממנו – לראשון
+    var i = current.el.contains(document.activeElement) ? f.indexOf(document.activeElement) : -1;
+    if (e.shiftKey && i <= 0) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (i === f.length - 1 || (i < 0 && !current.el.contains(document.activeElement)))) { e.preventDefault(); first.focus(); }
   }
+
+  /* ---------- Back סוגר דיאלוג פתוח (B-11) ----------
+     בפתיחה נכנסת רשומת היסטוריה (אותה כתובת, state.fdDialog); Back = סגירה, והעמוד לא עוזב ולא מתרנדר מחדש
+     (המאזין של ui.js רשום לפני מאזיני העמודים ועוצר את ה-popstate). סגירה רגילה (✕, Esc, scrim, בחירה) מחזירה
+     את הרשומה ב-history.back(). אם העמוד כתב היסטוריה (push/replace) בין הסגירה לחזרה – הכתיבות מוחלות מחדש
+     על הרשומה שחזרנו אליה, כך שה-URL הסופי הוא מה שהעמוד כתב. */
+  var hist = { pushed: false, pending: null, timer: null, go: null };
+  var nativePush = null, nativeReplace = null;
+  try {
+    nativePush = history.pushState.bind(history);
+    nativeReplace = history.replaceState.bind(history);
+    history.pushState = function (st, t, url) { if (hist.pending) hist.pending.push(['push', st, url]); return nativePush(st, t, url); };
+    history.replaceState = function (st, t, url) { if (hist.pending) hist.pending.push(['replace', st, url]); return nativeReplace(st, t, url); };
+  } catch (e) { nativePush = nativeReplace = null; }
+  function histPush() {
+    if (hist.pushed || hist.pending || !nativePush) return;
+    try {
+      var st = {}; var cur = history.state;
+      if (cur && typeof cur === 'object') for (var k in cur) st[k] = cur[k];
+      st.fdDialog = 1;
+      nativePush(st, '', window.location.href);
+      hist.pushed = true;
+    } catch (e) { hist.pushed = false; }
+  }
+  function histPop() { // סגירה שלא הגיעה מ-Back: מחזירים את הרשומה שנוספה
+    if (!hist.pushed) return;
+    hist.pushed = false;
+    hist.pending = [];
+    clearTimeout(hist.timer);
+    hist.timer = setTimeout(function () { hist.pending = null; if (hist.go) { var to = hist.go; hist.go = null; window.location.assign(to); } }, 1500); // רשת ביטחון אם popstate לא הגיע
+    try { history.back(); } catch (e) { hist.pending = null; }
+  }
+  window.addEventListener('popstate', function (e) {
+    if (hist.pending) { // החזרה שאנחנו ביצענו – לא אירוע של העמוד
+      var q = hist.pending; hist.pending = null; clearTimeout(hist.timer);
+      e.stopImmediatePropagation();
+      try {
+        q.forEach(function (c) {
+          var st = c[1];
+          if (st && typeof st === 'object' && st.fdDialog) { var o = {}; for (var k in st) if (k !== 'fdDialog') o[k] = st[k]; st = o; }
+          (c[0] === 'push' ? nativePush : nativeReplace)(st, '', c[2]);
+        });
+      } catch (err) { /* */ }
+      _params = null;
+      if (hist.go) { var to = hist.go; hist.go = null; window.location.assign(to); }
+      return;
+    }
+    if (hist.pushed && current) { // Back כשדיאלוג פתוח: סוגרים אותו, והעמוד נשאר כמו שהוא
+      hist.pushed = false;
+      e.stopImmediatePropagation();
+      closeDialog(false, true);
+      return;
+    }
+    hist.pushed = false;
+  });
+  // קישור ניווט בתוך דיאלוג פתוח (למשל בתפריט): קודם מחזירים את רשומת הדיאלוג ורק אז מנווטים –
+  // אחרת Back מהעמוד הבא היה חוזר לאותו עמוד פעמיים
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || !current || !hist.pushed || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || !current.el.contains(a) || a.target || a.hasAttribute('download')) return;
+    var href = a.getAttribute('href') || '';
+    if (href.charAt(0) === '#' || !/^(https?|file):$/.test(a.protocol)) return;
+    if (a.pathname === window.location.pathname && a.search === window.location.search && a.hash) return;
+    e.preventDefault();
+    hist.go = a.href;
+    closeDialog(false, true);
+    hist.pushed = true;
+    histPop();
+  });
 
   function openDialog(id, opt) {
     opt = opt || {};
@@ -342,6 +413,7 @@
     backgroundEls().forEach(function (b) { b.setAttribute('inert', ''); b.setAttribute('data-inerted', ''); });
     document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', trap, true);
+    histPush();
     var target = qs('[data-dialog-title]', el) || qs('h2,h3', el) || qs(FOCUSABLE, el);
     if (target) {
       if (!target.hasAttribute('tabindex') && !target.matches(FOCUSABLE)) target.setAttribute('tabindex', '-1');
@@ -350,10 +422,11 @@
     if (opt.onOpen) opt.onOpen(el);
   }
 
-  function closeDialog(silent) {
+  function closeDialog(silent, fromHistory) {
     if (!current) return;
     var c = current;
     current = null;
+    if (!silent && !fromHistory) histPop();
     // silent = מעבר ישיר לדיאלוג אחר: הישן נעלם מיד, בלי שתי מגירות זזות יחד.
     // אחרת יציאה של 150ms; הפאנל inert מיד, כך שהפוקוס, inert והגלילה מטופלים כרגיל כבר עכשיו
     hide(c.el, silent);
@@ -443,12 +516,32 @@
     }
     var ic = opt.icon === undefined ? (/\[לאישור/.test(text) ? 'info' : 'check') : opt.icon;
     show(toastEl);
+    dodgeSoon();
     toastEl.textContent = '';
     // תזמון קצר כדי שקוראי מסך יכריזו גם על אותו טקסט פעמיים
     setTimeout(function () { toastEl.innerHTML = (ic ? icon(ic, { size: 18 }) : '') + '<span>' + esc(text) + '</span>'; }, 30);
     toastMs = ms === 0 ? 0 : (ms || toastDuration(text));
     armToast();
   }
+
+  /* ---------- שכבות קבועות לא מסתירות פוקוס (WCAG 2.4.11; QA_VISUAL P2-3, P3-1) ----------
+     ה-toast וה-demo-pill יושבים בתחתית המסך. כשהרכיב בפוקוס נמצא מתחתיהם – הם שקופים ולא לחיצים (.is-dodge),
+     עד שהפוקוס או הגלילה מוציאים אותו מהאזור. נבדק ב-focusin ובגלילה (פריים אחד). */
+  function overlap(a, b) { return a.right > b.left && a.left < b.right && a.bottom > b.top && a.top < b.bottom; }
+  function dodgeCheck() {
+    var ae = document.activeElement;
+    var r = ae && ae !== document.body && ae !== document.documentElement && ae.getBoundingClientRect ? ae.getBoundingClientRect() : null;
+    qsa('.toast,.demo-pill').forEach(function (o) {
+      var on = !!r && !o.hidden && !o.contains(ae) && (r.width || r.height) > 0 && overlap(r, o.getBoundingClientRect());
+      if (o.classList.contains('is-dodge') !== on) o.classList.toggle('is-dodge', on);
+    });
+  }
+  var dodgeTick = false;
+  function dodgeSoon() { if (dodgeTick) return; dodgeTick = true; window.requestAnimationFrame(function () { dodgeTick = false; dodgeCheck(); }); }
+  document.addEventListener('focusin', dodgeSoon);
+  document.addEventListener('focusout', dodgeSoon);
+  window.addEventListener('scroll', function () { if (document.activeElement && document.activeElement !== document.body) dodgeSoon(); }, { passive: true });
+  window.addEventListener('resize', dodgeSoon);
 
   function copy(text) {
     var done = function () { toast('הועתק'); };
@@ -508,7 +601,7 @@
     qsa('.sr-only,svg', clone).forEach(function (x) { x.remove(); });
     var label = (clone.textContent || '').replace(/\s+/g, ' ').trim();
     var ext = a.getAttribute('target') === '_blank';
-    toast((ext ? 'קישור חיצוני' : 'קישור') + (label ? ' "' + label + '"' : '') + ' – היעד [לאישור]', { icon: 'info' });
+    toast((ext ? 'קישור חיצוני' : 'קישור') + (label ? ' ״' + label + '״' : '') + ' – היעד [לאישור]', { icon: 'info' });
   });
 
   /* ---------- Field errors ---------- */
@@ -517,9 +610,13 @@
     if (!input) return;
     var errId = input.id + '-err';
     var err = document.getElementById(errId);
+    var d = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
     if (!msg) {
       input.setAttribute('aria-invalid', 'false');
       if (err) err.hidden = true;
+      // P2-1 (QA_INPUTS): הפניה ישירה ב-aria-describedby מקריאה גם הודעה מוסתרת – מורידים את מזהה השגיאה
+      var rest = d.filter(function (x) { return x !== errId; });
+      if (rest.length !== d.length) { if (rest.length) input.setAttribute('aria-describedby', rest.join(' ')); else input.removeAttribute('aria-describedby'); }
       return;
     }
     if (!err) {
@@ -531,7 +628,6 @@
     err.innerHTML = icon('alert-circle', { size: 18 }) + '<span>' + esc(msg) + '</span>';
     err.hidden = false;
     input.setAttribute('aria-invalid', 'true');
-    var d = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
     if (d.indexOf(errId) < 0) { d.push(errId); input.setAttribute('aria-describedby', d.join(' ')); }
   }
 

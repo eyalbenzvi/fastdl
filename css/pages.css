@@ -9,20 +9,12 @@ a.btn{text-decoration:none}
 .btn--secondary.btn--sm .ico,.btn .ico{flex:none}
 main:focus{outline:none}
 .page>main{display:block}
-.u-num{font-variant-numeric:tabular-nums}
 .success{color:var(--c-success)}
 .price-free{color:var(--c-success);font-weight:var(--fw-bold)}
-.divider{border:0;border-top:1px solid var(--c-border);margin:0}
-.wrap--narrow{max-width:calc(848px)}
-.wrap--faq{max-width:968px}
-.wrap--info{max-width:1048px}
 .wrap--status{max-width:928px}
 .wrap--form{max-width:768px}
-.stack-4{display:flex;flex-direction:column;gap:var(--sp-4)}
-.stack-5{display:flex;flex-direction:column;gap:var(--sp-5)}
 .stack-6{display:flex;flex-direction:column;gap:var(--sp-6)}
 .h2--card{font-size:var(--fs-h2-m);font-weight:var(--fw-bold);line-height:1.35}
-.h1--status{font-size:var(--fs-h1-status);font-weight:var(--fw-bold);line-height:1.25}
 .chip--static{display:inline-flex;align-items:center;text-decoration:none!important}
 .chip--static[aria-current="true"]{background:var(--c-navy);border-color:var(--c-navy);color:#fff}
 .ext-link{display:inline-flex;align-items:center;gap:6px}
@@ -30,15 +22,11 @@ main:focus{outline:none}
 .drawer__title{font-size:var(--fs-h2-m);font-weight:var(--fw-bold)}
 .drawer__title:focus,.modal [data-dialog-title]:focus,[data-dialog-title]:focus{outline:none}
 .drawer>.dialog__head .icon-btn{flex:none}
-.drawer__foot{margin-top:auto;padding-top:8px}
-@media (max-width:640px){
-  .h1--status{font-size:var(--fs-h1-flow-m)}
-}
 
 /* ---------- Polish (taste-skill pass): hit areas, figures, measure ---------- */
 /* קישורי טקסט עצמאיים: אזור לחיצה של 44px לפחות בלי לשנות את הפריסה – ::after שקוף שמתרחב אנכית סביב הקישור */
-.wordmark,.header-phone,.status-id a,.status-actions a:not(.btn),a.status-self-start:not(.btn),.status-help__list a,.about-links a,.contact-call__phone,.menu-call__phone,.home-alt__link,.info-bar__link,.home-trust__phone,.drawer a:not(.btn),.docs-modal>.ext-link{position:relative}
-.wordmark::after,.header-phone::after,.status-id a::after,.status-actions a:not(.btn)::after,a.status-self-start:not(.btn)::after,.status-help__list a::after,.about-links a::after,.contact-call__phone::after,.menu-call__phone::after,.home-alt__link::after,.info-bar__link::after,.home-trust__phone::after,.drawer a:not(.btn)::after,.docs-modal>.ext-link::after,.demo-pill a::after,.demo-bar__index::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,var(--tap-min));transform:translateY(-50%)}
+.wordmark,.header-phone,.site-footer__bottom a,.status-id a,.status-actions a:not(.btn),a.status-self-start:not(.btn),.status-help__list a,.about-links a,.contact-call__phone,.menu-call__phone,.home-alt__link,.info-bar__link,.home-trust__phone,.drawer a:not(.btn),.docs-modal>.ext-link{position:relative}
+.wordmark::after,.header-phone::after,.site-footer__bottom a::after,.status-id a::after,.status-actions a:not(.btn)::after,a.status-self-start:not(.btn)::after,.status-help__list a::after,.about-links a::after,.contact-call__phone::after,.menu-call__phone::after,.home-alt__link::after,.info-bar__link::after,.home-trust__phone::after,.drawer a:not(.btn)::after,.docs-modal>.ext-link::after,.demo-pill a::after,.demo-bar__index::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,var(--tap-min));transform:translateY(-50%)}
 /* רשימות צפופות (Footer) וכרום ההדגמה: מרחיבים עד אמצע הרווח שבין הפריטים, כדי שאזורי הלחיצה לא יחפפו */
 .site-footer__list a,.demo-chip,.demo-pill__toggle,.demo-pill a,.demo-bar__index{position:relative}
 .site-footer__list a::after{content:"";position:absolute;inset-inline:0;inset-block:-4px}
@@ -71,7 +59,7 @@ main:focus{outline:none}
 .more-list.is-off{opacity:0;transform:translateY(-4px) scale(.97)}
 .more-list a{display:block;padding:10px 14px;border-radius:8px;color:var(--c-navy);text-decoration:none}
 .more-list a:active,.more-list a[aria-current="page"]{background:var(--c-navy-50)}@media (hover:hover) and (pointer:fine){.more-list a:hover{background:var(--c-navy-50)}}
-.header-tools{display:flex;align-items:center;gap:14px;flex:none}
+.header-tools{display:flex;align-items:center;gap:12px;flex:none}
 .header-phone{display:flex;align-items:center;gap:8px;color:var(--c-navy)!important;text-decoration:none!important;font-weight:var(--fw-bold)}
 .header-phone .ico{color:var(--c-primary)}
 .lang-btn{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:1.5px solid var(--c-border-strong);border-radius:10px;color:var(--c-navy)!important;text-decoration:none!important;font-weight:var(--fw-semibold)}
@@ -82,8 +70,9 @@ main:focus{outline:none}
 .trust__items{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:8px 0}
 .trust__item{display:flex;align-items:center;gap:8px}
 @media (max-width:640px){
-  .site-header__bar{height:var(--header-h-m)}
+  .site-header__bar{min-height:var(--header-h-m)}
 }
+/* טלפון בכותרת התהליך: התווית "מוקד שירות" גלויה בלבד (aria-hidden) – השם הנגיש מגיע מ-sr-only "חיוג למוקד שירות:" (A-01) */
 /* טלפונים צרים: ב-360 (רוב מכשירי האנדרואיד) כפתור התפריט נחתך; ב-320 חסרים 45px */
 @media (max-width:374px){
   .site-header__bar{gap:12px}
@@ -122,10 +111,11 @@ main:focus{outline:none}
 .site-footer__auth{display:flex;gap:8px;color:var(--c-footer-muted);font-size:var(--fs-small)}
 .site-footer__auth .ico{margin-top:3px}
 .site-footer__h{font-weight:var(--fw-bold);margin-bottom:10px}
+.site-footer__call{text-wrap:balance} /* הטלפון והשעות בצירופים שלמים (.nowrap), בלי "·" יתומה */
 .site-footer__list{display:flex;flex-direction:column;gap:8px}
 @media (max-width:860px){.site-footer__cols{grid-template-columns:minmax(0,1fr)}}
-/* מובייל: כל קישור בפוטר בשורה של 44px (L-04) – הרשימה בעמודה אחת, ולכן במקום 25px + רווח 8 */
-@media (max-width:640px){
+/* מובייל ומכשירי מגע: כל קישור בפוטר בשורה של 44px (L-04, QA_VISUAL P2-5) – במקום 25px + רווח 8 */
+@media (max-width:640px),(pointer:coarse){
   .site-footer__list{gap:0}
   .site-footer__list a{display:flex;align-items:center;min-height:var(--tap-min)}
   .site-footer__list a::after{content:none}
@@ -160,7 +150,7 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .sticky-actions{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .drawer dl.kv-list{display:flex;flex-direction:column;gap:14px}
 .drawer dl.kv-list dt{font-size:var(--fs-small);color:var(--c-text-muted)}
-.drawer dl.kv-list dd{font-weight:var(--fw-semibold)}
+.drawer dl.kv-list dd{font-weight:var(--fw-semibold);min-width:0;overflow-wrap:anywhere}
 .modal .dialog__head .icon-btn,.drawer .dialog__head .icon-btn{background:var(--c-navy-50)}
 
 /* ---------- Page-specific sections are appended below ---------- */
@@ -368,6 +358,7 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .ds-mhead .menu-btn .ico{width:22px;height:22px}
 .ds-mhead__trust{background:var(--c-navy-50);padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:var(--fs-small);font-weight:var(--fw-medium)}
 .ds-mhead__trust .ico{color:var(--c-brand-cyan-dark)}
+@media (max-width:374px){.ds-mhead .wordmark__bars{display:none}.ds-mhead__bar{gap:8px;overflow:hidden}} /* ב-320–360 הדמיית הכותרת לא חורגת מהכרטיס (QA_VISUAL P3-7) */
 
 @media (max-width:1023px){
   .ds-swatches{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -401,7 +392,7 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .err-card{padding:44px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
 .err-card__ico{width:80px;height:80px;border-radius:50%;background:var(--c-info-bg);color:var(--c-info);display:flex;align-items:center;justify-content:center;flex:none}
 .err-card__title{font-size:var(--fs-h1-auth);line-height:1.25}
-.err-card__code{font-size:4rem;font-weight:var(--fw-black);color:var(--c-border-strong);line-height:1}
+.err-card__code{font-size:4rem;font-weight:var(--fw-black);color:var(--c-input-border);line-height:1} /* דקורטיבי (aria-hidden), ובכל זאת ≥3:1 לטקסט גדול (QA_VISUAL P3-2, A-04) */
 .err-card__actions{display:flex;gap:var(--sp-4);flex-wrap:wrap}
 @media (max-width:640px){
   .err-card{padding:24px}
@@ -433,15 +424,35 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .home-trust--ar{padding-bottom:72px}
 .ar-footer{padding:32px 0}
 .ar-footer__bar{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:var(--fs-small)}
+/* QA_VISUAL P2-4: קישורי הניווט בשתי שורות (השם + "(بالعبرية)") – בלי גלישה אופקית ב-1024–1440; כפתור "עברית" לא נחתך */
+html[lang="ar"] .nav__link{white-space:normal;text-align:center;line-height:1.25;padding-block:6px}
+html[lang="ar"] .nav__link .ar-he{display:block}
+html[lang="ar"] .site-header__bar{min-height:var(--header-h);height:auto;flex-wrap:wrap;row-gap:8px;padding-block:4px} /* טקסט מוגדל: הכלים יורדים לשורה שנייה במקום לגלוש */
+.ar-tools{flex:none}
+html[lang="ar"] .wordmark{flex:0 1 auto;min-width:0}
+html[lang="ar"] .wordmark__text{min-width:0}
+/* קישור הדילוג בערבית ארוך ונשבר לשתי שורות בזום – מוסתר ב-transform ולא ב-top קבוע, כך שלא "מציץ" */
+html[lang="ar"] .skip-link{top:0;transform:translateY(-120%)}
+html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 @media (max-width:640px){
   html[lang="ar"] .h1{font-size:var(--fs-h1-m)}
-  html[lang="ar"] .site-header__bar{height:var(--header-h)}
+  html[lang="ar"] .site-header__bar{min-height:var(--header-h);height:auto}
   .home-hero--ar{padding:56px 0 64px}
   .home-how--ar{padding:56px 0 0}
   .home-how--ar .home-how__card{padding:32px}
   html[lang="ar"] .id-card{padding:28px}
   html[lang="ar"] .home-alt__card{padding:20px 28px}
   .home-trust--ar{padding-bottom:72px}
+}
+/* זום 200% (≤300): הכותרת נשברת לשתי שורות (כמו בעברית) – הכלים לא יושבים על פס האמון; טקסט הצעדים לא חורג מהכרטיס */
+@media (max-width:300px){
+  html[lang="ar"] .site-header__bar{height:auto;flex-wrap:wrap;row-gap:8px;padding-block:8px}
+  .home-how--ar .home-how__card{padding:20px}
+  .home-how--ar .home-how__step,.home-how--ar .home-how__step p{min-width:0;overflow-wrap:anywhere}
+  html[lang="ar"] .home-alt__card{padding:16px}
+  html[lang="ar"] .home-alt__actions,html[lang="ar"] .home-alt__actions>*{min-width:0;max-width:100%}
+  html[lang="ar"] .home-alt__actions .btn{white-space:normal;height:auto;min-height:var(--tap-min)}
+  html[lang="ar"] .ar-he{white-space:normal}
 }
 
 
@@ -635,6 +646,8 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .guide-video__play{width:84px;height:84px;border-radius:50%;border:0;background:#fff;color:var(--c-navy);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .guide-video__play svg{fill:var(--c-navy);transform:translateX(3px)} /* משולש play לא מתהפך ב-RTL; הזזה אופטית ימינה */
 .guide-video__tag{position:absolute;inset-block-start:16px;inset-inline-start:16px;font-size:var(--fs-xs)} /* .tbc: הסרטון עוד לא אושר (F13) */
+/* זום 200% (≤300): התגית יושבת מעל כפתור ההפעלה ולא עליו (QA_VISUAL P2-1) */
+@media (max-width:300px){.guide-video__frame{flex-direction:column;gap:8px;aspect-ratio:auto;padding:12px}.guide-video__tag{position:static}.guide-video__play{width:56px;height:56px}}
 
 /* מסמכים לדוגמה (4.20) */
 .info-docs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-4);width:100%}
@@ -671,6 +684,9 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .info-notes{background:var(--c-warning-bg);border:1px solid var(--c-warning-border);border-radius:var(--radius-lg);padding:24px;display:flex;flex-direction:column;gap:12px}
 .info-notes__t{display:flex;align-items:center;gap:8px;font-size:var(--fs-title);font-weight:var(--fw-bold);color:var(--c-warning-text)}
 .info-notes__list{display:flex;flex-direction:column;gap:10px}
+/* QA_COPY 3.33: התבליט ב-CSS ולא כטקסט – קורא מסך לא מקריא "תבליט" */
+.info-notes__list>li{position:relative;padding-inline-start:16px}
+.info-notes__list>li::before{content:"";position:absolute;inset-inline-start:2px;top:.7em;width:6px;height:6px;border-radius:50%;background:currentColor}
 @media (max-width:860px){.fast-grid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){
   .fast-steps,.fast-calc{padding:20px}
@@ -705,6 +721,8 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .dl-card__tags{display:flex;gap:6px;flex-wrap:wrap}
 .dl-card__foot{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .dl-card__price{font-weight:var(--fw-black);font-size:var(--fs-h3)}
+/* QA_VISUAL P3-7: ב-641–720 (טלפון לרוחב) הטבלה לא נכנסת – כרטיסים כמו במובייל, בלי גלילה אופקית נסתרת */
+@media (min-width:641px) and (max-width:720px){.dl-table-wrap.hide-m{display:none!important}.dl-groups.only-m{display:flex!important}}
 
 /* ---------- P14 pickup ---------- */
 .pk-map{position:relative;height:260px;border-radius:var(--radius-lg);background:var(--c-illus-line);overflow:hidden} /* #DCE4EA לפי 05_screens P14 */
@@ -756,8 +774,9 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .about-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-6)}
 .about-card{display:flex;flex-direction:column;gap:14px}
 .about-card__head{display:flex;gap:12px;align-items:center}
+.about-card__head>h2{min-width:0;overflow-wrap:anywhere} /* זום 200%: הכותרת לא חורגת מהכרטיס (QA_VISUAL P2-1) */
 .about-card__ico{width:48px;height:48px;background:var(--c-info-bg);color:var(--c-info)}
-.about-mot{display:flex;align-items:center;justify-content:center;height:64px;width:240px;max-width:100%;border:2px dashed var(--c-input-border);border-radius:10px;color:var(--c-text-muted);font-size:var(--fs-small);font-weight:var(--fw-semibold);text-align:center}
+.about-mot{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px;width:240px;max-width:100%;border:2px dashed var(--c-input-border);border-radius:10px;color:var(--c-text-muted);font-size:var(--fs-small);font-weight:var(--fw-semibold);text-align:center}
 .info-trust{gap:12px}
 .info-trust .ico{margin-top:4px}
 .about-links{display:flex;gap:24px;flex-wrap:wrap}
@@ -788,9 +807,6 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .stepper-m__text{font-weight:var(--fw-bold)}
 
 /* step 1 */
-.order-addr-note{display:flex;gap:12px;align-items:center;background:var(--c-navy-50);border-radius:var(--radius-md);padding:14px 18px}
-.order-addr-note .ico{color:var(--c-info)}
-.order-chips{display:flex;gap:8px;flex-wrap:wrap}
 .order-opts{display:flex;flex-direction:column;gap:12px}
 .opt-card-wrap{position:relative}
 .order-opt__q{z-index:2;border-radius:50%}
@@ -818,7 +834,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* step 2 */
 .order-locked{padding:22px 24px;display:flex;gap:16px;align-items:center}
 .order-locked__ibox{width:48px;height:48px}
-.order-addr-big{font-size:var(--fs-h2-m);font-weight:var(--fw-bold)}
+.order-addr-big{font-size:var(--fs-h2-m);font-weight:var(--fw-bold);min-width:0;overflow-wrap:anywhere}
 .order-form{padding:24px;display:flex;flex-direction:column;gap:16px}
 .order-form__t{font-weight:var(--fw-bold)}
 .order-form__t .opt{font-weight:400;color:var(--c-text-muted)}
@@ -829,7 +845,6 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 
 /* step 3 */
 .order-opt__title strong{font-size:var(--fs-title)}
-.order-mini-tl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:var(--fs-small);font-weight:var(--fw-semibold);color:var(--c-info)}
 .order-terms__link{min-height:0;font-weight:var(--fw-bold)}
 
 /* step 4 */
@@ -838,7 +853,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-sum__s::-webkit-details-marker{display:none}
 .order-sum__dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;margin-top:12px}
 .order-sum__dl dt{font-size:var(--fs-small);color:var(--c-text-muted)}
-.order-sum__dl dd{font-weight:var(--fw-semibold)}
+.order-sum__dl dd{font-weight:var(--fw-semibold);min-width:0;overflow-wrap:anywhere}
 .order-sum__dl dd.order-sum__total{font-weight:var(--fw-black);font-size:var(--fs-h3)}
 .order-secure{display:flex;align-items:center;gap:8px}
 .order-secure .ico{color:var(--c-success)}
@@ -847,12 +862,10 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-done{padding:40px;display:flex;flex-direction:column;gap:20px;align-items:flex-start}
 .order-done__circle{width:76px;height:76px;border-radius:50%;background:var(--c-success-bg);color:var(--c-success);display:flex;align-items:center;justify-content:center}
 .order-done__circle .ico{stroke-width:2.5}
-.order-done__num{display:flex;align-items:center;gap:6px;font-size:var(--fs-lead);flex-wrap:wrap}
+.order-done__num{display:flex;align-items:center;gap:6px;font-size:var(--fs-lead);flex-wrap:wrap;max-width:100%}
 .order-done__num .icon-btn{border-radius:8px}
 .order-done__next{width:100%;background:var(--c-bg);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
 .order-done__t{font-weight:var(--fw-bold)}
-.order-done__tl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:var(--fw-semibold)}
-.order-done__arr{color:var(--c-info)}
 .order-done__sms{display:flex;align-items:center;gap:8px}
 .order-done__sms .ico{color:var(--c-primary)}
 .order-done__btns{display:flex;gap:16px;flex-wrap:wrap;width:100%}
@@ -866,7 +879,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-drawer .kv-list{display:flex;flex-direction:column;gap:12px}
 .order-drawer .kv-list dt{font-size:var(--fs-small);color:var(--c-text-muted)}
 .order-drawer .kv-list dd{font-weight:var(--fw-semibold)}
-.order-tbl-wrap{overflow-x:auto}
+.order-tbl-wrap{overflow-x:auto;flex-shrink:0} /* QA_VISUAL P1-2: רק המגירה גוללת, לא תיבה פנימית מכווצת */
 .order-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
 .order-tbl th,.order-tbl td{text-align:start;padding:10px 8px;border-bottom:1px solid var(--c-border);vertical-align:top}
 .order-tbl thead th{font-weight:var(--fw-bold);color:var(--c-text-muted);font-size:var(--fs-xs)}
@@ -909,6 +922,9 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .status-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .status-actions--wide{gap:20px}
 .status-links{display:flex;gap:20px;flex-wrap:wrap}
+/* QA_VISUAL P2-5: קישורי S0 (תשובה 2) – אזור לחיצה של 44px בלי לשנות את הפריסה */
+.status-links a{position:relative}
+.status-links a::after{content:"";position:absolute;inset-inline:0;top:50%;height:max(100%,var(--tap-min,44px));transform:translateY(-50%)}
 .status-done{display:flex;align-items:flex-start;gap:8px;font-weight:var(--fw-semibold);color:var(--c-success)}
 .status-done .ico{margin-top:3px}
 .status-done:focus{outline:none}
@@ -924,6 +940,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .status-det .h2{margin-bottom:16px}
 .status-det dd .copy-row{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .status-det dd .icon-btn{border-radius:var(--radius-sm)}
+.status-det .kv dd{min-width:0;overflow-wrap:anywhere} /* P2-9: כתובת ארוכה בלי רווחים לא מרחיבה את העמוד */
 
 /* help */
 .status-help{background:var(--c-navy-50);border-radius:var(--radius-lg);padding:24px 28px;display:flex;flex-direction:column;gap:12px}
@@ -960,6 +977,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .s0-ans__part{display:flex;flex-direction:column;gap:6px}
 .s0-ans__part--sep{border-top:1px solid var(--c-border);padding-top:14px}
 .s0-ans .field .error{margin-top:6px}
+.s0-ans .check{min-height:var(--tap-min,44px);align-items:center} /* P2-5: תיבת ההסכמה – שורה של 44px גם ב-≥641 */
 .s0-foot{border-top:1px solid var(--c-border);padding-top:14px}
 .s0-foot .ext-link{display:inline;}
 .s0-foot .ext-link .ico{margin-inline-start:4px;vertical-align:-2px}
@@ -996,6 +1014,9 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 }
 /* זום 200% (≤300): כרטיס הזמן בטור, ותאריכים ארוכים נשברים (המספרים עצמם לא) */
 @media (max-width:300px){
+  /* QA_VISUAL P2-1: בזום 200% מספר ארוך (טלפון, מספר הזמנה) נשבר במקום לחרוג מהכרטיס/מהכפתור */
+  .status-page .num{white-space:normal;overflow-wrap:anywhere}
+  .st-help__call .btn{min-width:0;max-width:100%;flex-wrap:wrap;white-space:normal;height:auto}
   .time-card{flex-direction:column;align-items:flex-start}
   .time-card>div{min-width:0;max-width:100%}
   .status-page .st-nw{white-space:normal}
@@ -1095,7 +1116,6 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .order-to-pickup{margin-top:-8px}
 .order-to-pickup .link-btn{font-weight:var(--fw-semibold)}
 .order-prod__eta{color:var(--c-info);font-size:var(--fs-body)}
-.order-late{align-items:center}
 /* שלב 4: הכפתור לא דביק (החלטה 7), שורת הרגעה מעליו */
 .order-actions--static{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .order-sum__chg{min-height:0;font-size:var(--fs-small);font-weight:var(--fw-semibold);margin-inline-start:6px;position:relative}
@@ -1106,7 +1126,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* שלב 5 */
 .order-done__dl{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
 .order-done__dl dt{font-size:var(--fs-small);color:var(--c-text-muted)}
-.order-done__dl dd{font-weight:var(--fw-semibold)}
+.order-done__dl dd{font-weight:var(--fw-semibold);min-width:0;overflow-wrap:anywhere}
 .order-done h2.order-done__t{font-size:var(--fs-lead)}
 /* מגירת ההשוואה */
 .order-tbl__pick{white-space:nowrap}
@@ -1175,6 +1195,8 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .st-fresh .ico{flex:none;margin-top:3px}
 /* ציר: תאריך מתחת לכל שלב */
 .st-tl__txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* A-06: הפסים של הציר בעטיפה (לא ילדים של <ol>) – אותו מיקום, כי העטיפה בגודל ה-<ol> */
+.st-tlbox{position:relative}
 .st-tl__d{font-size:var(--fs-tag);font-weight:var(--fw-regular,400);color:var(--c-text-muted);line-height:1.4}
 .timeline__step--skip{color:var(--c-text-muted)}
 .timeline__step--skip .timeline__dot{background:var(--c-bg);border:2px dashed var(--c-step-future);color:var(--c-text-muted)}
@@ -1220,6 +1242,15 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
   .st-help__call{align-items:stretch}
 }
 @media (prefers-reduced-motion:reduce){.st-tlsum__chev{transition:none}}
+/* QA_VISUAL P2-2: גופן מוגדל בדפדפן (נקודת שבירה ב-em) – הציר עובר לתצוגה הקומפקטית גם ברוחב דסקטופ */
+@media (min-width:641px) and (max-width:40em){
+  .status-tl .timeline{grid-template-columns:minmax(0,1fr);gap:14px}
+  .status-tl .timeline__step{flex-direction:row;text-align:start}
+  .status-tl .timeline__track,.status-tl .timeline__fill{display:none}
+  .st-tlsum{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .status-tl:not(.is-open) .st-tl{display:none}
+  .status-tl.is-open .st-tl{margin-top:16px;border-top:1px solid var(--c-border);padding-top:16px}
+}
 /* ===== /UX recs: status ===== */
 
 /* ===== UX behavior: shared/pages ===== */
@@ -1238,6 +1269,8 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 /* P2-8 · רכיבי ההדגמה לא מסתירים תוכן.
    pill: מרווח בתחתית הפוטר בגובה ה-pill (16 + 44 + 12), כך שאפשר לגלול את שורת המוקד אל מעליו */
 html.has-pill .site-footer{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+/* פוקוס מקלדת שהדפדפן גולל אליו נעצר מעל ה-pill (B-12); מה שכבר במסך מתחת ל-pill – ה-pill שקוף (ui.js, .is-dodge) */
+html.has-pill:not(:has(.sticky-actions)){scroll-padding-block-end:calc(72px + env(safe-area-inset-bottom,0px))}
 html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* ?clean=1 – מבחני משתמשים */
 /* סרגל ההדגמה נראה כמו כלי, לא כמו Stepper: קו מקווקו וצ'יפים מקווקווים */
 .demo-bar{border-bottom:2px dashed var(--c-demo-accent)}
@@ -1288,4 +1321,29 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
 .order-actions__credit{display:block;color:var(--c-text)}
 /* P3-2: שדה עם שגיאה שמקבל פוקוס – התווית מעליו לא נחתכת בראש המסך */
 .order .field .input{scroll-margin-top:48px}
+/* A-05: תיבת תנאי השימוש – אזור הקשה של 44×44 סביב ה-checkbox (label נוסף עוטף אותו), בלי שינוי פריסה */
+.order-terms__box{position:relative;display:inline-flex;flex:none;cursor:pointer}
+.order-terms__box::after{content:"";position:absolute;inset-inline:-11px;top:50%;height:var(--tap-min,44px);transform:translateY(-50%)}
+/* QA_VISUAL P2-5: ההצהרה בהנפקה החוזרת – שורה של 44px גם ב-≥641 */
+.reissue-decl{min-height:var(--tap-min,44px);align-items:center}
+.reissue-decl input{margin-top:0}
+/* QA_VISUAL P3-5: טלפון לרוחב (גובה נמוך, מגע) – "המשך" דביק כמו במובייל לאורך */
+@media (min-width:641px) and (max-height:500px) and (pointer:coarse){
+  .order .sticky-actions{position:sticky;bottom:0;z-index:20;background:#fff;box-shadow:var(--shadow-sticky);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));margin-inline:-16px}
+  .order .sticky-actions.fd-lock{position:sticky}
+  html:has(.order .sticky-actions){scroll-padding-block-end:calc(96px + env(safe-area-inset-bottom,0px))}
+}
+/* QA_VISUAL P2-1: זום 200% (≤300) – המחיר בשורה משלו (לא עולה על שם השיטה ועל "?"), שורות ארוכות נשברות,
+   "בחרתם" בשתי שורות (המחיר נראה), ומספרים ארוכים נשברים במקום לחרוג מהכרטיס */
+@media (max-width:300px){
+  .opt-card.order-m{grid-template-columns:22px minmax(0,1fr);grid-template-areas:"r n" ". p" ". e" ". b" ". f";padding-inline-end:52px}
+  .order-m__price{margin-inline-end:0}
+  .order-m__ben,.order-m__fit{min-width:0;overflow-wrap:anywhere}
+  .order-m__b{display:inline}
+  .order-m__b .ico{vertical-align:-3px}
+  .order-actions--choice .order-actions__chosen{white-space:normal}
+  .order .num,.reissue .num{white-space:normal;overflow-wrap:anywhere}
+  .order-pay-grid{grid-template-columns:minmax(0,1fr)}
+  .order .label{overflow-wrap:anywhere}
+}
 /* ===== /UX behavior: order/status ===== */

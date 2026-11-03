@@ -12,19 +12,19 @@
 
   var NAV = [
     { t: 'בדיקת מצב והזמנה', href: 'login.html', pages: ['login', 'otp', 'status', 'order', 'reissue'] },
-    { t: 'מה עלי לעשות?', href: 'guide.html', pages: ['guide'] },
+    { t: 'מה עליי לעשות?', href: 'guide.html', pages: ['guide'] },
     { t: 'רישיון הכי מהיר', href: 'fastest.html', pages: ['fastest'] },
     { t: 'שיטות מסירה ומחירון', href: 'delivery.html', pages: ['delivery'] }
   ];
   var MORE = [
-    { t: 'עמדות איסוף', href: 'pickup.html', page: 'pickup' },
+    { t: 'עמדות איסוף עצמי', href: 'pickup.html', page: 'pickup' },
     { t: 'שאלות ותשובות', href: 'faq.html', page: 'faq' },
     { t: 'על השירות', href: 'about.html', page: 'about' },
     { t: 'צרו קשר', href: 'contact.html', page: 'contact' }
   ];
   var MENU = [
     { t: 'בדיקת מצב והזמנת משלוח', d: 'איפה הרישיון שלי ואיך הוא יגיע אליי', href: 'login.html', pages: ['login', 'otp', 'status', 'order', 'reissue'] },
-    { t: 'מה עלי לעשות עכשיו?', d: 'מסלול לפי המצב: אגרה, צילום, הרשמה', href: 'guide.html', pages: ['guide'] },
+    { t: 'מה עליי לעשות עכשיו?', d: 'מסלול לפי המצב: אגרה, צילום, הרשמה', href: 'guide.html', pages: ['guide'] },
     { t: 'רישיון הכי מהיר', d: 'המסלול המהיר ביותר לקבלת הרישיון', href: 'fastest.html', pages: ['fastest'] },
     { t: 'שיטות מסירה ומחירון', d: 'השוואה בין כל אפשרויות המסירה והעלות שלהן', href: 'delivery.html', pages: ['delivery'] },
     { t: 'עמדות איסוף עצמי', d: 'כתובות, שעות פעילות והנחיות הגעה', href: 'pickup.html', pages: ['pickup'] },
@@ -36,13 +36,16 @@
 
   function cur(pages) { return pages.indexOf(page) >= 0 ? ' aria-current="page"' : ''; }
 
+  /* השם הנגיש של קישור הוורדמרק = הטקסט הגלוי ("רישיון עד הבית מבית דפוס בארי") + ", לעמוד הבית" (sr-only),
+     בלי aria-label – כך פקודה קולית לפי הטקסט הגלוי עובדת (label-in-name, A-01) */
+  var HOME_SR = '<span class="sr-only">, לעמוד הבית</span>';
   function wordmark(dark) {
-    return '<span class="wordmark__text"><span class="wordmark__name">רישיון עד הבית</span><span class="wordmark__sub">מבית דפוס בארי</span></span>' +
+    return '<span class="wordmark__text"><span class="wordmark__name">רישיון עד הבית</span><span class="sr-only">&nbsp;</span><span class="wordmark__sub">מבית דפוס בארי</span></span>' +
       '<span class="wordmark__bars" aria-hidden="true"><span></span><span></span><span></span></span>';
   }
 
   function hoursLine() {
-    return 'א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span> · שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span>';
+    return '<span class="nowrap">א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></span> <span class="nowrap">· שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></span>';
   }
 
   /* ---------- Maintenance banner ---------- */
@@ -56,9 +59,9 @@
   /* ---------- Header ---------- */
   function headerHTML() {
     var moreCurrent = MORE.some(function (m) { return m.page === page; });
-    return '<a class="skip-link" href="#main">דלג לתוכן הראשי</a>' +
+    return '<a class="skip-link" href="#main">דילוג לתוכן הראשי</a>' +
       '<header class="site-header"><div class="wrap site-header__bar">' +
-      '<a class="wordmark" href="index.html" aria-label="רישיון עד הבית – מבית דפוס בארי, לעמוד הבית">' + wordmark() + '</a>' +
+      '<a class="wordmark" href="index.html">' + wordmark() + HOME_SR + '</a>' +
       '<nav class="nav hide-t" aria-label="ניווט ראשי">' +
       NAV.map(function (n) { return '<a class="nav__link" href="' + n.href + '"' + cur(n.pages) + '>' + n.t + '</a>'; }).join('') +
       '<button type="button" class="nav__more' + (moreCurrent ? ' is-current' : '') + '" aria-expanded="false" aria-controls="more-list" id="more-btn">עוד' + I('chevron-down', { size: 18 }) + '</button>' +
@@ -75,28 +78,28 @@
       '<button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu-drawer">' + I('menu', { size: 20 }) + '<span class="menu-btn__t">תפריט</span></button>' +
       '</div>' +
       '</div></header>' +
-      '<div class="trust"><div class="wrap trust__bar">' +
+      '<section class="trust" aria-label="הרשאה ואבטחה"><div class="wrap trust__bar">' +
       '<div class="trust__items">' +
       '<span class="trust__item">' + I('shield-check', { size: 18 }) + '<span class="hide-m">השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</span><span class="only-m">בהרשאת משרד התחבורה</span></span>' +
       '<span class="trust__item hide-m">' + I('lock', { size: 18 }) + 'המידע שלכם מאובטח</span>' +
       '</div>' +
       '<span class="mot-placeholder hide-t">לוגו משרד התחבורה – בכפוף לאישור</span>' +
-      '</div></div>';
+      '</div></section>';
   }
 
   /* ---------- Order-flow mode: וורדמרק + טלפון המוקד + פס אמון; פוטר בשורה אחת ---------- */
   function flowHeaderHTML() {
-    return '<a class="skip-link" href="#main">דלג לתוכן הראשי</a>' +
+    return '<a class="skip-link" href="#main">דילוג לתוכן הראשי</a>' +
       '<header class="site-header site-header--flow"><div class="wrap site-header__bar">' +
-      '<a class="wordmark" href="index.html" aria-label="רישיון עד הבית – מבית דפוס בארי, לעמוד הבית">' + wordmark() + '</a>' +
-      '<a class="header-phone header-phone--flow" href="' + TEL + '" aria-label="חיוג למוקד שירות ' + PHONE + '">' + I('phone', { size: 20 }) +
-      '<span class="header-phone__lbl hide-m">מוקד שירות</span><span class="num" dir="ltr">' + PHONE + '</span></a>' +
+      '<a class="wordmark" href="index.html">' + wordmark() + HOME_SR + '</a>' +
+      '<a class="header-phone header-phone--flow" href="' + TEL + '">' + I('phone', { size: 20 }) +
+      '<span class="sr-only">חיוג למוקד שירות:&nbsp;</span><span class="header-phone__lbl hide-m" aria-hidden="true">מוקד שירות</span><span class="num" dir="ltr">' + PHONE + '</span></a>' +
       '</div></header>' +
-      '<div class="trust"><div class="wrap trust__bar">' +
+      '<section class="trust" aria-label="הרשאה ואבטחה"><div class="wrap trust__bar">' +
       '<div class="trust__items">' +
       '<span class="trust__item">' + I('shield-check', { size: 18 }) + '<span class="hide-m">השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</span><span class="only-m">בהרשאת משרד התחבורה</span></span>' +
       '<span class="trust__item">' + I('lock', { size: 18 }) + '<span class="hide-m">המידע שלכם מאובטח</span><span class="only-m">מאובטח</span></span>' +
-      '</div></div></div>';
+      '</div></div></section>';
   }
   function flowFooterHTML() {
     var ext = I('external-link', { size: 16 }) + '<span class="sr-only">(נפתח בלשונית חדשה)</span>';
@@ -110,7 +113,7 @@
   }
 
   function menuHTML() {
-    return '<aside class="drawer drawer--menu" id="menu-drawer" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden>' +
+    return '<div class="drawer drawer--menu" id="menu-drawer" role="dialog" aria-modal="true" aria-labelledby="menu-title" hidden>' +
       '<div class="dialog__head"><p class="drawer__title" id="menu-title" data-dialog-title tabindex="-1">תפריט</p>' +
       '<button type="button" class="icon-btn" aria-label="סגירת התפריט" data-close-dialog>' + I('x') + '</button></div>' +
       '<nav aria-label="תפריט ראשי"><ul class="menu-list">' +
@@ -124,7 +127,7 @@
       '<p class="small muted">' + hoursLine() + '</p>' +
       '</div>' +
       '<div class="menu-lang"><span class="chip chip--static" aria-current="true">עברית</span><a class="chip chip--static" href="home-ar.html" lang="ar">العربية</a></div>' +
-      '</aside>';
+      '</div>';
   }
 
   /* ---------- Footer ---------- */
@@ -134,22 +137,25 @@
       '<div class="site-footer__brand"><span class="wordmark wordmark--dark">' + wordmark(true) + '</span>' +
       '<p class="site-footer__auth">' + I('shield-check', { size: 18 }) + 'השירות מופעל בהרשאת משרד התחבורה ולפי הנחיותיו</p></div>' +
       '<nav aria-label="קישורי שירות"><p class="site-footer__h">שירות</p><ul class="site-footer__list">' +
-      '<li><a href="faq.html">שאלות ותשובות</a></li><li><a href="contact.html">צרו קשר</a></li><li><a href="pickup.html">עמדות איסוף</a></li><li><a href="delivery.html">שיטות מסירה</a></li></ul></nav>' +
+      '<li><a href="faq.html">שאלות ותשובות</a></li><li><a href="contact.html">צרו קשר</a></li><li><a href="pickup.html">עמדות איסוף עצמי</a></li><li><a href="delivery.html">שיטות מסירה ומחירון</a></li></ul></nav>' +
       '<nav aria-label="מידע משפטי"><p class="site-footer__h">מידע</p><ul class="site-footer__list">' +
       '<li><a href="accessibility.html">הצהרת נגישות</a></li><li><a href="#">מדיניות פרטיות</a></li><li><a href="#">תנאי שימוש</a></li><li><a href="about.html">איך תדעו שזה אנחנו</a></li></ul></nav>' +
       '</div>' +
-      '<div class="site-footer__bottom"><span>© דפוס בארי</span><span>מוקד שירות: <a href="' + TEL + '"><span class="num" dir="ltr">' + PHONE + '</span></a> · א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></span></div>' +
+      '<div class="site-footer__bottom"><span>© דפוס בארי</span><span class="site-footer__call"><span class="nowrap">מוקד שירות: <a href="' + TEL + '"><span class="num" dir="ltr">' + PHONE + '</span></a></span> ' +
+      '<span class="nowrap">· א׳–ה׳ <span class="num" dir="ltr">08:00–17:00</span></span> <span class="nowrap">· שישי וערבי חג <span class="num" dir="ltr">08:00–13:00</span></span></span></div>' +
       '</div></footer>';
   }
 
-  /* רכיבי ההדגמה (P2-8): במובייל (≤640) מקופלים כברירת מחדל, והבחירה נשמרת לכל הסשן (UI.store 'fd.demoOpen').
+  /* רכיבי ההדגמה (P2-8): במובייל (≤640), בטלפון לרוחב (גובה ≤500) ובכל מכשיר מגע מקופלים כברירת מחדל (QA_VISUAL P2-3),
+     והבחירה נשמרת לכל הסשן (UI.store 'fd.demoOpen').
      ?clean=1 מסתיר את סרגל ההדגמה ואת ה-pill לגמרי עד ?clean=0 (מבחני משתמשים) */
   var mqM = null;
-  try { mqM = window.matchMedia('(max-width:640px)'); } catch (e) { /* */ }
+  var mqDemo = null;
+  try { mqM = window.matchMedia('(max-width:640px)'); mqDemo = window.matchMedia('(max-width:640px), (max-height:500px), (pointer:coarse)'); } catch (e) { /* */ }
   function demoOpen() {
     var v = UI.store.get('fd.demoOpen', null);
     if (v === true || v === false) return v;
-    return !(mqM && mqM.matches);
+    return !(mqDemo && mqDemo.matches);
   }
   function cleanMode() {
     var c = UI.param('clean');
@@ -248,12 +254,21 @@
   function setupMenu() {
     var btn = document.getElementById('menu-btn');
     if (!btn) return;
-    btn.addEventListener('click', openMenu);
+    btn.addEventListener('click', function () { openMenu(btn); });
   }
-  function openMenu() {
+  // opener: הכפתור שפתח (למשל דוגמה במערכת העיצוב). B-07: כשכפתור "תפריט" מוסתר (≥1024) הפוקוס חוזר למי שפתח,
+  // או ל-main – לא נופל ל-BODY
+  function openMenu(opener) {
     var btn = document.getElementById('menu-btn');
     if (btn) btn.setAttribute('aria-expanded', 'true');
-    UI.drawer.open('menu-drawer', { returnFocus: btn, onClose: function () { if (btn) btn.setAttribute('aria-expanded', 'false'); } });
+    var back = opener && opener.focus ? opener : (btn && btn.offsetParent ? btn : (document.activeElement !== document.body ? document.activeElement : null));
+    UI.drawer.open('menu-drawer', {
+      returnFocus: back,
+      onClose: function () {
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (!back || !back.offsetParent) setTimeout(function () { if (document.activeElement === document.body) focusMain(); }, 0);
+      }
+    });
   }
 
   function setupPill() {

@@ -17,56 +17,79 @@
   var ORDER_IDS = GROUPS.reduce(function (a, g) { return a.concat(g.ids); }, []);
   var ICON = { pickup_bari: 'store', pickup_tlv_airport: 'plane', express_home: 'truck', regular_home: 'truck', registered_mail: 'mail', regular_mail: 'mail' };
   // מועד הגעה מוחלט לפי "מתי להתחיל" (ייצור 25.8 או 26.8 ב-07:00; ימי עסקים א׳–ה׳). 07 §7.5 + כללי 01
+  // "עוד לא": רק מהיר ונתב״ג זזים ביום עסקים – כמו בציר של מסך המצב (status.js, החלטה 48). [לאישור תפעולי] – DECISIONS
+  var LATER = ' (יום עסקים אחד מאוחר יותר)';
   var ETA = {
     now: {
       pickup_bari: 'אפשר לאסוף מיום ד׳ 26.8, מ-11:00', express_home: 'יגיע עד יום ד׳ 26.8', pickup_tlv_airport: 'אפשר לאסוף מיום ד׳ 26.8',
       regular_home: 'יגיע בין יום ה׳ 27.8 ליום ג׳ 1.9', registered_mail: 'יגיע עד יום ב׳ 14.9', regular_mail: 'יגיע עד יום ב׳ 14.9'
     },
     wait: {
-      pickup_bari: 'אפשר לאסוף מיום ה׳ 27.8, מ-11:00 (יום אחד מאוחר יותר)', express_home: 'יגיע עד יום ה׳ 27.8 (יום אחד מאוחר יותר)', pickup_tlv_airport: 'אפשר לאסוף מיום ה׳ 27.8 (יום אחד מאוחר יותר)',
-      regular_home: 'יגיע בין יום א׳ 30.8 ליום ד׳ 2.9', registered_mail: 'יגיע עד יום ג׳ 15.9', regular_mail: 'יגיע עד יום ג׳ 15.9'
+      pickup_bari: 'אפשר לאסוף מיום ד׳ 26.8, מ-11:00', express_home: 'יגיע עד יום ה׳ 27.8' + LATER, pickup_tlv_airport: 'אפשר לאסוף מיום ה׳ 27.8' + LATER,
+      regular_home: 'יגיע בין יום ה׳ 27.8 ליום ג׳ 1.9', registered_mail: 'יגיע עד יום ב׳ 14.9', regular_mail: 'יגיע עד יום ב׳ 14.9'
     }
   };
   var HOW = { express_home: 'ביד, מהשליח', regular_home: 'ביד, מהשליח', pickup_bari: 'באיסוף, עם תעודה מזהה', pickup_tlv_airport: 'באיסוף, עם תעודה מזהה', registered_mail: 'בתיבה, עם מעקב', regular_mail: 'בתיבה, ללא מעקב' };
   var IF_NOT = {
     express_home: 'רואים במעקב איפה הוא', regular_home: 'רואים במעקב איפה הוא', registered_mail: 'רואים במעקב של דואר ישראל איפה הוא',
     regular_mail: 'אפשר לבקש הנפקה חוזרת רק אחרי 19 ימי עסקים',
-    pickup_bari: 'שמור לאיסוף עד [לאישור]', pickup_tlv_airport: 'שמור לאיסוף עד [לאישור]'
+    pickup_bari: 'נשמר לאיסוף עד [לאישור]', pickup_tlv_airport: 'נשמר לאיסוף עד [לאישור]'
   };
   var INCL = { express_home: 'מסירה ביד · מעקב משלוח ב-SMS', regular_home: 'מסירה ביד · מעקב משלוח ב-SMS', pickup_tlv_airport: 'איסוף עם תעודה מזהה', registered_mail: 'מעקב של דואר ישראל', pickup_bari: 'איסוף עם תעודה מזהה', regular_mail: 'ללא מעקב' };
-  var CAVEAT = { regular_mail: 'נמסר רק לתיבה שיש עליה שם' }; // "ללא מעקב" כבר בתג של הכרטיס
+  var CAVEAT = { regular_mail: 'נמסר רק לתיבה שיש עליה שם מזהה' }; // "ללא מעקב" כבר בתג של הכרטיס
   var TAG_CLS = { 'ללא עלות': 'tag--free', 'הכי מהיר': 'tag--fast', 'הכי מהיר לאיסוף': 'tag--fast', 'הכי מהיר עד הבית': 'tag--fast', 'ללא מעקב': 'tag--notrack', 'מסירה ביד': 'tag--hand' };
   var METHODS = (D.delivery_methods || []).slice().sort(function (a, b) { return ORDER_IDS.indexOf(a.id) - ORDER_IDS.indexOf(b.id); });
   METHODS.forEach(function (m) { GROUPS.forEach(function (g) { if (g.ids.indexOf(m.id) >= 0) m.g = g.key; }); m.g = m.g || 'home'; });
   function method(id) { for (var i = 0; i < METHODS.length; i++) if (METHODS[i].id === id) return METHODS[i]; return null; }
   var moin = (D.citizen && D.citizen.moin_address) || { street: 'העצמאות', house: '10', city: 'באר שבע', display: 'רחוב העצמאות 10, באר שבע' };
   function eta(m, prod) { return m ? ETA[prod === 'wait' ? 'wait' : 'now'][m.id] || m.eta_display : ''; }
+  // בסיכומים (שלב 4/5) אין מועד להשוות אליו – בלי "(יום עסקים אחד מאוחר יותר)" (QA_COPY 3.15)
+  function etaPlain(m, prod) { return eta(m, prod).replace(LATER, ''); }
 
   // באיסוף עצמי אין מעקב – השורה לא מוצגת בכלל (CLAUDE.md §3.4: שדה בלי ערך לא מוצג)
   function trk(m) {
     if (m.g === 'pickup') return null;
     if (m.id === 'registered_mail') return 'מעקב דואר';
-    return m.tracking ? 'כן' : 'ללא מעקב';
+    return m.tracking ? 'כן, שליח' : 'ללא מעקב';
   }
   function fmtPrice(x) { x = Math.round(x * 100) / 100; return Number.isInteger(x) ? String(x) : x.toFixed(2); }
-  function priceNum(m) { return fmtPrice(m.price); }
 
   /* ---------- טקסט: escape + מספרים ב-LTR + [לאישור] ---------- */
   // P1-1: ספרות בלבד, ‎+972/972 → 0, ואז עד 10 ספרות (validation.js יכול לספק Validate.normalizeMobile משותף)
   function normMobile(v) {
+    v = lat(v);
     if (window.Validate && typeof Validate.normalizeMobile === 'function') return Validate.normalizeMobile(v);
     var d = String(v || '').replace(/\D/g, '');
     if (/^00972/.test(d)) d = '0' + d.slice(5); else if (/^972/.test(d)) d = '0' + d.slice(3);
     return d.slice(0, 10);
   }
-  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '״'); }
-  function numify(s) { return s.replace(/\d+(?:[.:,\/]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; }); }
-  function rich(s) {
-    return String(s == null ? '' : s).split(/(\[[^\]]*\])/).map(function (part) {
-      if (/^\[.*\]$/.test(part)) return '<span class="tbc">' + esc(part) + '</span>';
-      return numify(esc(part));
+  // P3-11: מירכאות של המשתמש נשארות כמו שהוקלדו (&quot;, לא ״)
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  // escape לכל קטע בנפרד: רצפי ספרות נעטפים על הטקסט הגולמי, כך שישות (&#39; וכו') לא נשברת (P1-1)
+  function numify(s) {
+    return String(s).split(/(\d+(?:[.:,\/]\d+)*)/).map(function (part, i) {
+      return i % 2 ? '<span class="num" dir="ltr">' + part + '</span>' : esc(part);
     }).join('');
   }
+  // P3-3 (QA_VISUAL): "יום ג׳ 1.9" ו"ב-SMS" לא נשברים באמצע
+  function keep(html) {
+    return html.replace(/((?:ל|מ|ב)?יום [א-ו]׳ <span class="num" dir="ltr">[\d.]+<\/span>)/g, '<span class="nowrap">$1</span>')
+      .replace(/ב-SMS/g, '<span class="nowrap">ב-SMS</span>');
+  }
+  function rich(s) {
+    return keep(String(s == null ? '' : s).split(/(\[[^\]]*\])/).map(function (part) {
+      if (/^\[.*\]$/.test(part)) return '<span class="tbc">' + esc(part) + '</span>';
+      return numify(part);
+    }).join(''));
+  }
+  /* ספרות ערביות-הודיות/פרסיות → 0–9 (P1-2). validation.js (Validate.toLatinDigits) כשקיים */
+  function lat(s) {
+    s = String(s == null ? '' : s);
+    if (window.Validate && typeof Validate.toLatinDigits === 'function') return Validate.toLatinDigits(s);
+    return s.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, function (c) { var k = c.charCodeAt(0); return String(k >= 0x06F0 ? k - 0x06F0 : k - 0x0660); });
+  }
+  // תווים בלי רוחב / סימוני כיווניות – לא נחשבים תוכן (P3-12)
+  function clean(s) { return String(s == null ? '' : s).replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '').trim(); }
 
   /* ---------- State ----------
      ordered=true – ההזמנה הושלמה (status.js מציג ממנה את S2/S3). edit=true – עריכת הזמנה קיימת (?edit=1 מ-S2):
@@ -78,7 +101,8 @@
       step: 1, method: null, auth: false, addr: 'moin', nudged: false,
       extras: { entrance: '', care_of: '', mailbox: '' },
       other: { city: '', street: '', house: '', entrance: '', apt: '', zip: '', care_of: '', phone: '', mailbox: '' },
-      prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null, paidTotal: null, committed: null
+      prod: 'now', terms: false, ordered: false, edit: false, paidMethod: null, paidTotal: null, committed: null,
+      inv: '', mail: '' // P3-13: שם ומייל לחשבונית נשמרים כמו שאר הטיוטה (פרטי הכרטיס – לא)
     };
   }
   function merge(base, saved) {
@@ -90,8 +114,11 @@
     });
     return base;
   }
-  var order, ui = { termsErr: false, why: false, info: null, drawer: null, paying: false, skipcc: false, methodErr: false, nudge: false };
-  function save() { UI.store.set(KEY, order); }
+  var order, ui = { termsErr: false, why: false, paying: false, skipcc: false, methodErr: false, nudge: false };
+  /* B-04: קישור הדגמה (פרמטרי מצב ב-URL, או שלב/שיטה שלא תואמים להזמנה השמורה) עובד על הזמנה בזיכרון בלבד –
+     לא נשמר ל-fd.order ולא דורס את המסע האמיתי. מסע אמיתי: order.html בלי פרמטרים, ?reset=1, ?edit=1, ריענון של כתובת שהמסע עצמו כתב */
+  var demoMode = false;
+  function save() { if (!demoMode) UI.store.set(KEY, order); }
   // ההזמנה שאושרה (לפני עריכה): שדות שהטיוטה משנה
   var COMMIT_KEYS = ['method', 'auth', 'addr', 'extras', 'other', 'prod', 'terms', 'paidMethod', 'paidTotal'];
   function snapshot(o) {
@@ -138,7 +165,9 @@
 
   /* ---------- URL / history ---------- */
   function urlFor(step) {
-    return window.location.pathname + '?step=' + step + (order.method ? '&m=' + encodeURIComponent(order.method) : '');
+    // במצב הדגמה ה-URL נשאר מסומן (demo=…), כך שרענון לא נטען כמסע האמיתי השמור
+    var demo = demoMode ? '&demo=' + (ui.skipcc ? 'skipcc' : '1') + (order.auth ? '&auth=1' : '') + (order.edit ? '&edit=1' : '') : '';
+    return window.location.pathname + '?step=' + step + (order.method ? '&m=' + encodeURIComponent(order.method) : '') + demo;
   }
   function writeUrl(push) {
     try {
@@ -164,12 +193,13 @@
     if (prev !== n) lockStep();
   }
 
-  /* P1-3: אחרי מעבר שלב, כפתורי השלב החדש (באותו מקום בדיוק כמו "המשך" הקודם) מתעלמים מהקשות ל-450ms.
-     .fd-lock = שכבה שקופה מעל אזור הכפתורים (pages.css) – ההקשה נבלעת ולא עוברת לתוכן שמתחת */
+  /* P1-3 + B-01: אחרי מעבר שלב כל השלב החדש מתעלם מהקשות ל-450ms – לא רק אזור הכפתורים: הגלילה לראש השלב
+     מביאה מתחת לאצבע תוכן אחר (למשל כרטיס "עוד לא" בשלב 3). .fd-lock = שכבה שקופה (pages.css) על השלב, על הסרגל
+     הדביק (z-index משלו) ועל "› חזרה" העליון; ובנוסף מאזין click ב-capture שבולע כל הקשה בתוך main בזמן הנעילה */
   var LOCK_MS = 450, lockT = null;
   function lockTargets() {
     var sec = qs('.order__step[data-step="' + order.step + '"]');
-    return [qs('#order-top')].concat(sec ? qsa('.order-actions, .order-done', sec) : []).filter(Boolean);
+    return [qs('#order-top'), sec].concat(sec ? qsa('.order-actions, .order-done', sec) : []).filter(Boolean);
   }
   function lockStep() {
     unlock();
@@ -177,6 +207,10 @@
     lockT = setTimeout(unlock, LOCK_MS);
   }
   function unlock() { clearTimeout(lockT); lockT = null; qsa('.fd-lock').forEach(function (el) { el.classList.remove('fd-lock'); }); }
+  document.addEventListener('click', function (e) {
+    if (!lockT || e.detail === 0 || !e.target.closest || !e.target.closest('#main')) return;
+    e.preventDefault(); e.stopPropagation();
+  }, true);
   // רק הקשה/קליק (detail>0) נחסמים; Enter/רווח במקלדת אחרי מעבר פוקוס מכוון הם פעולה מכוונת
   function locked(e) { return !!lockT && !(e && e.detail === 0); }
 
@@ -196,7 +230,7 @@
     order.edit = false;
     order.committed = null; // העריכה הושלמה – היא ההזמנה עכשיו
     if (!isFree()) order.paidMethod = order.method;
-    if (!keepReissue) UI.store.remove('fd.reissue');
+    if (!keepReissue && !demoMode) UI.store.remove('fd.reissue');
   }
 
   function focusStep() {
@@ -234,7 +268,7 @@
       var n = Math.min(order.step, 4);
       var sec = qs('.order__step[data-step="' + order.step + '"]');
       var err = sec && qsa('.error', sec).some(function (e) { return !e.hidden && e.textContent.trim(); });
-      t = (err ? 'שגיאה: ' : '') + 'שלב ' + n + ' מתוך 4: ' + STEP_NAMES[n - 1] + ' – ' + BASE_TITLE;
+      t = (err ? 'שגיאה – ' : '') + 'שלב ' + n + ' מתוך 4: ' + STEP_NAMES[n - 1] + ' – ' + BASE_TITLE;
     }
     if (document.title !== t) document.title = t;
   }
@@ -243,7 +277,7 @@
     var items = ['P05 משלוח', 'P06 כתובת', 'P07 ייצור', 'P08 תשלום', 'P09 אישור'].map(function (t, i) {
       return { label: t, pressed: order.step === i + 1, onClick: function () { demoGo(i + 1); } };
     });
-    items.push({ label: 'מורשה לשנות כתובת (הצטלם)', pressed: order.auth, onClick: function () {
+    items.push({ label: 'מורשים לשנות כתובת (הצטלמו מחדש)', pressed: order.auth, onClick: function () {
       order.auth = !order.auth; save(); render();
       var b = qs('[data-slot="demo-bar"] [data-demo-i="5"]'); if (b) b.focus();
     } });
@@ -271,10 +305,10 @@
     }).join('');
     qs('#stepper').innerHTML = html;
     var num = Math.min(order.step, 4);
-    qs('#stepper-m-text').textContent = 'שלב ' + num + ' מתוך 4 – ' + STEP_NAMES[num - 1];
+    qs('#stepper-m-text').textContent = 'שלב ' + num + ' מתוך 4: ' + STEP_NAMES[num - 1];
     var bar = qs('#stepper-m-bar');
     bar.setAttribute('aria-valuenow', String(num));
-    bar.setAttribute('aria-valuetext', 'שלב ' + num + ' מתוך 4 – ' + STEP_NAMES[num - 1]);
+    bar.setAttribute('aria-valuetext', 'שלב ' + num + ' מתוך 4: ' + STEP_NAMES[num - 1]);
     bar.firstElementChild.style.width = (num * 25) + '%';
   }
 
@@ -342,7 +376,7 @@
   function renderMethodErr() {
     var e = qs('#method-err');
     e.hidden = !ui.methodErr;
-    e.innerHTML = ui.methodErr ? UI.icon('alert-circle', { size: 18 }) + 'בחרו איך תרצו לקבל את הרישיון' : '';
+    e.innerHTML = ui.methodErr ? UI.icon('alert-circle', { size: 18 }) + 'בחרו איך תרצו לקבל את הרישיון.' : '';
     qs('#method-list').setAttribute('aria-invalid', ui.methodErr ? 'true' : 'false');
     updateTitle();
   }
@@ -361,7 +395,7 @@
         '<button type="button" class="link-btn" data-pick="express_home" aria-label="להחליף למשלוח מהיר עד הבית">להחליף</button></p></div>';
     } else if (m.id === 'regular_mail' && ui.nudge) {
       html = '<div class="order-m-extra callout callout--warning order-nudge" id="mail-nudge">' + UI.icon('info') +
-        '<div class="order-nudge__body"><p><strong>לפני שממשיכים:</strong> בדואר רגיל אין מעקב, והרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה. אם הוא לא מגיע, אפשר לבקש הנפקה חוזרת רק אחרי <span class="num" dir="ltr">19</span> ימי עסקים.</p>' +
+        '<div class="order-nudge__body"><p><strong>לפני שממשיכים:</strong> בדואר רגיל אין מעקב, והרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה. אם הוא לא יגיע, אפשר לבקש הנפקה חוזרת רק אחרי <span class="num" dir="ltr">19</span> ימי עסקים.</p>' +
         '<div class="order-nudge__btns">' +
         (reg ? '<button type="button" class="btn btn--secondary btn--sm" data-pick="registered_mail"><span>דואר רשום עם מעקב – ' + rich(reg.price_display) + '</span></button>' : '') +
         (rh ? '<button type="button" class="btn btn--secondary btn--sm" data-pick="regular_home"><span>שליח עד הבית – ' + rich(rh.price_display) + '</span></button>' : '') +
@@ -417,20 +451,38 @@
     qsa('[data-other]', sec).forEach(function (i) { i.value = order.other[i.getAttribute('data-other')] || ''; });
     qsa('[data-extra]', sec).forEach(function (i) { i.value = order.extras[i.getAttribute('data-extra')] || ''; });
   }
-  var OTHER_REQ = [['o-city', 'עיר'], ['o-st', 'רחוב'], ['o-h', 'מספר בית'], ['o-z', 'מיקוד']];
+  /* [id, שם לשגיאת "יש למלא", בדיקת ערך (מחזירה הודעה כשהערך מלא אבל לא תקין)] – ההודעה מתאימה לכלל שנכשל (P3-2) */
+  var OTHER_REQ = [
+    ['o-city', 'עיר'], ['o-st', 'רחוב'],
+    // מספר בית יכול לכלול אות ("12א") – חייב רק להכיל ספרה (M-05)
+    ['o-h', 'מספר בית', function (v) { return /\d/.test(lat(v)) ? '' : 'מספר הבית צריך לכלול ספרה.'; }],
+    ['o-z', 'מיקוד', function (v) { return /^\d{7}$/.test(lat(v)) ? '' : 'המיקוד צריך לכלול {7} ספרות.'; }]
+  ];
   function validateOther() {
     var first = null;
+    splitHouse();
     OTHER_REQ.forEach(function (r) {
       var el = document.getElementById(r[0]);
-      // מספר בית יכול לכלול אות ("12א") – חייב רק להכיל ספרה (M-05)
-      var bad = !el.value.trim() || (r[0] === 'o-h' && !/\d/.test(el.value));
-      if (bad) { UI.fieldError(el, 'יש למלא ' + r[1] + '.'); first = first || el; } else UI.fieldError(el, null);
+      var v = clean(el.value);
+      var msg = !v ? 'יש למלא ' + r[1] + '.' : r[2] ? r[2](v) : '';
+      fieldErr(el, msg || null);
+      if (msg) first = first || el;
     });
     var ph = document.getElementById('o-p');
-    if (!Validate.mobile(ph.value)) { UI.fieldError(ph, ph.value.trim() ? 'מספר הנייד צריך להתחיל ב-05 ולהכיל 10 ספרות.' : 'יש למלא נייד של המקבל.'); first = first || ph; } else UI.fieldError(ph, null);
+    if (!Validate.mobile(lat(ph.value))) { fieldErr(ph, clean(ph.value) ? 'מספר הנייד צריך להתחיל ב-{05} ולהכיל {10} ספרות.' : 'יש למלא נייד של המקבל.'); first = first || ph; } else UI.fieldError(ph, null);
     if (first) focusField(first);
     updateTitle();
     return !first;
+  }
+
+  // P3-10: מילוי אוטומטי של address-line1 ("הרצל 12") ממלא רק את שדה הרחוב – מספר הבית עובר לשדה שלו
+  function splitHouse() {
+    var st = document.getElementById('o-st'), h = document.getElementById('o-h');
+    if (!st || !h || clean(h.value)) return;
+    var mm = /^(.*\D)\s+(\d+\s*[א-ת]?)$/.exec(clean(lat(st.value)));
+    if (!mm) return;
+    st.value = mm[1].trim(); h.value = mm[2].replace(/\s+/g, '');
+    order.other.street = st.value; order.other.house = h.value; save();
   }
 
   /* --- שלב 3 --- */
@@ -439,7 +491,6 @@
     qsa('input[name="prod"]').forEach(function (r) { r.checked = r.value === order.prod; r.closest('.opt-card').classList.toggle('is-selected', r.checked); });
     qs('#eta-now').innerHTML = rich(eta(m, 'now'));
     qs('#eta-wait').innerHTML = rich(eta(m, 'wait'));
-    qs('#late-note').hidden = !(order.prod === 'wait' && m && (m.id === 'express_home' || m.id === 'pickup_tlv_airport'));
     var t = qs('#terms');
     t.checked = !!order.terms;
     UI.fieldError(t, ui.termsErr ? 'כדי להמשיך יש לאשר את תנאי השימוש.' : null);
@@ -449,15 +500,30 @@
   }
 
   /* --- שלב 4 --- */
+  /* P2-8: הסיכום מציג את כל מה שהוזן (כמו פרטי הבקשה במסך המצב): כניסה, דירה, מיקוד, אצל, תיבת דואר.
+     P3-9: "רחוב" נוסף רק כשהמשתמש לא כתב סוג דרך בעצמו ("שדרות רוטשילד", "רחוב הרצל") */
+  var ROAD = /^(רחוב|רח['׳]|שדרות|שד['׳]|דרך|סמטת|סמ['׳]|כיכר|ככר|שכונת|שכ['׳]|מעלה|נתיב|שביל|כביש|טיילת|גבעת|קריית|קרית)(\s|$)/;
+  function streetLine(st) { st = clean(st); return st && !ROAD.test(st) ? 'רחוב ' + st : st; }
+  function extrasTail(x) {
+    var t = [];
+    if (x.care_of && clean(x.care_of)) t.push('אצל ' + rich(clean(x.care_of)));
+    if (x.mailbox && clean(x.mailbox)) t.push('על תיבת הדואר: ' + rich(clean(x.mailbox)));
+    return t.length ? ' · ' + t.join(' · ') : '';
+  }
   function addrSummary() {
     var m = cur();
-    if (m && !m.needs_address) return { k: 'עמדה', v: rich(m.address || '') };
+    if (m && !m.needs_address) return { k: 'עמדת איסוף', v: rich(m.address || '') };
     if (order.auth && order.addr === 'other') {
       var o = order.other;
-      var line = ('רחוב ' + o.street + ' ' + o.house).trim() + (o.city ? ', ' + o.city : '');
-      return { k: 'כתובת', v: rich(o.street ? line : 'כתובת אחרת שהוזנה') };
+      if (!clean(o.street)) return { k: 'כתובת למשלוח', v: rich('כתובת אחרת שהוזנה') };
+      var line = [streetLine(o.street) + (clean(o.house) ? ' ' + clean(o.house) : '')];
+      if (clean(o.entrance)) line.push('כניסה ' + clean(o.entrance));
+      if (clean(o.apt)) line.push('דירה ' + clean(o.apt));
+      if (clean(o.city) || clean(o.zip)) line.push((clean(o.city) + ' ' + clean(o.zip)).trim());
+      return { k: 'כתובת למשלוח', v: rich(line.join(', ')) + extrasTail(o) };
     }
-    return { k: 'כתובת', v: rich(moin.display) };
+    var x = order.extras || {};
+    return { k: 'כתובת למשלוח', v: rich(moin.display) + (clean(x.entrance) ? ' · כניסה ' + rich(clean(x.entrance)) : '') + extrasTail(x) };
   }
   function renderStep4() {
     var m = cur();
@@ -476,20 +542,57 @@
     qs('#sum-addr').innerHTML = a.v;
     qs('#sum-addr-chg').hidden = !(m && m.needs_address);
     qs('#sum-prod').innerHTML = order.prod === 'now' ? 'עכשיו – ייצור <span class="nowrap">יום ג׳ <span class="num" dir="ltr">25.8</span></span>' : 'אחרי המועד – ייצור <span class="nowrap">יום ד׳ <span class="num" dir="ltr">26.8</span></span>';
-    qs('#sum-incl').innerHTML = m ? rich((INCL[m.id] ? INCL[m.id] + ' · ' : '') + eta(m, order.prod)) : '';
-    var inv = qs('#inv');
-    if (inv && !inv.value && D.citizen) inv.value = ((D.citizen.first_name || '') + ' ' + (D.citizen.last_name || '')).trim(); // ממולא מראש, אפשר לשנות
+    qs('#sum-incl').innerHTML = m ? rich((INCL[m.id] ? INCL[m.id] + ' · ' : '') + etaPlain(m, order.prod)) : '';
+    var inv = qs('#inv'), mail = qs('#mail');
+    if (inv && !inv.value) inv.value = order.inv || (D.citizen ? ((D.citizen.first_name || '') + ' ' + (D.citizen.last_name || '')).trim() : ''); // ממולא מראש, אפשר לשנות
+    if (mail && !mail.value && order.mail) mail.value = order.mail;
     qs('#order-sum').open = true; // פתוח כברירת מחדל (כמו בהדמיות 33 בשני הרוחבים); אפשר לקפל
     var pay = qs('#pay');
     if (!ui.paying) { pay.disabled = false; pay.setAttribute('aria-busy', 'false'); pay.removeAttribute('aria-disabled'); }
   }
-  // [id, תקין?, הודעה לשדה ריק, הודעה לערך שגוי]. P3-2: שדה ריק מקבל "יש למלא…"; הטווח "12–19" כמספר LTR שלא נשבר
+  /* בדיקות כרטיס. validation.js (A) מוסיף Validate.luhn / cardExpiry→{ok,reason} / email – משתמשים בהם כשקיימים */
+  function digitsOf(v) { return lat(v).replace(/\D/g, ''); }
+  function luhn(d) {
+    if (window.Validate && typeof Validate.luhn === 'function') return Validate.luhn(d);
+    var sum = 0, alt = false;
+    for (var i = d.length - 1; i >= 0; i--) { var x = Number(d.charAt(i)); if (alt) { x *= 2; if (x > 9) x -= 9; } sum += x; alt = !alt; }
+    return sum % 10 === 0;
+  }
+  function isAmex(v) { return /^3[47]/.test(digitsOf(v)); }
+  function expCheck(v) { // {ok, reason: 'format'|'past'}; החודש הנוכחי תקין, עד 20 שנה קדימה
+    v = clean(lat(v));
+    if (window.Validate && typeof Validate.cardExpiry === 'function') { var r = Validate.cardExpiry(v); if (r && typeof r === 'object') return r; }
+    var mm = /^(0[1-9]|1[0-2])\/(\d{2})$/.exec(v);
+    if (!mm) return { ok: false, reason: 'format' };
+    var now = new Date(), y = 2000 + Number(mm[2]), mo = Number(mm[1]);
+    var nowY = now.getFullYear(), nowM = now.getMonth() + 1;
+    if (y < nowY || (y === nowY && mo < nowM)) return { ok: false, reason: 'past' };
+    if (y > nowY + 20) return { ok: false, reason: 'format' };
+    return { ok: true };
+  }
+  function emailOk(v) {
+    if (window.Validate && typeof Validate.email === 'function') return Validate.email(v);
+    return /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:.]{2,}$/.test(v);
+  }
+  /* [id, בדיקה (מחזירה '' כשתקין או את ההודעה), הודעה לשדה ריק (null = לא חובה)].
+     P3-2: שדה ריק מקבל "יש למלא…"; ההודעה לערך מלא מתאימה לכלל שנכשל. {…} = מספר/טקסט LTR שלא נשבר */
   var CC = [
-    ['cc', function (v) { return Validate.cardNumber(v); }, 'יש למלא מספר כרטיס.', 'מספר הכרטיס לא תקין. בדקו שהזנתם {12–19} ספרות.'],
-    ['exp', function (v) { return Validate.cardExpiry(v); }, 'יש למלא תוקף.', 'תוקף לא תקין. הזינו חודש ושנה בפורמט MM/YY.'],
-    ['cvv', function (v) { return Validate.cvv(v); }, 'יש למלא קוד CVV.', 'קוד CVV לא תקין. הזינו {3} או {4} ספרות.'],
-    ['hid', function (v) { return Validate.israeliId(v); }, 'יש למלא ת״ז של בעל הכרטיס.', 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).'],
-    ['inv', function (v) { return !!v.trim(); }, 'יש למלא שם לחשבונית.', 'יש למלא שם לחשבונית.']
+    ['cc', function (v) {
+      var d = digitsOf(v);
+      if (d.length < 12 || d.length > 19) return 'מספר הכרטיס לא תקין. בדקו שהזנתם {12–19} ספרות.';
+      return /^0+$/.test(d) || !luhn(d) ? 'מספר הכרטיס לא תקין. בדקו שהספרות הוקלדו כמו שהן מופיעות על הכרטיס.' : '';
+    }, 'יש למלא מספר כרטיס.'],
+    ['exp', function (v) {
+      var r = expCheck(v);
+      return r.ok ? '' : r.reason === 'past' ? 'תוקף הכרטיס עבר. בדקו את התוקף שמופיע על הכרטיס.' : 'תוקף לא תקין. הזינו חודש ושנה, למשל {08/28}.';
+    }, 'יש למלא תוקף.'],
+    ['cvv', function (v) {
+      var d = digitsOf(v), need = isAmex(qs('#cc').value) ? 4 : 3;
+      return d.length === need && d === clean(lat(v)) ? '' : 'קוד CVV לא תקין. הזינו {' + need + '} ספרות.';
+    }, 'יש למלא קוד CVV.'],
+    ['hid', function (v) { return Validate.israeliId(lat(v)) ? '' : 'מספר תעודת הזהות לא תקין. בדקו את כל הספרות, כולל הספרה האחרונה (ספרת הביקורת).'; }, 'יש למלא ת״ז של בעל הכרטיס.'],
+    ['inv', function (v) { return /[A-Za-z\u0590-\u05FF\u0600-\u06FF]/.test(v) ? '' : 'השם לחשבונית צריך לכלול אותיות.'; }, 'יש למלא שם לחשבונית.'],
+    ['mail', function (v) { return emailOk(v) ? '' : 'כתובת המייל לא תקינה. בדקו שהיא כתובה כמו {name@example.com}.'; }, null]
   ];
   // UI.fieldError מציג טקסט; {…} הופך אחר כך ל-<span class="num" dir="ltr">
   function fieldErr(el, msg) {
@@ -508,7 +611,10 @@
     var first = null;
     CC.forEach(function (c) {
       var el = document.getElementById(c[0]);
-      if (!c[1](el.value)) { fieldErr(el, el.value.trim() ? c[3] : c[2]); first = first || el; } else UI.fieldError(el, null);
+      if (c[0] === 'mail' && el.value !== el.value.trim()) el.value = el.value.trim(); // רווחים בקצוות יורדים
+      var v = clean(el.value);
+      var msg = !v ? c[2] : c[1](v);
+      if (msg) { fieldErr(el, msg); first = first || el; } else UI.fieldError(el, null);
     });
     if (first) focusField(first);
     updateTitle();
@@ -538,14 +644,15 @@
     var a = addrSummary();
     var paid = isFree() && !(order.paidTotal > 0) ? 'ללא עלות' : typeof order.paidTotal === 'number' ? '<span class="num" dir="ltr">' + fmtPrice(order.paidTotal) + '</span> ₪'
       : (order.paidMethod && method(order.paidMethod) ? rich(method(order.paidMethod).price_display) : (m ? rich(m.price_display) : ''));
-    var rows = [['שיטה', m ? esc(m.name) : ''], [a.k === 'עמדה' ? 'עמדת איסוף' : 'כתובת', a.v], ['שולם', paid],
-      [m && !m.needs_address ? 'אפשר לאסוף' : 'יגיע', rich(eta(m, order.prod).replace(/^(יגיע |אפשר לאסוף )/, ''))]];
+    var rows = [['שיטת מסירה', m ? esc(m.name) : ''], [a.k, a.v], ['שולם', paid],
+      [m && !m.needs_address ? 'אפשר לאסוף' : 'יגיע', rich(etaPlain(m, order.prod).replace(/^(יגיע |אפשר לאסוף )/, ''))]];
     qs('#done-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('');
     var next;
-    if (m && m.id === 'regular_mail') next = 'ודאו שעל תיבת הדואר מופיע שם משפחה. הרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה.';
-    else if (m && m.tracking) next = 'נשלח לכם SMS עם קישור למעקב ברגע שהרישיון יוצא לדרך.';
-    else next = 'באיסוף צריך להציג תעודה מזהה ואת מספר ההזמנה.';
-    qs('#done-next').textContent = next;
+    if (m && m.id === 'regular_mail') next = esc('ודאו שעל תיבת הדואר מופיע שם משפחה. הרישיון נמסר לתיבה רק אם מופיע עליה שם מזהה.');
+    else if (m && m.tracking) next = esc('כשהרישיון ייצא לדרך, נשלח לכם SMS עם קישור למעקב.'); // 1.4: "נשלח" בעתיד, לא כעבר
+    else if (m && m.g === 'pickup') next = esc('מה להביא לאיסוף: תעודה מזהה ומספר ההזמנה.') + ' <span class="tbc">[לאישור: האם מספר ההזמנה נדרש]</span>'; // 2.4 – אותו נוסח כמו S5
+    else next = esc('נעדכן אתכם ב-SMS כשהרישיון ייצא לדרך.');
+    qs('#done-next').innerHTML = keep(next);
     qs('#done-status').setAttribute('href', statusUrl());
     if (D.order_example) qs('#order-number').textContent = D.order_example.order_number;
   }
@@ -555,7 +662,7 @@
     var m = method(id);
     if (!m) return;
     qs('#dr-method-t').textContent = m.name;
-    var rows = [['זמן אספקה', m.eta_rule], ['מחיר', m.price_display], ['מעקב', trk(m)], ['איך מקבלים', HOW[m.id]], ['אם לא הגיע', IF_NOT[m.id]], ['מתאים ל…', m.fit]];
+    var rows = [['זמן אספקה', m.eta_rule], ['מחיר', m.price_display], ['מעקב', trk(m)], ['איך מקבלים', HOW[m.id]], ['אם לא הגיע', IF_NOT[m.id]], ['למי זה מתאים', m.fit]];
     if (m.g === 'pickup') rows.push(['כתובת', m.address], ['שעות', m.hours]);
     qs('#dr-method-dl').innerHTML = rows.filter(function (r) { return r[1]; }).map(function (r) {
       return '<div><dt>' + esc(r[0]) + '</dt><dd>' + rich(r[1]) + '</dd></div>';
@@ -622,9 +729,15 @@
       r.addEventListener('change', function () { order.addr = r.value; save(); renderStep2(); var f = qs(order.addr === 'other' ? '#other-form' : '#extras-form'); if (f && !f.hidden) UI.ensureVisible(f, { anchor: r.closest('.opt-card'), minVisible: 120 }); });
     });
     qsa('[data-other]').forEach(function (i) {
-      i.addEventListener('input', function () {
-        if (i.id === 'o-p') { var v = normMobile(i.value); if (v !== i.value) i.value = v; } // P1-1: 052-123-4567 / ‎+972… בלי לאבד ספרה
-        if (i.id === 'o-z') { var d = i.value.replace(/\D/g, ''); if (d !== i.value) i.value = d; } // מספר בית/דירה: גם "12א" (M-05)
+      i.addEventListener('input', function (e) {
+        if (i.id === 'o-p') {
+          // P1-1: 052-123-4567 / ‎+972… בלי לאבד ספרה. P3-6: הדבקה של יותר מ-10 ספרות לא נחתכת בשקט – נשארת ומקבלת שגיאה
+          var raw = lat(i.value).replace(/\D/g, '');
+          var v = e && e.inputType === 'insertFromPaste' && raw.length > 10 && !/^(00)?972/.test(raw) ? raw : normMobile(i.value);
+          if (v !== i.value) i.value = v;
+        }
+        if (i.id === 'o-z') { var d = lat(i.value).replace(/\D/g, ''); if (d !== i.value) i.value = d; } // מספר בית/דירה: גם "12א" (M-05)
+        if (i.id === 'o-h' || i.id === 'o-a' || i.id === 'o-e') { var l = lat(i.value); if (l !== i.value) i.value = l; }
         order.other[i.getAttribute('data-other')] = i.value; save();
         if (i.getAttribute('aria-invalid') === 'true') UI.fieldError(i, null);
       });
@@ -632,6 +745,7 @@
     qsa('[data-extra]').forEach(function (i) {
       i.addEventListener('input', function () { order.extras[i.getAttribute('data-extra')] = i.value; save(); });
     });
+    var stEl = qs('#o-st'); if (stEl) stEl.addEventListener('change', splitHouse);
     qs('#to-pickup').addEventListener('click', function (e) {
       if (locked(e)) return;
       go(1);
@@ -660,19 +774,36 @@
     });
 
     // שלב 4
-    // סינון ואז חיתוך (P2-1): ת״ז שמודבקת עם רווחים/מקף לא נחתכת לפני הסינון
+    // סינון ואז חיתוך (P2-1): ת״ז שמודבקת עם רווחים/מקף לא נחתכת לפני הסינון. ספרות ערביות/פרסיות → 0–9 (P1-2).
+    // P3-6: בהדבקה לא חותכים – ערך ארוך מדי נשאר ומקבל שגיאה, ולא הופך בשקט למספר אחר שנראה תקין
     var filters = { cc: [/[^\d ]/g, 23], cvv: [/\D/g, 4], hid: [/\D/g, 9] };
     Object.keys(filters).forEach(function (id) {
       var el = document.getElementById(id);
-      el.addEventListener('input', function () { var v = el.value.replace(filters[id][0], '').slice(0, filters[id][1]); if (v !== el.value) el.value = v; });
+      el.addEventListener('input', function (e) {
+        var v = lat(el.value).replace(filters[id][0], '');
+        if (!(e && e.inputType === 'insertFromPaste')) v = v.slice(0, filters[id][1]);
+        if (v !== el.value) el.value = v;
+      });
     });
     var exp = qs('#exp');
     exp.addEventListener('input', function (e) {
       // P3-3: עריכה באמצע (12/28) – הסמן נשאר אחרי אותה ספרה אחרי העיצוב מחדש
-      var caret = exp.selectionStart == null ? exp.value.length : exp.selectionStart;
-      var before = exp.value.slice(0, caret).replace(/\D/g, '').length;
-      var d = exp.value.replace(/\D/g, '').slice(0, 4);
-      var v = d.length > 2 || (d.length === 2 && e.inputType !== 'deleteContentBackward') ? d.slice(0, 2) + '/' + d.slice(2) : d;
+      var raw = lat(exp.value), del = /^delete/.test(e.inputType || '');
+      var caret = exp.selectionStart == null ? raw.length : exp.selectionStart;
+      var before = raw.slice(0, caret).replace(/\D/g, '').length;
+      // P2-4: הדבקה / מילוי אוטומטי עם מפריד: "12/2028", "12 / 28", "1/28" → חודש ושנה (שנה בת 4 ספרות → 2 אחרונות)
+      var parts = /^\s*(\d{1,2})\s*[\/.\-]\s*(\d{2}|\d{4})\s*$/.exec(raw);
+      if (parts && del) return; // מחיקה באמצע "12/28" → "1/28": לא מזיזים את ספרת השנה לחודש
+      var d;
+      if (parts) { d = ('0' + parts[1]).slice(-2) + parts[2].slice(-2); before = d.length; }
+      else {
+        d = raw.replace(/\D/g, '');
+        // P3-4: חודש בספרה אחת – "5" → "05", ו"1" + לוכסן → "01/"
+        if (!del && (/^[2-9]/.test(d) || /^\s*\d\s*[\/.\-]/.test(raw))) { d = '0' + d; before++; }
+        if (!del && d.length === 6) d = d.slice(0, 2) + d.slice(4); // "122028" (MMYYYY)
+        d = d.slice(0, 4);
+      }
+      var v = d.length > 2 || (d.length === 2 && !del) ? d.slice(0, 2) + '/' + d.slice(2) : d;
       if (v === exp.value) return;
       exp.value = v;
       var pos = 0, seen = 0;
@@ -683,6 +814,18 @@
     CC.forEach(function (c) {
       var el = document.getElementById(c[0]);
       el.addEventListener('input', function () { if (el.getAttribute('aria-invalid') === 'true') UI.fieldError(el, null); });
+    });
+    // P3-13: שם ומייל לחשבונית נשמרים בטיוטה (לא פרטי הכרטיס)
+    ['inv', 'mail'].forEach(function (id) { var el = qs('#' + id); el.addEventListener('input', function () { order[id] = el.value; save(); }); });
+    // P3-19: Enter על רדיו / תיבת סימון בשלבים 1 ו-3 = "המשך" (כמו Enter בשדות של שלבים 2 ו-4)
+    qs('#main').addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || e.defaultPrevented || !e.target.matches || !e.target.matches('input[type="radio"], input[type="checkbox"]')) return;
+      var stp = e.target.closest('.order__step');
+      var n = stp && stp.getAttribute('data-step');
+      var btn = n === '1' ? qs('#next-1') : n === '3' ? qs('#next-3') : null;
+      if (!btn) return;
+      e.preventDefault();
+      btn.click();
     });
     // שלב 4 בתוך <form> (P3-3): Enter / "Go" במקלדת = תשלום; autocomplete של כרטיס עובד בטופס
     qs('#pay-form').addEventListener('submit', function (e) { e.preventDefault(); pay(); });
@@ -735,10 +878,30 @@
   }
 
   /* ---------- Init ---------- */
+  // B-09: "עריכת ההזמנה" ב-S2 של ההדגמה (בלי מסע שמור) – ההזמנה של S2: איסוף מנתב״ג, "עוד לא", 118 ₪
+  function demoS2() {
+    var o = fresh();
+    o.method = 'pickup_tlv_airport'; o.prod = 'wait'; o.terms = true; o.ordered = true; o.step = 5;
+    o.paidMethod = 'pickup_tlv_airport'; o.paidTotal = (method('pickup_tlv_airport') || { price: 118 }).price;
+    return o;
+  }
   function init() {
     var p = UI.params();
     var stepP = parseInt(p.get('step'), 10);
-    var saved = p.get('reset') === '1' ? null : UI.store.get(KEY, null);
+    var reset = p.get('reset') === '1';
+    var stored = reset ? null : UI.store.get(KEY, null);
+    if (reset) UI.store.remove(KEY);
+    /* B-04: מצב הדגמה – פרמטר מצב ב-URL, או ?step/?m שלא תואמים להזמנה השמורה (קישור מהאינדקס, לא ריענון של המסע).
+       ?reset=1 מתחיל מסע אמיתי חדש (גם עם פרמטרים); ?edit=1 בלי הזמנה שמורה = עריכה בהדגמה של S2 (B-09) */
+    var DEMO_KEYS = ['auth', 'addr', 'terms', 'termsErr', 'why', 'info', 'drawer', 'group', 'demo', 'prod'];
+    var mP = p.get('m');
+    if (!reset) {
+      if (DEMO_KEYS.some(function (k) { return p.has(k); })) demoMode = true;
+      else if (p.get('edit') === '1') demoMode = !(stored && stored.ordered);
+      else if (stepP >= 1 && stepP <= 5) demoMode = !(stored && (!mP || stored.method === mP) && (stepP !== 5 || stored.ordered));
+    }
+    var saved = demoMode ? null : stored;
+    if (demoMode && p.get('edit') === '1') saved = demoS2();
     var edit = p.get('edit') === '1' && saved && saved.ordered;
     // אחרי הזמנה שהושלמה: כניסה חדשה (בלי ?step=5 ובלי עריכה) מתחילה הזמנה חדשה
     if (saved && saved.ordered && stepP !== 5 && !edit && !saved.edit) saved = null;
@@ -768,7 +931,8 @@
     order.step = clamp(order.step);
     if (order.step === 5 && (!order.ordered || order.edit)) complete(true);
     save();
-    writeUrl(false);
+    if (!demoMode) writeUrl(false); // הדגמה: ה-URL נשאר כמו שנטען, כך שריענון משחזר בדיוק את מצב ההדמיה
+    else try { history.replaceState({ fdStep: order.step }, '', window.location.href); } catch (e) { /* file:// */ }
 
     UI.accordion(qs('.order-why'), { openIndex: ui.why ? 0 : -1 });
     fillCompare();

@@ -59,6 +59,9 @@
     eq("Validate.israeliId('18')", function () { return Validate.israeliId('18'); }, true);
     eq("Validate.israeliId('123456789')", function () { return Validate.israeliId('123456789'); }, false);
     eq("Validate.israeliId('')", function () { return Validate.israeliId(''); }, false);
+    eq("Validate.israeliId('0') – כולו אפסים", function () { return Validate.israeliId('0'); }, false);
+    eq("Validate.israeliId('000000000')", function () { return Validate.israeliId('000000000'); }, false);
+    eq("Validate.israeliId('٠٠٠٠٠٠٠١٨') – ספרות ערביות", function () { return Validate.israeliId('٠٠٠٠٠٠٠١٨'); }, true);
     eq("Validate.mobile('054-1234567')", function () { return Validate.mobile('054-1234567'); }, true);
     eq("Validate.mobile('0541234')", function () { return Validate.mobile('0541234'); }, false);
     eq("Validate.mobile('0641234567')", function () { return Validate.mobile('0641234567'); }, false);
@@ -86,13 +89,73 @@
     eq("bindNormalize: הקלדת '052-123-4567' בשדה", function () {
       var i = document.createElement('input'); document.body.appendChild(i); Validate.bindNormalize(i, 'mobile');
       i.value = '052-123-4567'; i.dispatchEvent(new Event('input')); var v = i.value; i.remove(); return v; }, '0521234567');
+    eq("bindNormalize: הדבקה של 11 ספרות לא נחתכת (P3-6)", function () {
+      var i = document.createElement('input'); document.body.appendChild(i); Validate.bindNormalize(i, 'mobile');
+      i.value = '05412345678'; i.dispatchEvent(new InputEvent('input', { inputType: 'insertFromPaste' })); var v = i.value; i.remove(); return v; }, '05412345678');
+    eq("bindNormalize: הקלדה בספרות ערביות '٠٥٤١٢٣٤٥٦٧'", function () {
+      var i = document.createElement('input'); document.body.appendChild(i); Validate.bindNormalize(i, 'mobile');
+      i.value = '٠٥٤١٢٣٤٥٦٧'; i.dispatchEvent(new Event('input')); var v = i.value; i.remove(); return v; }, '0541234567');
+
+    group('Validate – ספרות ערביות/פרסיות (QA_INPUTS P1-2)');
+    eq("Validate.toLatinDigits('٠١٢٣٤٥٦٧٨٩')", function () { return Validate.toLatinDigits('٠١٢٣٤٥٦٧٨٩'); }, '0123456789');
+    eq("Validate.toLatinDigits('۰۱۲۳۴۵۶۷۸۹')", function () { return Validate.toLatinDigits('۰۱۲۳۴۵۶۷۸۹'); }, '0123456789');
+    eq("Validate.toLatinDigits('FD-٢٠٢٦ abc')", function () { return Validate.toLatinDigits('FD-٢٠٢٦ abc'); }, 'FD-2026 abc');
+    eq("Validate.digits('٠٥٤-١٢٣٤٥٦٧')", function () { return Validate.digits('٠٥٤-١٢٣٤٥٦٧'); }, '0541234567');
+    eq("Validate.normalizeMobile('٠٥٤١٢٣٤٥٦٧')", function () { return Validate.normalizeMobile('٠٥٤١٢٣٤٥٦٧'); }, '0541234567');
+    eq("Validate.normalizeId('۱۲۳۴۵۶۷۸۲')", function () { return Validate.normalizeId('۱۲۳۴۵۶۷۸۲'); }, '123456782');
+    eq("Validate.mobile('٠٥٤١٢٣٤٥٦٧')", function () { return Validate.mobile('٠٥٤١٢٣٤٥٦٧'); }, true);
+
+    group('Validate – הקלדת קידומת והדבקה (P3-6, P3-7)');
+    eq("Validate.normalizeMobile('+')", function () { return Validate.normalizeMobile('+'); }, '+');
+    eq("Validate.normalizeMobile('+97')", function () { return Validate.normalizeMobile('+97'); }, '+97');
+    eq("Validate.normalizeMobile('0097')", function () { return Validate.normalizeMobile('0097'); }, '0097');
+    eq("Validate.normalizeMobile('0097254')", function () { return Validate.normalizeMobile('0097254'); }, '0097254');
+    eq("Validate.normalizeMobile('05412345678', true) – הדבקה", function () { return Validate.normalizeMobile('05412345678', true); }, '05412345678');
+    eq("Validate.mobile(Validate.normalizeMobile('05412345678', true))", function () { return Validate.mobile(Validate.normalizeMobile('05412345678', true)); }, false);
+    eq("Validate.normalizeId('0123456789', true) – הדבקה", function () { return Validate.normalizeId('0123456789', true); }, '0123456789');
+
+    group('Validate – כרטיס אשראי (P2-3, P2-4, P2-5, P3-4, P3-5)');
+    eq("Validate.luhn('4580 4580 4580 4580')", function () { return Validate.luhn('4580 4580 4580 4580'); }, true);
+    eq("Validate.luhn('4111111111111111')", function () { return Validate.luhn('4111111111111111'); }, true);
+    eq("Validate.luhn('4580123456789012')", function () { return Validate.luhn('4580123456789012'); }, false);
+    eq("Validate.luhn('000000000000')", function () { return Validate.luhn('000000000000'); }, false);
+    eq("Validate.luhn('378282246310005') – Amex", function () { return Validate.luhn('378282246310005'); }, true);
+    eq("Validate.normalizeExpiry('12/2028')", function () { return Validate.normalizeExpiry('12/2028'); }, '12/28');
+    eq("Validate.normalizeExpiry('1228')", function () { return Validate.normalizeExpiry('1228'); }, '12/28');
+    eq("Validate.normalizeExpiry('1/28')", function () { return Validate.normalizeExpiry('1/28'); }, '01/28');
+    eq("Validate.normalizeExpiry('12 / 28')", function () { return Validate.normalizeExpiry('12 / 28'); }, '12/28');
+    eq("Validate.normalizeExpiry('122028')", function () { return Validate.normalizeExpiry('122028'); }, '12/28');
+    eq("Validate.normalizeExpiry('528')", function () { return Validate.normalizeExpiry('528'); }, '05/28');
+    eq("Validate.normalizeExpiry('١٢/٢٨')", function () { return Validate.normalizeExpiry('١٢/٢٨'); }, '12/28');
+    eq("Validate.cardExpiry('12/28').ok", function () { return Validate.cardExpiry('12/28').ok; }, true);
+    eq("Validate.cardExpiry('08/26').ok – החודש של 'עכשיו' (25.8.2026)", function () { return Validate.cardExpiry('08/26').ok; }, true);
+    eq("Validate.cardExpiry('07/26').reason", function () { return Validate.cardExpiry('07/26').reason; }, 'past');
+    eq("Validate.cardExpiry('01/20').reason", function () { return Validate.cardExpiry('01/20').reason; }, 'past');
+    eq("Validate.cardExpiry('13/28').reason", function () { return Validate.cardExpiry('13/28').reason; }, 'format');
+    eq("Validate.cardExpiry('').reason", function () { return Validate.cardExpiry('').reason; }, 'format');
+    eq("Validate.cardExpiry('12/2028').ok", function () { return Validate.cardExpiry('12/2028').ok; }, true);
+    eq("Validate.cardExpiry('10/26', new Date(2026, 10, 3)).reason", function () { return Validate.cardExpiry('10/26', new Date(2026, 10, 3)).reason; }, 'past');
+    eq("Validate.cvv('123')", function () { return Validate.cvv('123'); }, true);
+    eq("Validate.cvv('1234', '378282246310005') – Amex", function () { return Validate.cvv('1234', '378282246310005'); }, true);
+    eq("Validate.cvv('123', '378282246310005') – Amex", function () { return Validate.cvv('123', '378282246310005'); }, false);
+    eq("Validate.cvv('1234', '4111111111111111')", function () { return Validate.cvv('1234', '4111111111111111'); }, false);
+
+    group('Validate – מייל (P2-6)');
+    eq("Validate.email('a@b.co')", function () { return Validate.email('a@b.co'); }, true);
+    eq("Validate.email('  israela@example.co.il  ')", function () { return Validate.email('  israela@example.co.il  '); }, true);
+    eq("Validate.email('ישראלה@דוגמה.קום')", function () { return Validate.email('ישראלה@דוגמה.קום'); }, true);
+    eq("Validate.email('abc')", function () { return Validate.email('abc'); }, false);
+    eq("Validate.email('a@b')", function () { return Validate.email('a@b'); }, false);
+    eq("Validate.email('a b@c.co')", function () { return Validate.email('a b@c.co'); }, false);
+    eq("Validate.email('<img>@a.co')", function () { return Validate.email('<img>@a.co'); }, false);
 
     /* ---------- Dates (מחשבון P12) ---------- */
     group('Dates');
-    eq("Dates.formatHe('2026-08-23')", function () { return Dates.formatHe('2026-08-23'); }, 'יום ראשון, 23.8.2026');
-    eq("Dates.fastestPickup('2026-08-23') → 25.8.2026 (ג׳)", function () { var d = Dates.fastestPickup('2026-08-23'); return Dates.formatShort(d) + '|' + d.getDay(); }, '25.8.2026|2');
-    eq("Dates.formatHe('2026-08-27')", function () { return Dates.formatHe('2026-08-27'); }, 'יום חמישי, 27.8.2026');
-    eq("Dates.fastestPickup('2026-08-27') → 31.8.2026 (ב׳)", function () { var d = Dates.fastestPickup('2026-08-27'); return Dates.formatShort(d) + '|' + d.getDay(); }, '31.8.2026|1');
+    eq("Dates.parse('2026-08-23') → יום ראשון", function () { return Dates.DAYS[Dates.parse('2026-08-23').getDay()]; }, 'ראשון');
+    eq("Dates.fastestPickup('2026-08-23') → 2026-08-25 (ג׳)", function () { var d = Dates.fastestPickup('2026-08-23'); return Dates.toISO(d) + '|' + d.getDay(); }, '2026-08-25|2');
+    eq("Dates.parse('2026-08-27') → יום חמישי", function () { return Dates.DAYS[Dates.parse('2026-08-27').getDay()]; }, 'חמישי');
+    eq("Dates.fastestPickup('2026-08-27') → 2026-08-31 (ב׳)", function () { var d = Dates.fastestPickup('2026-08-27'); return Dates.toISO(d) + '|' + d.getDay(); }, '2026-08-31|1');
+    eq("Dates.isBusinessDay(שישי 2026-08-28)", function () { return Dates.isBusinessDay(Dates.parse('2026-08-28')); }, false);
 
     /* ---------- כללי דילוג בהזמנה (07 §7.1) – פונקציות טהורות מוגדרות כאן מהמפרט ---------- */
     // קדימה מ-1: needs_address ? 2 : 3 · קדימה מ-3: price > 0 ? 4 : 5 · קדימה מ-2 → 3, מ-4 → 5

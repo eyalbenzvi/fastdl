@@ -11,7 +11,8 @@
   var state = { m: 'express_home' };
 
   function esc(s) { return UI.esc(s); }
-  function numify(s) { return s.replace(/\d+(?:[.:,\/]\d+)*/g, function (n) { return '<span class="num" dir="ltr">' + n + '</span>'; }); }
+  // escape אחרי פיצול לרצפי ספרות (כמו status.js): ישות כמו &#39; לא נשברת
+  function numify(s) { return String(s).split(/(\d+(?:[.:,\/]\d+)*)/).map(function (x, i) { return i % 2 ? '<span class="num" dir="ltr">' + x + '</span>' : esc(x); }).join(''); }
   function cur() { for (var i = 0; i < OPTS.length; i++) if (OPTS[i].id === state.m) return OPTS[i]; return OPTS[0]; }
 
   function renderOpts() {
@@ -19,7 +20,7 @@
       var on = o.id === state.m;
       // במובייל "ללא עלות" עובר לשורה מתחת לשם (pages.css), כדי שהשם והמועד לא יישברו (F07)
       return '<label class="opt-card reissue-opt' + (on ? ' is-selected' : '') + '"><input type="radio" name="rm" value="' + o.id + '"' + (on ? ' checked' : '') + '>' +
-        '<span class="reissue-opt__body"><strong class="reissue-opt__name">' + esc(o.name) + '</strong><span class="small muted">' + numify(esc(o.eta_rule)) + ' · עם מעקב</span></span>' +
+        '<span class="reissue-opt__body"><strong class="reissue-opt__name">' + esc(o.name) + '</strong><span class="small muted">' + numify(o.eta_rule) + ' · עם מעקב</span></span>' +
         '<span class="price-free reissue-opt__price">ללא עלות</span></label>';
     }).join('');
   }
@@ -27,16 +28,16 @@
   // כותרת הלשונית (F05): "שגיאה: " כשההצהרה לא סומנה; בסיום – לפי ה-H1
   var BASE_TITLE = document.title;
   function setTitle(t) { if (document.title !== t) document.title = t; }
-  function formTitle() { var e = qs('#decl-err'); setTitle((e && !e.hidden ? 'שגיאה: ' : '') + BASE_TITLE); }
+  function formTitle() { var e = qs('#decl-err'); setTitle((e && !e.hidden ? 'שגיאה – ' : '') + BASE_TITLE); }
 
   function showDone(focus) {
     var m = cur();
     qs('#rd-name').textContent = m.name;
-    qs('#rd-eta').innerHTML = numify(esc(m.eta_rule));
+    qs('#rd-eta').innerHTML = numify(m.eta_rule);
     qs('#rd-track').hidden = !m.tracking; // כל השיטות בהנפקה חוזרת עם מעקב [לאישור]
     qs('#reissue-form').hidden = true;
     qs('#reissue-done').hidden = false;
-    setTitle('ההזמנה החוזרת התקבלה – רישיון עד הבית');
+    setTitle('ההנפקה החוזרת התקבלה – רישיון עד הבית');
     if (focus) {
       try { window.scrollTo(0, Math.max(0, qs('#main').getBoundingClientRect().top + window.pageYOffset)); } catch (e) { /* */ }
       var h = qs('#reissue-done-h');
@@ -62,7 +63,9 @@
     var decl = qs('#decl');
     decl.addEventListener('change', function () { if (decl.checked) UI.fieldError(decl, null); formTitle(); });
     var sent = false;
-    qs('#reissue-submit').addEventListener('click', function () {
+    // הטופס (P3-19): Enter בשדות הכתובת = "אישור" (כמו בשלבים 2 ו-4 בהזמנה)
+    qs('#reissue-fm').addEventListener('submit', function (e) {
+      e.preventDefault();
       if (sent) return; // אישור אחד בלבד
       if (!decl.checked) { UI.fieldError(decl, MSG); decl.focus(); formTitle(); return; }
       UI.store.set('fd.reissue', {

@@ -47,12 +47,12 @@
               </div>
               <div class="field">
                 <label class="label" for="c-ord">מספר הזמנה <span class="opt">(לא חובה)</span></label>
-                <input id="c-ord" class="input input--num" dir="ltr" autocomplete="off" placeholder="FD-2026-0000000">
+                <input id="c-ord" class="input input--num" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20" placeholder="FD-2026-0000000">
               </div>
               <div class="g2 contact-form__row">
                 <div class="field">
                   <label class="label" for="c-name">שם</label>
-                  <input id="c-name" class="input" autocomplete="name">
+                  <input id="c-name" class="input" autocomplete="name" maxlength="80">
                 </div>
                 <div class="field">
                   <label class="label" for="c-ph">נייד</label>
@@ -61,8 +61,8 @@
               </div>
               <div class="field">
                 <label class="label" for="c-txt">פירוט</label>
-                <textarea id="c-txt" class="input" maxlength="1000" aria-describedby="c-cnt"></textarea>
-                <p id="c-cnt" class="help"><span class="num" dir="ltr" id="c-cnt-n">0</span> / <span class="num" dir="ltr">1000</span> תווים</p>
+                <textarea id="c-txt" class="input" data-max="1000" aria-describedby="c-cnt"></textarea>
+                <p id="c-cnt" class="help"><span class="num" dir="ltr" id="c-cnt-n">0</span> <span aria-hidden="true">/</span><span class="sr-only">מתוך</span> <span class="num" dir="ltr">1000</span> תווים<span id="c-cnt-cut" hidden> · הטקסט קוצר ל-<span class="num" dir="ltr">1000</span> תווים</span></p>
                 <p class="sr-only" id="c-cnt-live" aria-live="polite"></p>
               </div>
               <button type="submit" class="btn btn--primary btn--m-block contact-form__submit">שליחת פנייה</button>
