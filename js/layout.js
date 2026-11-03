@@ -206,6 +206,9 @@
         if (window.Layout.onMaintClose) window.Layout.onMaintClose();
       });
       document.body.insertAdjacentHTML('beforeend', menuHTML());
+      // רכיב הנגישות עצמו טרם נבחר – באב-הטיפוס הכפתור מודיע על כך (לא מבוי סתום)
+      var ab = UI.qs('.a11y-btn', h);
+      if (ab) ab.addEventListener('click', function () { UI.toast('תפריט הנגישות [לאישור]'); });
     }
     var f = UI.qs('[data-slot="footer"]');
     if (f) {
