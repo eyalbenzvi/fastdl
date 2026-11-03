@@ -131,10 +131,128 @@
     if (!ms) { done(); return; }
     el._fdHide = setTimeout(done, ms + 30);
   }
-  // חשיפת תוכן שנפתח במקום (אקורדיון, תשובה): opacity בלבד, 150ms, רק בפעולת משתמש.
-  // force: גם אם כבר גלוי והתוכן הוחלף (למשל תשובה אחרת באותה תיבה)
+  /* ---------- GSAP – שכבת שיפור לתוכן שנפתח במקום ----------
+     js/vendor/gsap.min.js (ו-Flip.min.js ב-FAQ) נטען לפני ui.js רק בעמודים שמשתמשים בו. בלי GSAP (חסום / לא נטען)
+     הכול עובד: מצב ה-DOM (hidden, aria-expanded, פוקוס) נקבע קודם ובלי תלות באנימציה, והחשיפה חוזרת ל-fade של WAAPI.
+     גובה אמיתי (0 ↔ auto) נמדד פעם אחת לפני הכתיבה (קריאה ואז כתיבה, בלי layout thrash), ובסוף clearProps כדי שה-CSS ישלוט.
+     prefers-reduced-motion (gsap.matchMedia): אין תנועה בכלל – המצב הסופי מיידי, ותנועה שרצה ברגע המעבר קופצת לסוף. */
+  var G = null, motionOn = false, compact = false;
+  var PANEL_PROPS = 'height,paddingTop,paddingBottom,marginTop,opacity,overflow';
+  try {
+    if (window.gsap && window.gsap.matchMedia) {
+      G = window.gsap;
+      if (window.Flip) G.registerPlugin(window.Flip);
+      G.defaults({ duration: 0.2, ease: 'power2.out', overwrite: 'auto' }); // 200ms; power2.out ≈ --ease cubic-bezier(.2,.7,.2,1)
+      G.matchMedia().add({
+        ok: '(prefers-reduced-motion: no-preference)',
+        reduce: '(prefers-reduced-motion: reduce)',
+        compact: '(max-width:640px)'
+      }, function (ctx) {
+        motionOn = !!ctx.conditions.ok;
+        compact = !!ctx.conditions.compact;
+        if (!motionOn) G.globalTimeline.getChildren(false).forEach(function (a) { a.progress(1); });
+      });
+    }
+  } catch (e) { G = null; motionOn = false; }
+  function anim() { return !!G && motionOn; }
+  function freeze(el) { // מצב סופי מיידי: עוצרים תנועה קודמת ומנקים את הסגנון שהשאירה
+    if (!G || !el) return;
+    G.killTweensOf(el);
+    G.set(el, { clearProps: PANEL_PROPS });
+    releaseClosingInert(el);
+  }
+  function boxOf(el, cs) {
+    return { height: parseFloat(cs.height) || 0, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, marginTop: cs.marginTop, opacity: +cs.opacity };
+  }
+  // פתיחה עם גובה אמיתי. fromZero: האלמנט כבר גלוי (הוחלף ב-innerHTML / class) ומתחיל מגובה 0
+  function expand(el, opt) {
+    if (!el) return;
+    opt = opt || {};
+    var wasHidden = el.hidden;
+    var running = !!(G && G.isTweening(el));
+    var cur = running ? boxOf(el, window.getComputedStyle(el)) : null; // סגירה באמצע: ממשיכים מהגובה הנוכחי
+    el.hidden = false;
+    if (!anim()) { freeze(el); return; }
+    if (!wasHidden && !running && !opt.fromZero) return;
+    freeze(el);
+    var to = boxOf(el, window.getComputedStyle(el));
+    if (!to.height) return; // display:none מה-CSS – אין מה להנפיש
+    var from = cur || { height: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, opacity: 0 };
+    from.overflow = 'hidden';
+    to.opacity = 1;
+    to.clearProps = PANEL_PROPS;
+    G.fromTo(el, from, to);
+  }
+  // סגירה: aria כבר עודכן אצל הקורא; כאן רק התנועה, inert בזמן היציאה, ו-hidden (או done) בסוף. יציאה 150ms
+  function collapse(el, opt) {
+    if (!el || el.hidden) return;
+    opt = opt || {};
+    var finish = function () {
+      if (opt.done) opt.done(); else el.hidden = true;
+      freeze(el);
+    };
+    if (!anim() || !el.offsetHeight) { finish(); return; }
+    G.killTweensOf(el);
+    if (!el.hasAttribute('inert')) { el.setAttribute('inert', ''); el.setAttribute('data-closing-inert', ''); }
+    G.fromTo(el, { height: el.offsetHeight, overflow: 'hidden' },
+      { height: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, opacity: 0, duration: 0.15, onComplete: finish });
+  }
+  // תוכן שמתחלף בתוך תיבה גלויה: הגובה זז מהישן לחדש, והתוכן החדש נכנס ב-fade קצר
+  function swap(box, mutate) {
+    if (!box) return;
+    if (!anim() || box.hidden || !box.offsetHeight) { var was = box.hidden; mutate(); if (was || !G) reveal(box, true); return; } // תיבה סגורה נפתחת; בלי GSAP – fade
+    var h0 = box.offsetHeight;          // קריאה
+    G.killTweensOf(box);
+    G.set(box, { clearProps: 'height,overflow' });
+    mutate();                            // כתיבה (DOM)
+    var h1 = box.offsetHeight;          // קריאה אחת אחרי השינוי
+    var kids = G.utils.toArray(box.children).filter(function (k) { return !k.hidden; });
+    var tl = G.timeline();
+    tl.fromTo(box, { height: h0, overflow: 'hidden' }, { height: h1, clearProps: 'height,overflow' }, 0)
+      .fromTo(kids, { opacity: 0, y: 6 }, { opacity: 1, y: 0, clearProps: 'opacity,transform' }, 0);
+  }
+  // כניסת מקטע שהוחלף (שלב בתהליך): opacity + הזזה קטנה בכיוון ההתקדמות. לא autoAlpha – הפוקוס עובר מיד ל-H1 שבתוכו
+  function enter(el, forward) {
+    if (!anim() || !el) return null;
+    var rtl = (document.documentElement.getAttribute('dir') || 'rtl') === 'rtl';
+    var x = 12 * (forward ? 1 : -1) * (rtl ? -1 : 1); // RTL: "קדימה" נכנס משמאל
+    return G.fromTo(el, { opacity: 0, x: x }, { opacity: 1, x: 0, clearProps: 'opacity,transform' });
+  }
+  // מסך הצלחה (תשלום/בקשה התקבלה): המקטע נכנס, העיגול מופיע, וה-✓ "נכתב" (stroke-dashoffset). ~0.35s בסך הכול
+  function success(section, circle) {
+    if (!anim() || !section) return null;
+    var path = circle && circle.querySelector('path');
+    var len = 0;
+    try { len = path ? path.getTotalLength() : 0; } catch (e) { len = 0; }
+    var tl = G.timeline({ defaults: { duration: 0.2 } });
+    tl.addLabel('in', 0)
+      .fromTo(section, { opacity: 0, y: 8 }, { opacity: 1, y: 0, clearProps: 'opacity,transform' }, 'in');
+    if (circle) tl.fromTo(circle, { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, clearProps: 'opacity,transform' }, 'in+=0.04');
+    if (len) tl.fromTo(path, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.22, ease: 'power1.inOut', clearProps: 'strokeDasharray,strokeDashoffset' }, '<0.08');
+    return tl;
+  }
+  // ערך שהתעדכן מחוץ למוקד העין (שורת "בחרתם" בסרגל הדביק): fade קצר, בלי ספירה של מספרים
+  function refresh(el) {
+    if (!anim() || !el) return;
+    G.fromTo(el, { opacity: 0.35, y: 3 }, { opacity: 1, y: 0, duration: 0.15, clearProps: 'opacity,transform' });
+  }
+  // Flip: אלמנטים שנשארים זזים למקומם החדש, אלמנטים שנכנסים עושים fade. mutate משנה את ה-DOM
+  function flip(targets, mutate) {
+    var F = window.Flip;
+    if (!anim() || !F) { mutate(); return; }
+    var els = G.utils.toArray(targets);
+    var state = F.getState(els);
+    mutate();
+    F.from(state, {
+      targets: els, duration: 0.2, ease: 'power2.out', prune: true,
+      onEnter: function (inEls) { return G.fromTo(inEls, { opacity: 0 }, { opacity: 1, duration: 0.2, clearProps: 'opacity' }); }
+    });
+  }
+  // חשיפת תוכן שנפתח במקום (אקורדיון, תשובה) – רק בפעולת משתמש. עם GSAP: גובה אמיתי + fade.
+  // בלי GSAP: opacity בלבד ב-WAAPI (150ms). force: גם אם כבר גלוי והתוכן הוחלף
   function reveal(el, force) {
     if (!el) return;
+    if (G) { expand(el, { fromZero: !!force && !el.hidden }); return; }
     var wasHidden = el.hidden;
     el.hidden = false;
     if (!wasHidden && !force) return;
@@ -145,6 +263,7 @@
       if (ms) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: ms, easing: root.getPropertyValue('--ease').trim() || 'ease-out' });
     } catch (e) { /* */ }
   }
+  function conceal(el) { if (G) collapse(el); else if (el) el.hidden = true; }
   // iOS Safari מפעיל :active במגע רק כשיש מאזין touchstart
   try { document.addEventListener('touchstart', function () {}, { passive: true }); } catch (e) { /* */ }
 
@@ -158,13 +277,13 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       var p = document.getElementById(btn.getAttribute('aria-controls'));
       if (!p) return;
-      if (open && animate) reveal(p); else p.hidden = !open;
+      if (animate) { if (open) reveal(p); else conceal(p); } else { freeze(p); p.hidden = !open; }
     }
     btns.forEach(function (b, i) {
       set(b, i === opt.openIndex);
       b.addEventListener('click', function () {
         var open = b.getAttribute('aria-expanded') !== 'true';
-        if (single && open) btns.forEach(function (o) { if (o !== b) set(o, false); });
+        if (single && open) btns.forEach(function (o) { if (o !== b && o.getAttribute('aria-expanded') === 'true') set(o, false, true); });
         set(b, open, true);
         if (opt.onToggle) opt.onToggle(i, open);
       });
@@ -408,7 +527,8 @@
 
   window.UI = {
     qs: qs, qsa: qsa, esc: esc, icon: icon, hydrateIcons: hydrateIcons,
-    accordion: accordion, drawer: drawer, modal: modal, show: show, hide: hide, reveal: reveal,
+    accordion: accordion, drawer: drawer, modal: modal, show: show, hide: hide, reveal: reveal, conceal: conceal,
+    motion: { on: anim, compact: function () { return compact; }, expand: expand, collapse: collapse, swap: swap, enter: enter, success: success, refresh: refresh, flip: flip },
     toast: toast, copy: copy, param: param, params: params, setParams: setParams,
     store: store, setBusy: setBusy, fieldError: fieldError, focus: focusEl
   };

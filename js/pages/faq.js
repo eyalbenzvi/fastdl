@@ -49,21 +49,28 @@
     });
   }
 
-  function render() {
+  // כל השאלות נבנות פעם אחת; סינון = hidden על הפריטים (כך Flip יכול להזיז את הפריטים שנשארים למקומם החדש)
+  list.innerHTML = F.map(function (f, i) {
+    var open = state.open === i;
+    return '<div class="acc" data-item="' + i + '" data-flip-id="faq-' + i + '">' +
+      '<button type="button" class="acc__btn" id="faq-b' + i + '" aria-expanded="' + open + '" aria-controls="faq-p' + i + '" data-i="' + i + '"><span>' + esc(f[1]) + '</span>' + UI.icon('chevron-down') + '</button>' +
+      '<div class="acc__panel faq-panel" id="faq-p' + i + '" role="region" aria-labelledby="faq-b' + i + '"' + (open ? '' : ' hidden') + '>' +
+      '<p>' + fmt(f[2]) + '</p><a class="btn btn--secondary info-btn" href="' + f[4] + '">' + esc(f[3]) + '</a></div></div>';
+  }).join('') + '<p class="faq-empty" hidden>לא מצאנו שאלה שמתאימה לחיפוש. נסו מילה אחרת, או פנו אלינו.</p>';
+  var itemEls = UI.qsa('[data-item]', list);
+  var emptyEl = UI.qs('.faq-empty', list);
+
+  function apply() {
+    var shown = visible().map(function (x) { return x.i; });
+    itemEls.forEach(function (el) { el.hidden = shown.indexOf(Number(el.getAttribute('data-item'))) < 0; });
+    emptyEl.hidden = shown.length > 0;
+    count.textContent = shown.length + ' שאלות מוצגות';
+  }
+
+  // animate: רק בבחירת נושא (פעולה בדידה). הקלדה בחיפוש מסננת מיד – פעולה בתדירות גבוהה, בלי תנועה
+  function render(animate) {
     UI.qsa('[data-cat]', chips).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-cat') === state.cat ? 'true' : 'false'); });
-    var items = visible();
-    count.textContent = items.length + ' שאלות מוצגות';
-    if (!items.length) {
-      list.innerHTML = '<p class="faq-empty">לא מצאנו שאלה שמתאימה לחיפוש. נסו מילה אחרת, או פנו אלינו.</p>';
-      return;
-    }
-    list.innerHTML = items.map(function (x) {
-      var f = x.f, i = x.i, open = state.open === i;
-      return '<div class="acc">' +
-        '<button type="button" class="acc__btn" id="faq-b' + i + '" aria-expanded="' + open + '" aria-controls="faq-p' + i + '" data-i="' + i + '"><span>' + esc(f[1]) + '</span>' + UI.icon('chevron-down') + '</button>' +
-        '<div class="acc__panel faq-panel" id="faq-p' + i + '" role="region" aria-labelledby="faq-b' + i + '"' + (open ? '' : ' hidden') + '>' +
-        '<p>' + fmt(f[2]) + '</p><a class="btn btn--secondary info-btn" href="' + f[4] + '">' + esc(f[3]) + '</a></div></div>';
-    }).join('');
+    if (animate) UI.motion.flip(itemEls.concat(emptyEl), apply); else apply();
   }
 
   list.addEventListener('click', function (e) {
@@ -73,16 +80,17 @@
     state.open = state.open === i ? -1 : i;
     UI.qsa('[data-i]', list).forEach(function (o) {
       var on = Number(o.getAttribute('data-i')) === state.open;
+      var was = o.getAttribute('aria-expanded') === 'true';
       o.setAttribute('aria-expanded', on ? 'true' : 'false');
       var p = document.getElementById(o.getAttribute('aria-controls'));
-      if (p) { if (on) UI.reveal(p); else p.hidden = true; }
+      if (p && on !== was) { if (on) UI.reveal(p); else UI.conceal(p); }
     });
   });
   chips.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-cat]') : null;
     if (!b) return;
     state.cat = b.getAttribute('data-cat');
-    render();
+    render(true);
   });
   input.addEventListener('input', function () { state.q = input.value; render(); });
 

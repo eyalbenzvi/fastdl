@@ -93,6 +93,12 @@ main:focus{outline:none}
   .menu-btn__t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap} /* השם הנגיש "תפריט" נשמר */
   .lang-btn .ico{display:none}
 }
+/* זום 200% (≤300): הכלל של ≤640 למעלה קובע גובה קבוע ודורס את height:auto של components.css – הכלים נשברים לשורה שנייה
+   וחורגים לתוך פס האמון. כאן הגובה חוזר ל-auto, והטלפון והתפריט נצמדים לסוף השורה השנייה */
+@media (max-width:300px){
+  .site-header__bar{height:auto}
+  .header-tools-m,.header-phone--flow{margin-inline-start:auto}
+}
 
 /* ---------- Menu drawer ---------- */
 .menu-list li{border-bottom:1px solid var(--c-border)}
@@ -1186,7 +1192,7 @@ html[lang="ar"] .wordmark__text{line-height:1.2}
 .st-dot--skip{border-style:dashed;background:var(--c-bg)}
 .st-tlsum__btn{flex:none;min-height:var(--tap-min,44px);display:inline-flex;align-items:center;gap:4px}
 .st-tlsum__chev{transition:transform .2s var(--ease,ease)}
-.status-tl.is-open .st-tlsum__chev{transform:rotate(180deg)}
+.st-tlsum__btn[aria-expanded="true"] .st-tlsum__chev{transform:rotate(180deg)} /* לפי aria-expanded: בסגירה ה-class is-open יורד רק בסוף התנועה */
 /* "מה עכשיו?" */
 .st-list{display:flex;flex-direction:column;gap:8px}
 .st-list li{display:flex;gap:10px;align-items:flex-start}

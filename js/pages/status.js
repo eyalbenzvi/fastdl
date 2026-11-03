@@ -615,9 +615,13 @@
     if (a === 'tl') {
       st.tlOpen = !st.tlOpen;
       var card = b.closest('.status-tl');
-      card.classList.toggle('is-open', st.tlOpen);
+      var list = document.getElementById('status-tl-list');
       b.setAttribute('aria-expanded', String(st.tlOpen));
       b.firstChild.nodeValue = st.tlOpen ? 'הסתרת השלבים' : 'כל השלבים';
+      // ≤640 הציר המלא מוסתר ב-CSS עד שפותחים; פתיחה/סגירה בגובה אמיתי. בסגירה ה-class יורד רק בסוף התנועה
+      if (st.tlOpen) { card.classList.add('is-open'); if (UI.motion.compact()) UI.motion.expand(list, { fromZero: true }); }
+      else if (UI.motion.compact() && UI.motion.on()) UI.motion.collapse(list, { done: function () { if (!st.tlOpen) card.classList.remove('is-open'); } });
+      else card.classList.remove('is-open');
       return;
     }
     if (a === 'ans') {
@@ -625,8 +629,7 @@
       UI.setParams({ ans: st.ans, docs: null });
       UI.qsa('.ans-btn', root).forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
       var box = document.getElementById('s0-ans');
-      box.innerHTML = s0Answer();
-      UI.reveal(box, true);
+      UI.motion.swap(box, function () { box.innerHTML = s0Answer(); });
     } else if (a === 'sms') {
       var c = document.getElementById('sms-consent');
       if (c && !c.checked) { UI.fieldError(c, 'כדי לקבל עדכון יש לסמן את תיבת ההסכמה.'); c.focus(); return; }
@@ -645,6 +648,7 @@
       var nn = UI.qs('.status-done', root); if (nn) nn.focus();
     } else if (a === 'reveal') {
       st.reveal = true; UI.setParams({ reveal: 1 }); render();
+      UI.motion.expand(document.getElementById('s7-reveal'), { fromZero: true });
       var t = UI.qs('.s7-reveal__t', root); if (t) t.focus();
     } else if (a === 'gotit') {
       st.gotIt = true; render();

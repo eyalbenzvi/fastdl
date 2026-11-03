@@ -41,6 +41,7 @@
       try { window.scrollTo(0, Math.max(0, qs('#main').getBoundingClientRect().top + window.pageYOffset)); } catch (e) { /* */ }
       var h = qs('#reissue-done-h');
       try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); }
+      UI.motion.success(qs('#reissue-done'), qs('#reissue-done .order-done__circle')); // רק בפעולת משתמש, לא בטעינה עם ?done
     }
   }
 

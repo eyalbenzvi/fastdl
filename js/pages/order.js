@@ -112,6 +112,7 @@
   function go(n, opt) {
     opt = opt || {};
     n = clamp(n);
+    var prev = order.step;
     order.step = n;
     if (n === 5) complete();
     ui.termsErr = false;
@@ -121,6 +122,16 @@
     writeUrl(!opt.replace);
     render();
     focusStep();
+    stepMotion(prev, n);
+  }
+
+  // מעבר שלב (רק בפעולת משתמש): השלב החדש נכנס בכיוון ההתקדמות (RTL: קדימה משמאל). השלב הישן מוסתר מיד, הפוקוס כבר ב-H1.
+  // שלב 5: רצף ההצלחה (עיגול + ✓). בלי GSAP / ב-reduced-motion – אין תנועה
+  function stepMotion(prev, n) {
+    if (prev === n) return;
+    var sec = qs('.order__step[data-step="' + n + '"]');
+    if (n === 5) UI.motion.success(sec, qs('.order-done__circle', sec));
+    else UI.motion.enter(sec, n > prev);
   }
 
   // ההזמנה הושלמה: מסך המצב יציג אותה (S2/S3); הנפקה חוזרת קודמת כבר לא רלוונטית
@@ -256,8 +267,13 @@
   function renderChosen() {
     var m = cur(), el = qs('#chosen-line');
     if (!el) return;
-    el.innerHTML = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) : 'עוד לא בחרתם';
+    var html = m ? 'בחרתם: <strong>' + esc(m.name) + '</strong> · ' + rich(m.price_display) : 'עוד לא בחרתם';
+    if (el.innerHTML === html) return;
+    el.innerHTML = html;
+    if (chosenReady) UI.motion.refresh(el); // שינוי בחירה: fade קצר בסרגל הדביק (המחיר מתחלף, לא נספר)
+    chosenReady = true;
   }
+  var chosenReady = false;
   function renderMethodErr() {
     var e = qs('#method-err');
     e.hidden = !ui.methodErr;

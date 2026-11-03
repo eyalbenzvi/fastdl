@@ -9,12 +9,14 @@
   if (UI.param('open') !== null && p >= 1 && p <= btns.length) cur = p - 1;
   else if (UI.param('open') === '0') cur = -1;
 
+  var box = document.getElementById('ans');
+  function apply() {
+    panels.forEach(function (el) { el.hidden = Number(el.getAttribute('data-ans')) !== cur; });
+  }
+  // בפעולת משתמש: התשובה מתחלפת בתוך #ans – הגובה זז מהתשובה הקודמת לחדשה (GSAP; בלי GSAP – fade)
   function render(animate) {
     btns.forEach(function (b, i) { b.setAttribute('aria-expanded', i === cur ? 'true' : 'false'); });
-    panels.forEach(function (el) {
-      var on = Number(el.getAttribute('data-ans')) === cur;
-      if (on && animate) UI.reveal(el); else el.hidden = !on;
-    });
+    if (animate) UI.motion.swap(box, apply); else apply();
   }
 
   btns.forEach(function (b, i) {
