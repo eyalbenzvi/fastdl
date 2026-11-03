@@ -1,0 +1,12 @@
+# Package A – notes for packages B and C (internal)
+- Toast API: UI.toast(text) · UI.toast(text, ms) · UI.toast(text, {ms, icon}) · UI.toast(text, ms, {icon}). icon: 'check' (default) | 'info' | any icon | false. "[לאישור]" text gets 'info' automatically. ms=0 stays.
+- Font-size tokens (rem): --fs-hero 44, --fs-h1 40, --fs-h1-m 28, --fs-h1-page 38, --fs-h1-flow 32, --fs-h2 28, --fs-h2-m 22, --fs-h3 20, --fs-h3-m 18, --fs-body 17, --fs-lead 18, --fs-small 15, --fs-tag 13; new: --fs-h1-auth 36, --fs-h1-status 34, --fs-h1-flow-m 26, --fs-title 19, --fs-ui 16, --fs-xs 14. Replace px font-size literals in your sections with these.
+- Colour/shape tokens: --c-illus-1/2/3, --c-illus-card-from/to, --c-illus-line (#DCE4EA), --c-footer-hover, --c-wordmark-sub-dark, --c-skel, --c-skel-shine, --c-demo-muted, --c-demo-toggle, --radius-art (18px), --focus-halo.
+- New classes: .num--wrap (lets a long .num wrap). .num no longer wraps by default.
+- H-03 OTP: pages.css OTP focus rule (~line 170) should add box-shadow:var(--focus-halo).
+- Prototype index: `.pi-lnk__d .num{white-space:normal}` sits in the shared Polish section – C should move it into the P00 section or use .num--wrap.
+- Remaining overflow at 195px (200% zoom), B/C files: status S1–S4, S4 toast, loading, status.html w/o param (time-card .st-nw, skeleton); guide (chevron); fastest (info-btn); contact (.num); design-system; prototype-index.
+- F11 literals in C sections: home hero-art colours (use --c-illus-*), #DCE4EA in pickup (use --c-illus-line), 18px/5px radii (--radius-art / --radius-pill).
+- L-01: add <meta name="color-scheme" content="light"> to remaining HTML pages.
+- B: status.js placeholderToast → pass {icon:'info'}.
+- DESIGN.md token list should be updated with the new tokens (C owns DESIGN.md).
