@@ -679,14 +679,28 @@
   }
 
   /* ---------- Auto-hydrate icons ---------- */
+  /* ---------- Loose wrapping fallback ----------
+     בהגדלת טקסט חזקה (הגדרת גודל גופן בדפדפן/מערכת) מחרוזות nowrap – תאריכים, מספרים – עלולות לייצר גלילה לרוחב.
+     אם הדף רחב מהמסך, מוסיפים html.loose-wrap שמתיר שבירה; נבדק בטעינה, בשינוי גודל ובשינוי תוכן. */
+  var looseT = null;
+  function checkLoose() {
+    var de = document.documentElement;
+    if (de.classList.contains('loose-wrap')) return;
+    if (de.scrollWidth > de.clientWidth + 1) de.classList.add('loose-wrap');
+  }
+  function scheduleLoose() { clearTimeout(looseT); looseT = setTimeout(checkLoose, 120); }
+  window.addEventListener('resize', function () { document.documentElement.classList.remove('loose-wrap'); scheduleLoose(); });
+  window.addEventListener('load', scheduleLoose);
+
   function boot() {
+    scheduleLoose();
     hydrateIcons(document);
     try {
       new MutationObserver(function (muts) {
         muts.forEach(function (m) {
           for (var i = 0; i < m.addedNodes.length; i++) {
             var n = m.addedNodes[i];
-            if (n.nodeType === 1) hydrateIcons(n);
+            if (n.nodeType === 1) { hydrateIcons(n); scheduleLoose(); }
           }
         });
       }).observe(document.documentElement, { childList: true, subtree: true });

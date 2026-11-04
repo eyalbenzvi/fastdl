@@ -116,7 +116,7 @@ main:focus{outline:none}
 .site-footer__list{display:flex;flex-direction:column;gap:8px}
 @media (max-width:860px){.site-footer__cols{grid-template-columns:minmax(0,1fr)}}
 /* מובייל ומכשירי מגע: כל קישור בפוטר בשורה של 44px (L-04, QA_VISUAL P2-5) – במקום 25px + רווח 8 */
-@media (max-width:640px),(pointer:coarse){
+@media (max-width:640px),(pointer:coarse),(any-pointer:coarse){
   .site-footer__list{gap:0}
   .site-footer__list a{display:flex;align-items:center;min-height:var(--tap-min)}
   .site-footer__list a::after{content:none}
@@ -1377,3 +1377,11 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
   .order .label{overflow-wrap:anywhere}
 }
 /* ===== /UX behavior: order/status ===== */
+
+/* ===== Loose wrapping fallback (html.loose-wrap נקבע ב-ui.js כשיש גלילה לרוחב, למשל בהגדלת טקסט) ===== */
+.loose-wrap .num,.loose-wrap .st-nw,.loose-wrap .nowrap{white-space:normal;overflow-wrap:anywhere}
+.loose-wrap .kv dd,.loose-wrap .order-sum dd{overflow-wrap:anywhere;min-width:0}
+/* כפתורי הבית בערבית ב-320: התווית "(بالعبرية)" נשברת בתוך הכפתור ולא בורחת ממנו */
+html[lang="ar"] .home-alt__actions .btn{min-width:0}
+html[lang="ar"] .home-alt__actions .btn .ar-he{display:inline-block;max-width:100%;overflow-wrap:anywhere}
+html[lang="ar"] .home-alt__actions .btn{height:auto;min-height:var(--control-h);padding-block:8px}
