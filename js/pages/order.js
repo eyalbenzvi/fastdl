@@ -193,24 +193,28 @@
     if (prev !== n) lockStep();
   }
 
-  /* P1-3 + B-01: אחרי מעבר שלב כל השלב החדש מתעלם מהקשות ל-450ms – לא רק אזור הכפתורים: הגלילה לראש השלב
-     מביאה מתחת לאצבע תוכן אחר (למשל כרטיס "עוד לא" בשלב 3). .fd-lock = שכבה שקופה (pages.css) על השלב, על הסרגל
-     הדביק (z-index משלו) ועל "› חזרה" העליון; ובנוסף מאזין click ב-capture שבולע כל הקשה בתוך main בזמן הנעילה */
-  var LOCK_MS = 450, lockT = null;
+  /* P1-3: אחרי מעבר שלב, כפתורי השלב החדש (באותו מקום בדיוק כמו "המשך" הקודם) מתעלמים מהקשות ל-450ms.
+     .fd-lock = שכבה שקופה מעל אזור הכפתורים (pages.css) – ההקשה נבלעת ולא עוברת לתוכן שמתחת.
+     B-01: הגלילה לראש השלב מביאה מתחת לאצבע גם תוכן אחר (למשל הכרטיס "עוד לא" בשלב 3) – לכן מאזין click ב-capture
+     בולע בזמן הנעילה כל הקשה בתוך main שנוחתת באותה נקודה במסך כמו ההקשה שהעבירה שלב (הקשה כפולה), בכל מקום בשלב.
+     הקשה מכוונת במקום אחר במסך עוברת כרגיל */
+  var LOCK_MS = 450, lockT = null, lastClick = null, lockAt = null;
   function lockTargets() {
     var sec = qs('.order__step[data-step="' + order.step + '"]');
-    return [qs('#order-top'), sec].concat(sec ? qsa('.order-actions, .order-done', sec) : []).filter(Boolean);
+    return [qs('#order-top')].concat(sec ? qsa('.order-actions, .order-done', sec) : []).filter(Boolean);
   }
+  document.addEventListener('click', function (e) {
+    if (lockT && lockAt && e.detail > 0 && Math.abs(e.clientX - lockAt.x) < 32 && Math.abs(e.clientY - lockAt.y) < 32 &&
+      e.target.closest && e.target.closest('#main')) { e.preventDefault(); e.stopPropagation(); return; }
+    lastClick = e.detail > 0 ? { x: e.clientX, y: e.clientY, t: Date.now() } : null;
+  }, true);
   function lockStep() {
     unlock();
+    lockAt = lastClick && Date.now() - lastClick.t < 1000 ? lastClick : null;
     lockTargets().forEach(function (el) { el.classList.add('fd-lock'); });
     lockT = setTimeout(unlock, LOCK_MS);
   }
   function unlock() { clearTimeout(lockT); lockT = null; qsa('.fd-lock').forEach(function (el) { el.classList.remove('fd-lock'); }); }
-  document.addEventListener('click', function (e) {
-    if (!lockT || e.detail === 0 || !e.target.closest || !e.target.closest('#main')) return;
-    e.preventDefault(); e.stopPropagation();
-  }, true);
   // רק הקשה/קליק (detail>0) נחסמים; Enter/רווח במקלדת אחרי מעבר פוקוס מכוון הם פעולה מכוונת
   function locked(e) { return !!lockT && !(e && e.detail === 0); }
 
@@ -559,12 +563,13 @@
     return sum % 10 === 0;
   }
   function isAmex(v) { return /^3[47]/.test(digitsOf(v)); }
-  function expCheck(v) { // {ok, reason: 'format'|'past'}; החודש הנוכחי תקין, עד 20 שנה קדימה
+  function expCheck(v) { // {ok, reason: 'format'|'past'}; החודש הנוכחי תקין, עד 20 שנה קדימה (fallback כש-validation.js ישן)
     v = clean(lat(v));
     if (window.Validate && typeof Validate.cardExpiry === 'function') { var r = Validate.cardExpiry(v); if (r && typeof r === 'object') return r; }
     var mm = /^(0[1-9]|1[0-2])\/(\d{2})$/.exec(v);
     if (!mm) return { ok: false, reason: 'format' };
-    var now = new Date(), y = 2000 + Number(mm[2]), mo = Number(mm[1]);
+    var nm = /^(\d{4})-(\d{2})/.exec(String(D.now || '')); // "היום" של האב-טיפוס (כמו validation.js), לא שעון המכשיר
+    var now = nm ? new Date(Number(nm[1]), Number(nm[2]) - 1, 1) : new Date(2026, 7, 25), y = 2000 + Number(mm[2]), mo = Number(mm[1]);
     var nowY = now.getFullYear(), nowM = now.getMonth() + 1;
     if (y < nowY || (y === nowY && mo < nowM)) return { ok: false, reason: 'past' };
     if (y > nowY + 20) return { ok: false, reason: 'format' };

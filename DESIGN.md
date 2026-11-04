@@ -410,10 +410,10 @@ Gently rounded, friendly but not playful: 6px for the `[לאישור]` marker, 8
 - **Style:** 52px, 1.5px Field Edge border, 12px radius, white, 18px text. Numeric fields are LTR with tabular figures, end-aligned. The label sits above at 600 weight; optional fields say "(לא חובה)" in muted text.
 - **Focus:** the amber 3px ring plus a blue border.
 - **Error:** 2px Signal Red border, `aria-invalid`, and a 15px/600 red message with an alert-circle icon (`role="alert"`) below the help text.
-- **OTP:** six 52×60 boxes, LTR, 26px bold, shrinking to 44px below 390.
+- **OTP:** six 52×60 boxes, LTR, 26px bold, shrinking to 44px below 390. No `maxlength`: a digit typed into a full box replaces it (touch/IME too), a multi-digit fill or paste spreads from box 1, and Arabic-Indic/Persian digits are read as 0–9. After verification the timer and "שלחו שוב" disappear.
 
 ### Navigation
-- **Header:** white, 76px, with a 1px bottom Mist Line. Wordmark on the start side, navy 500 nav links with a 2px Counter Blue underline for the current or hovered page, a "עוד" dropdown, the phone, a language button and the round blue accessibility button. ≤1023: "תפריט" opens a drawer from the right.
+- **Header:** white, 76px (a minimum on the static Arabic header, whose nav links sit on two lines – name + "(بالعبرية)" – and whose tools wrap under the wordmark when text is enlarged), with a 1px bottom Mist Line. Wordmark on the start side, navy 500 nav links with a 2px Counter Blue underline for the current or hovered page, a "עוד" dropdown, the phone, a language button and the round blue accessibility button. ≤1023: "תפריט" opens a drawer from the right.
 - **Trust bar:** Navy Haze, 46px, 15px/500, teal icons, and the dashed Ministry logo placeholder.
 - **Flow mode** (`data-flow="order"`): wordmark + support phone + trust bar only, with a one-line footer.
 - **Footer:** a navy ground, a white wordmark, two link columns, and a bottom row in `footer-muted`.
@@ -438,6 +438,8 @@ The info drawer enters from the left and the menu from the right, both 460px max
 - **Do** pair every status with an icon and a word, and keep the 3px #FFB020 focus ring with 2px offset on every interactive element, with `--focus-halo` (2px white + navy to 7px) under it on light surfaces (incl. the OTP boxes).
 - **Do** wrap every number in `<span class="num" dir="ltr">` and use tabular figures. Mirror arrows for RTL (forward = left).
 - **Do** mark every unconfirmed fact with `<span class="tbc">[לאישור]</span>`.
+- **Do** write dates in the house format "יום ד׳ 26.8 בשעה 05:12" (no year, no comma) and opening hours in full, Friday included ("א׳–ה׳ 08:00–17:00 · שישי וערבי חג 08:00–13:00"). Hebrew quotes are ״…״ and the geresh ׳; no slash forms (צריך/ה) – plural address or neutral wording.
+- **Do** draw list bullets in CSS, never as a "•" character in the text. Decorative large numerals (the 404) still use Field Edge (3:1), not Steel Line.
 - **Do** keep hit targets ≥44px, and keep motion at 150–200ms on transform and opacity, cancelled by `prefers-reduced-motion`.
 
 ### Don't:

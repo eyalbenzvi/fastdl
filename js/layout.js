@@ -266,7 +266,10 @@
       returnFocus: back,
       onClose: function () {
         if (btn) btn.setAttribute('aria-expanded', 'false');
-        if (!back || !back.offsetParent) setTimeout(function () { if (document.activeElement === document.body) focusMain(); }, 0);
+        if (!back || !back.offsetParent) setTimeout(function () {
+          var a = document.activeElement, dr = document.getElementById('menu-drawer');
+          if (!a || a === document.body || (dr && dr.contains(a))) focusMain();
+        }, 0);
       }
     });
   }

@@ -44,8 +44,8 @@
   }
   function dayName(isoStr) { return 'יום ' + DAY[pd(isoStr).getDay()]; }
   function dm(isoStr) { var d = pd(isoStr); return d.getDate() + '.' + (d.getMonth() + 1); }
-  function fd(isoStr, time) { // "יום ד׳ 26.8" [+ " בשעה 05:12"], לא נשבר
-    return '<span class="st-nw">' + dayName(isoStr) + ' ' + n(dm(isoStr)) + (time ? ' בשעה ' + n(time) : '') + '</span>';
+  function fd(isoStr, time) { // "יום ד׳ 26.8" [+ " בשעה 05:12"]: התאריך לא נשבר; "בשעה …" יכול לרדת שורה כיחידה אחת (ציר צר ב-768)
+    return '<span class="st-nw">' + dayName(isoStr) + ' ' + n(dm(isoStr)) + '</span>' + (time ? ' <span class="st-nw">בשעה ' + n(time) + '</span>' : '');
   }
 
   var T = { // ציר הזמנים של הבקשה בהדמיה (FD_DATA.request)

@@ -102,6 +102,7 @@ main:focus{outline:none}
 .menu-call__t{display:flex;align-items:center;gap:8px;font-weight:var(--fw-bold)}
 .menu-call__t .ico{color:var(--c-primary)}
 .menu-call__phone{font-size:var(--fs-h2-m);font-weight:var(--fw-black)}
+.menu-call__phone .num{white-space:normal} /* טקסט מוגדל: נשבר במקפים ולא מרחיב את המגירה (כפתור הסגירה נשאר במסך) */
 .menu-lang{display:flex;gap:8px}
 
 /* ---------- Footer ---------- */
@@ -190,6 +191,11 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
   .auth-card__title{font-size:var(--fs-h1-m)}
   .auth-card__submit{min-width:0}
 }
+/* QA_VISUAL P3-6: תיבות ה-OTP רחבות יותר בטלפונים צרים – פחות רווח בין התיבות ובריפוד הכרטיס (44px מ-360, ‏~40px ב-320) */
+@media (max-width:375px){
+  .auth-otp .otp{gap:4px}
+  form.auth-card{padding-inline:14px}
+}
 
 
 /* ===== merged from contact.css ===== */
@@ -200,7 +206,8 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .contact-main{display:flex;flex-direction:column;gap:22px}
 .contact-faq{background:var(--c-navy-50);border-radius:var(--radius-lg);padding:22px 26px;display:flex;flex-direction:column;gap:10px}
 .contact-faq__title{font-size:var(--fs-title);font-weight:var(--fw-bold)}
-.contact-faq__list{display:flex;flex-direction:column;gap:6px}
+.contact-faq__list{display:flex;flex-direction:column;gap:0}
+.contact-faq__list a{display:inline-block;padding-block:10px} /* יעד מגע ≥44px (QA_VISUAL P2-5) */
 .contact-form{padding:30px;display:flex;flex-direction:column;gap:18px}
 .contact-form__select{appearance:auto;padding-inline-end:8px}
 .contact-form__row{gap:var(--sp-4)}
@@ -215,7 +222,8 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .contact-call{padding:28px;display:flex;flex-direction:column;gap:10px;border-top:4px solid var(--c-primary)}
 .contact-call__head{display:flex;gap:var(--sp-3);align-items:center}
 .contact-call__ico{width:48px;height:48px}
-.contact-call__phone{font-size:1.875rem;font-weight:var(--fw-black);text-decoration:none;line-height:1.3}
+.contact-call__phone{font-size:1.875rem;font-weight:var(--fw-black);text-decoration:none;line-height:1.3;max-width:100%}
+.contact-call__phone .num{white-space:normal} /* טקסט מוגדל: המספר נשבר במקף ולא חורג מהכרטיס */
 /* שורה שקטה, לא תיבה: קו מקווקו באתר = "לא מאושר", והשורה לא לחיצה (F15) */
 .contact-soon{color:var(--c-text-muted);font-weight:var(--fw-semibold);display:flex;align-items:center;gap:10px}
 .contact-soon .ico{flex:none}
@@ -298,8 +306,8 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 .ds-type{gap:18px}
 .ds-type__row{display:flex;align-items:baseline;gap:var(--sp-5);border-bottom:1px solid var(--c-border);padding-bottom:14px}
 .ds-type__row:last-child{border-bottom:0;padding-bottom:0}
-.ds-type__k{width:92px;flex:none;font-size:var(--fs-small);color:var(--c-text-muted);text-align:start}
-.ds-mot{display:flex;align-items:center;justify-content:center;height:64px;width:220px;max-width:100%;border:2px dashed var(--c-input-border);border-radius:10px;color:var(--c-text-muted);font-size:var(--fs-small);font-weight:var(--fw-semibold);text-align:center;padding:0 12px;line-height:1.3}
+.ds-type__k{width:92px;flex:none;font-size:var(--fs-small);color:var(--c-text-muted);text-align:start;white-space:normal}
+.ds-mot{display:flex;align-items:center;justify-content:center;min-height:64px;width:220px;max-width:100%;border:2px dashed var(--c-input-border);border-radius:10px;color:var(--c-text-muted);font-size:var(--fs-small);font-weight:var(--fw-semibold);text-align:center;padding:0 12px;line-height:1.3}
 
 /* buttons */
 .ds-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px;align-items:center}
@@ -352,13 +360,16 @@ a.demo-chip[aria-current="page"]{background:var(--c-demo-accent);border-color:va
 
 /* mobile header sample */
 .ds-mhead{overflow:hidden;width:390px;max-width:100%}
-.ds-mhead__bar{height:var(--header-h-m);padding-inline:12px 8px;display:flex;align-items:center;justify-content:space-between;background:#fff}
+.ds-mhead__bar{min-height:var(--header-h-m);padding:4px 12px 4px 8px;padding-inline:12px 8px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#fff} /* טקסט מוגדל: הכלים יורדים שורה */
+.ds-mhead .wordmark{min-width:0;flex:0 1 auto}
+.ds-mhead .wordmark__text{min-width:0;overflow-wrap:anywhere}
+.ds-kv-card .copy-row .num{white-space:normal;overflow-wrap:anywhere}
 .ds-mhead__tools{display:flex}
 .ds-mhead .menu-btn{padding:0 10px}
 .ds-mhead .menu-btn .ico{width:22px;height:22px}
 .ds-mhead__trust{background:var(--c-navy-50);padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:var(--fs-small);font-weight:var(--fw-medium)}
 .ds-mhead__trust .ico{color:var(--c-brand-cyan-dark)}
-@media (max-width:374px){.ds-mhead .wordmark__bars{display:none}.ds-mhead__bar{gap:8px;overflow:hidden}} /* ב-320–360 הדמיית הכותרת לא חורגת מהכרטיס (QA_VISUAL P3-7) */
+@media (max-width:374px){.ds-mhead .wordmark__bars{display:none}.ds-mhead__bar{gap:8px}} /* ב-320–360 הדמיית הכותרת לא חורגת מהכרטיס (QA_VISUAL P3-7) */
 
 @media (max-width:1023px){
   .ds-swatches{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -409,9 +420,9 @@ html[lang="ar"] .h1{font-size:2.625rem;font-weight:var(--fw-black);line-height:1
 html[lang="ar"] .h2{line-height:1.4}
 html[lang="ar"] .h1 .accent{color:var(--c-primary)}
 html[lang="ar"] .wordmark__name{font-size:1.3125rem}
-html[lang="ar"] .wordmark__text{line-height:1.2}
+html[lang="ar"] .wordmark__text{line-height:1.3} /* הגופן הערבי גבוה – השורות לא חופפות */
 .ar-tools{display:flex;align-items:center;gap:12px}
-.ar-phone{font-weight:var(--fw-bold);color:var(--c-navy)!important;text-decoration:none!important}
+.ar-phone{font-weight:var(--fw-bold);color:var(--c-navy)!important;text-decoration:none!important;min-height:var(--tap-min);display:inline-flex;align-items:center} /* יעד 44px */
 .ar-trust{min-height:var(--trust-h);display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding-block:8px}
 .home-hero--ar .hero-art{min-height:400px}
 .hero-art--ar .hero-art__circle{width:380px;height:380px}
@@ -431,6 +442,8 @@ html[lang="ar"] .site-header__bar{min-height:var(--header-h);height:auto;flex-wr
 .ar-tools{flex:none}
 html[lang="ar"] .wordmark{flex:0 1 auto;min-width:0}
 html[lang="ar"] .wordmark__text{min-width:0}
+html[lang="ar"] .home-alt__actions .btn{white-space:normal;max-width:100%;flex-wrap:wrap;row-gap:0}
+html[lang="ar"] .home-alt__actions .btn .ar-he{white-space:normal}
 /* קישור הדילוג בערבית ארוך ונשבר לשתי שורות בזום – מוסתר ב-transform ולא ב-top קבוע, כך שלא "מציץ" */
 html[lang="ar"] .skip-link{top:0;transform:translateY(-120%)}
 html[lang="ar"] .skip-link:focus{top:12px;transform:none}
@@ -522,7 +535,7 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .gate{padding:28px;display:flex;flex-direction:column;gap:14px;height:100%}
 .gate__head{display:flex;align-items:center;gap:14px}
 .gate__ico{width:60px;height:60px;border-radius:50%}
-.gate__title{font-size:1.3125rem}
+.gate__title{font-size:1.3125rem;min-width:0;overflow-wrap:anywhere}
 .gate__text{flex:1}
 .gate--status .gate__ico{background:var(--c-gate-status-50);color:var(--c-gate-status)}.gate--status .gate__title{color:var(--c-gate-status)}
 .gate--order .gate__ico{background:var(--c-gate-order-50);color:var(--c-gate-order)}.gate--order .gate__title{color:var(--c-gate-order)}
@@ -674,6 +687,12 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .fast-tl__step:last-child::before{display:none}
 .fast-tl__num{position:relative;z-index:1;width:44px;height:44px;border-radius:50%;background:var(--c-navy-50);color:var(--c-navy);font-weight:var(--fw-black);font-size:var(--fs-h3-m);display:flex;align-items:center;justify-content:center;flex:none}
 .fast-tl__step--key .fast-tl__num{background:var(--c-primary);color:#fff}
+/* forced-colors (QA_VISUAL P3-4) – רכיבי עמודי המידע שמוגדרים ברקע בלבד: מסגרת מערכת; הצעד המרכזי במילוי Highlight */
+@media (forced-colors:active){
+  .fast-tl__num,.home-how__num,.err-card__ico,.contact-sent__ico,.about-step__ico,.ibox,.info-notes,.ar-draft,.guide-video__frame,.pk-map,.hero-art__card{border:1px solid CanvasText}
+  .fast-tl__step--key .fast-tl__num{forced-color-adjust:none;background:Highlight;color:HighlightText;border-color:Highlight}
+  .info-notes__list>li::before{forced-color-adjust:none;background:CanvasText}
+}
 .fast-tl__body{flex:1;display:flex;flex-direction:column;gap:6px;padding-top:8px;min-width:0}
 .fast-tl__t{font-size:var(--fs-title);font-weight:var(--fw-bold);line-height:1.4}
 .fast-tl__acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
@@ -774,7 +793,7 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .about-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-6)}
 .about-card{display:flex;flex-direction:column;gap:14px}
 .about-card__head{display:flex;gap:12px;align-items:center}
-.about-card__head>h2{min-width:0;overflow-wrap:anywhere} /* זום 200%: הכותרת לא חורגת מהכרטיס (QA_VISUAL P2-1) */
+.about-card__head>h2{min-width:0;overflow-wrap:anywhere;padding-block:4px} /* זום 200%: הכותרת לא חורגת מהכרטיס (QA_VISUAL P2-1) */
 .about-card__ico{width:48px;height:48px;background:var(--c-info-bg);color:var(--c-info)}
 .about-mot{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px;width:240px;max-width:100%;border:2px dashed var(--c-input-border);border-radius:10px;color:var(--c-text-muted);font-size:var(--fs-small);font-weight:var(--fw-semibold);text-align:center}
 .info-trust{gap:12px}
@@ -963,6 +982,8 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .s7-reveal__t{margin-bottom:12px}
 .s7-reveal__t:focus{outline:none}
 .s7-reveal .callout__title{color:var(--c-success)}
+.status-page .callout>p,.status-page .callout>div{min-width:0;overflow-wrap:anywhere} /* זום 200%: הטקסט לא יוצא מהתיבה */
+#prod-modal .link-btn{min-inline-size:var(--tap-min,44px)} /* "ביטול": יעד 44px גם ברוחב */
 
 /* S0 question + answers */
 .s0-q{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:12px}
@@ -1036,7 +1057,7 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .pi-jr__steps li::marker{color:var(--c-navy);font-weight:var(--fw-bold)}
 .pi-jr__go{align-self:flex-start}
 .demo-scn{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
-.demo-select{min-height:36px;border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:var(--c-demo-bg);color:#fff;font:inherit;font-weight:var(--fw-semibold);padding-inline:12px 8px;cursor:pointer}
+.demo-select{min-height:var(--tap-min);border-radius:var(--radius-pill);border:1.5px solid var(--c-demo-chip-border);background:var(--c-demo-bg);color:#fff;font:inherit;font-size:var(--fs-ui);font-weight:var(--fw-semibold);padding-inline:12px 8px;cursor:pointer} /* 16px: בלי זום אוטומטי ב-iOS; 44px יעד מגע (QA_INPUTS P3-19, QA_VISUAL P2-5) */
 .demo-select:focus-visible{outline:3px solid var(--c-focus,#FFB020);outline-offset:2px}
 @media (max-width:640px){.pi-jr__go{align-self:stretch}}
 .pi-jr__steps .num{white-space:nowrap}
@@ -1163,7 +1184,8 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
   .order-nudge__btns{flex-direction:column;align-self:stretch}
   .order-nudge__btns .btn{width:100%}
   .order-actions--choice{flex-wrap:nowrap;gap:4px;padding-block:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
-  .order-actions--choice .order-actions__chosen{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+  /* עד שתי שורות (לא חיתוך בשורה אחת): בגופן מוגדל/זום המחיר נשאר גלוי (QA_VISUAL P2-1); בגודל רגיל – שורה אחת כמו קודם */
+  .order-actions--choice .order-actions__chosen{overflow:hidden;line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}
   .order-actions--choice .order-actions__row{flex-direction:column;align-items:stretch}
   .order-actions--choice .btn{min-height:48px}
   .order-actions--static{flex-direction:column-reverse;align-items:stretch}
@@ -1234,6 +1256,8 @@ html[lang="ar"] .skip-link:focus{top:12px;transform:none}
 .st-help a .ico{flex:none}
 .status-help__list.st-help a::after{height:100%}
 .st-help__call{display:flex;flex-direction:column;gap:8px;align-items:flex-start;margin-top:8px}
+/* QA_VISUAL P2-1/P2-2: בזום/גופן מוגדל המספר יורד שורה בתוך הכפתור ולא חורג ממנו */
+.st-help__call .btn{max-width:100%;flex-wrap:wrap;row-gap:2px;padding-block:8px}
 @media (max-width:640px){
   .status-tl{padding:16px 20px}
   .st-tlsum{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -1316,7 +1340,7 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
   html.kb-open{scroll-padding-block-end:16px}
   html.kb-open .order .sticky-actions{position:static;box-shadow:none}
   /* P2-5: בעריכה שורת "בחרתם" כוללת גם "כבר שילמתם · לתשלום עכשיו" – נשברת במקום להיחתך */
-  .order-actions--choice .order-actions__chosen--credit{white-space:normal}
+  .order-actions--choice .order-actions__chosen--credit{white-space:normal;display:block;-webkit-line-clamp:unset;line-clamp:none;overflow:visible}
 }
 .order-actions__credit{display:block;color:var(--c-text)}
 /* P3-2: שדה עם שגיאה שמקבל פוקוס – התווית מעליו לא נחתכת בראש המסך */
@@ -1324,6 +1348,7 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
 /* A-05: תיבת תנאי השימוש – אזור הקשה של 44×44 סביב ה-checkbox (label נוסף עוטף אותו), בלי שינוי פריסה */
 .order-terms__box{position:relative;display:inline-flex;flex:none;cursor:pointer}
 .order-terms__box::after{content:"";position:absolute;inset-inline:-11px;top:50%;height:var(--tap-min,44px);transform:translateY(-50%)}
+.order-terms__box input{position:relative;z-index:1}
 /* QA_VISUAL P2-5: ההצהרה בהנפקה החוזרת – שורה של 44px גם ב-≥641 */
 .reissue-decl{min-height:var(--tap-min,44px);align-items:center}
 .reissue-decl input{margin-top:0}
@@ -1333,6 +1358,11 @@ html.demo-clean .demo-bar,html.demo-clean .demo-pill{display:none!important} /* 
   .order .sticky-actions.fd-lock{position:sticky}
   html:has(.order .sticky-actions){scroll-padding-block-end:calc(96px + env(safe-area-inset-bottom,0px))}
 }
+/* גופן מוגדל (QA_VISUAL P2-2): תוויות בשורת התוקף/CVV ושם הכפתור "לתשלום…" נשברים בתוך העמודה/הכפתור */
+.order-pay-grid>.field{min-width:0}
+.order-pay-grid .label{overflow-wrap:anywhere}
+.order-actions .btn{max-width:100%;padding-block:6px}
+.order-actions .btn>span{min-width:0}
 /* QA_VISUAL P2-1: זום 200% (≤300) – המחיר בשורה משלו (לא עולה על שם השיטה ועל "?"), שורות ארוכות נשברות,
    "בחרתם" בשתי שורות (המחיר נראה), ומספרים ארוכים נשברים במקום לחרוג מהכרטיס */
 @media (max-width:300px){

@@ -59,7 +59,7 @@ function israeliId(input) {
 | טוסט העתקה | 1.6 שניות | הועתק |
 | מסך מצב | שלד | `?s=loading` (ללא הגבלה) |
 
-כפתור בטעינה: `disabled` + `aria-busy="true"` + ספינר. רוחב הכפתור לא קופץ (min-width).
+כפתור בטעינה: `aria-disabled="true"` + `aria-busy="true"` + ספינר (לא `disabled` – כפתור מושבת שמחזיק את הפוקוס מפיל אותו ל-BODY; לחיצה ו-submit נבלעים ב-JS, `UI.setBusy`, החלטה P3-4). רוחב הכפתור לא קופץ (min-width).
 
 ## 8.5 נגישות – רשימת בדיקה
 - [ ] `<html lang="he" dir="rtl">` (בערבית `lang="ar"`); `<title>` ייחודי לכל עמוד.

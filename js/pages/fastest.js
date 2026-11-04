@@ -40,8 +40,11 @@
     pick.innerHTML = label(d);
     home.innerHTML = 'עד ' + label(d);
   }
+  // document.activeElement לא אמין בשדה תאריך באמצע עריכת מקטע – מעקב פוקוס עצמאי
+  var focused = false;
+  input.addEventListener('focus', function () { focused = true; });
   input.addEventListener('input', function () { update(false); });
-  input.addEventListener('change', function () { update(document.activeElement !== input); });
-  input.addEventListener('blur', function () { update(true); });
+  input.addEventListener('change', function () { update(!focused); });
+  input.addEventListener('blur', function () { focused = false; update(true); });
   update(true);
 })();

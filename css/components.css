@@ -69,7 +69,7 @@ a{color:var(--c-primary);text-decoration:underline;text-underline-offset:3px}
 .muted{color:var(--c-text-muted)}
 .small{font-size:var(--fs-small)}
 .num{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr;white-space:nowrap} /* טלפון/מספר הזמנה לא נשבר באמצע (F02); בזום 200% כן – ראו ≤300 */
-.nowrap{white-space:nowrap} /* צירוף שלא נשבר: "· שישי וערבי חג 08:00–13:00", "יום ג׳ 1.9" (QA_VISUAL P3-3) */
+.nowrap{display:inline-block;max-width:100%} /* צירוף שלא נשבר ("· שישי וערבי חג 08:00–13:00", "יום ג׳ 1.9", QA_VISUAL P3-3): עובר שורה בשלמותו, ונשבר בפנים רק כשהוא רחב מהשורה כולה (טקסט מוגדל) */
 .tbc{background:var(--c-tbc-bg);color:var(--c-tbc-text);font-weight:var(--fw-bold);border:1px dashed var(--c-tbc-border);border-radius:var(--radius-xs);padding:0 6px}
 
 /* ---------- Icons ---------- */
@@ -305,6 +305,7 @@ textarea.input{height:150px;padding:12px 16px;resize:vertical;line-height:1.5}
   .drawer>.dialog__head,.modal>.dialog__head{touch-action:none}
   .drawer.is-dragging,.modal.is-dragging{transition:none}
 }
+@media (max-width:375px){.otp{gap:4px}} /* QA_VISUAL P3-6: ב-320–375 שש תיבות של 44px נכנסות כשהרווח קטן */
 /* זום עמוד 200% / "גודל טקסט" גדול ב-iOS (רוחב 195–300): הכותרת נשברת לשתי שורות במקום גלישה אופקית (M-02). ב-≥320 אין שינוי */
 @media (max-width:300px){
   .site-header__bar{height:auto;min-height:var(--header-h-m);flex-wrap:wrap;row-gap:8px;padding-block:8px}
